@@ -21,15 +21,15 @@ describe('haraka-plugin-elasticsearch', function () {
     });
 });
 
-describe('load_haraka-plugin-elasticsearch_ini', function () {
-    it('loads haraka-plugin-elasticsearch.ini from config/haraka-plugin-elasticsearch.ini', function (done) {
-        this.plugin.load_haraka-plugin-elasticsearch_ini();
+describe('load_elasticsearch_ini', function () {
+    it('loads elasticsearch.ini from config/elasticsearch.ini', function (done) {
+        this.plugin.load_elasticsearch_ini();
         assert.ok(this.plugin.cfg);
         done();
     });
 
     it('initializes enabled boolean', function (done) {
-        this.plugin.load_haraka-plugin-elasticsearch_ini();
+        this.plugin.load_elasticsearch_ini();
         assert.equal(this.plugin.cfg.main.enabled, true, this.plugin.cfg);
         done();
     });

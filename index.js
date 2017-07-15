@@ -2,10 +2,10 @@
 
 exports.register = function () {
     var plugin = this;
-    plugin.load_haraka-plugin-elasticsearch_ini();
+    plugin.load_elasticsearch_ini();
 }
 
-exports.load_haraka-plugin-elasticsearch_ini = function () {
+exports.load_elasticsearch_ini = function () {
     var plugin = this;
 
     plugin.cfg = plugin.config.get('haraka-plugin-elasticsearch.ini', {
@@ -16,6 +16,6 @@ exports.load_haraka-plugin-elasticsearch_ini = function () {
         ]
     },
     function () {
-        plugin.load_example_ini();
+        plugin.load_elasticsearch_ini();
     });
 }
