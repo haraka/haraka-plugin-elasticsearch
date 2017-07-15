@@ -120,7 +120,7 @@ curl -XPUT localhost:9200/_template/haraka_results -d '
                     }
                 },
                 { "msg_results" : {
-                        "match" : "msg",
+                        "match" : "plugin.*.msg",
                         "mapping" : {
                             "type" : "string", "index" : "not_analyzed"
                         }
