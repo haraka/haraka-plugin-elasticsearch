@@ -6,7 +6,7 @@ node_js:
 services:
 # https://docs.travis-ci.com/user/database-setup/
 #  - mongodb
-#  - elasticsearch
+   - elasticsearch
 #  - redis-server
 
 before_script:
