@@ -2,7 +2,7 @@
 [![Code Climate][clim-img]][clim-url]
 [![Greenkeeper badge][gk-img]][gk-url]
 [![NPM][npm-img]][npm-url]
-<!-- requires URL update [![Windows Build Status][ci-win-img]][ci-win-url] -->
+[![Windows Build Status][ci-win-img]][ci-win-url]
 <!-- doesn't work in haraka plugins... yet. [![Code Coverage][cov-img]][cov-url]-->
 
 # haraka-plugin-elasticsearch
@@ -304,8 +304,8 @@ curl -XPUT localhost:9200/_template/haraka_results -d '
 <!-- leave these buried at the bottom of the document -->
 [ci-img]: https://travis-ci.org/haraka/haraka-plugin-elasticsearch.svg
 [ci-url]: https://travis-ci.org/haraka/haraka-plugin-elasticsearch
-[ci-win-img]: https://ci.appveyor.com/api/projects/status/CHANGETHIS?svg=true
-[ci-win-url]: https://ci.appveyor.com/project/haraka/haraka-CHANGETHIS
+[ci-win-img]: https://ci.appveyor.com/api/projects/status/lpo93lu5b4wx5do5?svg=true
+[ci-win-url]: https://ci.appveyor.com/project/msimerson/haraka-plugin-elasticsearch
 [cov-img]: https://codecov.io/github/haraka/haraka-plugin-elasticsearch/coverage.svg
 [cov-url]: https://codecov.io/github/haraka/haraka-plugin-elasticsearch
 [clim-img]: https://codeclimate.com/github/haraka/haraka-plugin-elasticsearch/badges/gpa.svg
