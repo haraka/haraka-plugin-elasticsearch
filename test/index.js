@@ -7,7 +7,7 @@ var fixtures     = require('haraka-test-fixtures');
 var _set_up = function (done) {
 
     try {
-        this.plugin = new fixtures.plugin('elasticsearch');
+        this.plugin = new fixtures.plugin('../index');
     }
     catch (e) {
         console.error('unable to load elasticsearch plugin');
@@ -144,7 +144,7 @@ exports.get_plugin_results = {
         this.connection.results.add(this.plugin, { pass: 'test' });
         this.connection.results.add({name: 'queue'}, { pass: 'delivered' });
         var expected_result = {
-            'elasticsearch': { pass: [ 'test' ] },
+            '../index': { pass: [ 'test' ] },
             'queue': { pass: [ 'delivered' ] },
         };
         delete this.plugin.cfg.top_level_names;
