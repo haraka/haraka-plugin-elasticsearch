@@ -117,7 +117,7 @@ exports.log_transaction = function (next, connection) {
 
     plugin.populate_conn_properties(connection, res);
     plugin.es.create({
-        index: exports.getIndexName('transaction'),
+        index: plugin.getIndexName('transaction'),
         type: 'haraka',
         id: connection.transaction.uuid,
         body: JSON.stringify(res),
@@ -157,7 +157,7 @@ exports.log_connection = function (next, connection) {
 
     // connection.lognotice(plugin, JSON.stringify(res));
     plugin.es.create({
-        index: exports.getIndexName('connection'),
+        index: plugin.getIndexName('connection'),
         type: 'haraka',
         id: connection.uuid,
         body: JSON.stringify(res),
@@ -391,7 +391,7 @@ exports.trimPluginName = function (name) {
 };
 
 exports.trim_plugin_names = function (res, name) {
-    var trimmed = exports.trimPluginName(name);
+    var trimmed = this.trimPluginName(name);
     if (trimmed === name) return;
 
     res[trimmed] = res[name];
