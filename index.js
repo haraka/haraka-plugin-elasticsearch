@@ -2,13 +2,13 @@
 
 exports.register = function () {
     var plugin = this;
-    plugin.load_template_ini();
+    plugin.load_haraka-plugin-elasticsearch_ini();
 }
 
-exports.load_template_ini = function () {
+exports.load_haraka-plugin-elasticsearch_ini = function () {
     var plugin = this;
 
-    plugin.cfg = plugin.config.get('template.ini', {
+    plugin.cfg = plugin.config.get('haraka-plugin-elasticsearch.ini', {
         booleans: [
             '+enabled',               // plugins.cfg.main.enabled=true
             '-disabled',              // plugins.cfg.main.disabled=false

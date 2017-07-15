@@ -1,4 +1,3 @@
-
 [![Build Status][ci-img]][ci-url]
 [![Code Climate][clim-img]][clim-url]
 [![Greenkeeper badge][gk-img]][gk-url]

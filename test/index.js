@@ -10,26 +10,26 @@ var fixtures = require('haraka-test-fixtures');
 //    mocha: http://mochajs.org
 
 beforeEach(function (done) {
-    this.plugin = new fixtures.plugin('template');
+    this.plugin = new fixtures.plugin('haraka-plugin-elasticsearch');
     done();  // if a test hangs, assure you called done()
 });
 
-describe('template', function () {
+describe('haraka-plugin-elasticsearch', function () {
     it('loads', function (done) {
         assert.ok(this.plugin);
         done();
     });
 });
 
-describe('load_template_ini', function () {
-    it('loads template.ini from config/template.ini', function (done) {
-        this.plugin.load_template_ini();
+describe('load_haraka-plugin-elasticsearch_ini', function () {
+    it('loads haraka-plugin-elasticsearch.ini from config/haraka-plugin-elasticsearch.ini', function (done) {
+        this.plugin.load_haraka-plugin-elasticsearch_ini();
         assert.ok(this.plugin.cfg);
         done();
     });
 
     it('initializes enabled boolean', function (done) {
-        this.plugin.load_template_ini();
+        this.plugin.load_haraka-plugin-elasticsearch_ini();
         assert.equal(this.plugin.cfg.main.enabled, true, this.plugin.cfg);
         done();
     });
