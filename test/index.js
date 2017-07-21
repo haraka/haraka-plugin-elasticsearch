@@ -28,14 +28,12 @@ exports.register = {
         test.equal('function', typeof this.plugin.register);
         test.done();
     },
-    /*
-     * hard to test w/o connecting to an ES server
     'can run register function' : function (test) {
+        // this tests requires a living ES server
         test.expect(1);
         test.doesNotThrow(this.plugin.register());
         test.done();
     },
-    */
 };
 
 exports.load_es_ini = {
