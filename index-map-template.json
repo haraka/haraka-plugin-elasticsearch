@@ -1,0 +1,204 @@
+{
+    "template" : "connection-*",
+    "mappings" : {
+        "haraka" : {
+            "dynamic_templates" : [
+                { "fail_results" : {
+                        "match" : "fail",
+                        "mapping" : {
+                            "type" : "string", "index" : "not_analyzed"
+                        }
+                    }
+                },
+                { "pass_results" : {
+                        "match" : "pass",
+                        "mapping" : {
+                            "type" : "string", "index" : "not_analyzed"
+                        }
+                    }
+                },
+                { "skip_results" : {
+                        "match" : "skip",
+                        "mapping" : {
+                            "type" : "string", "index" : "not_analyzed"
+                        }
+                    }
+                },
+                { "msg_results" : {
+                        "match" : "plugin.*.msg",
+                        "mapping" : {
+                            "type" : "string", "index" : "not_analyzed"
+                        }
+                    }
+                },
+                { "err_results" : {
+                        "match" : "err",
+                        "mapping" : {
+                            "type" : "string", "index" : "not_analyzed"
+                        }
+                    }
+                },
+                { "ip_addrs" : {
+                        "match" : "ip",
+                        "mapping" : { "type" : "ip" }
+                    }
+                },
+                { "hostnames" : {
+                        "match" : "host",
+                        "mapping" : {
+                            "type" : "string", "index" : "not_analyzed"
+                        }
+                    }
+                }
+            ],
+            "properties" : {
+                "plugin" : {
+                    "properties" : {
+                        "asn" : {
+                            "properties" : {
+                                "org" : { "type" : "string", "index" : "not_analyzed" },
+                                "asn_good"        : { "type" : "double" },
+                                "asn_bad"         : { "type" : "double" },
+                                "asn_score"       : { "type" : "double" },
+                                "asn_connections" : { "type" : "double" }
+                            }
+                        },
+                        "geoip" : {
+                            "properties" : {
+                                "org"      : { "type" : "string", "index" : "not_analyzed" },
+                                "geo"      : { "type" : "geo_point" },
+                                "distance" : { "type" : "float" }
+                            }
+                        },
+                        "helo" : {
+                            "properties"   : {
+                                "ips"      : { "type" : "string", "index" : "not_analyzed" }
+                            }
+                        },
+                        "fcrdns" : {
+                            "properties"    : {
+                                "fcrdns"    : { "type" : "string", "index" : "not_analyzed" },
+                                "other_ips" : { "type" : "string", "index" : "not_analyzed" },
+                                "ptr_names" : { "type" : "string", "index" : "not_analyzed" }
+                            }
+                        },
+                        "p0f" : {
+                            "properties" : {
+                                "os_flavor" : { "type" : "string", "index" : "not_analyzed" }
+                            }
+                        },
+                        "rspamd" : {
+                            "properties"   : {
+                                "emails"   : { "type" : "string", "index" : "not_analyzed" },
+                                "urls"     : { "type" : "string", "index" : "not_analyzed" },
+                                "messages" : { "type" : "string", "index" : "not_analyzed" }
+                            }
+                        },
+                        "karma" : {
+                            "properties" : {
+                                "connect"   : { "type" : "double" },
+                                "score"     : { "type" : "double" },
+                                "good"      : { "type" : "double" },
+                                "bad"       : { "type" : "double" },
+                                "history"   : { "type" : "double" },
+                                "connections" : { "type" : "double" },
+                                "total_connects" : { "type" : "double" },
+                                "neighbors" : { "type" : "double" }
+                            }
+                        },
+                        "spamassassin" : {
+                            "properties" : {
+                                "headers": {
+                                    "properties" : {
+                                        "report" : { "type" : "string", "index" : "not_analyzed" },
+                                        "Status" : { "type" : "string", "index" : "not_analyzed" }
+                                    }
+                                },
+                                "line0" : { "type" : "string", "index" : "not_analyzed" },
+                                "reqd"  : { "type" : "double" },
+                                "score" : { "type" : "double" },
+                                "tests" : { "type" : "string", "index" : "not_analyzed" }
+                            }
+                        },
+                        "spf" : {
+                            "properties" : {
+                                "domain" : { "type" : "string", "index" : "not_analyzed" }
+                            }
+                        }
+                    }
+                },
+                "message" : {
+                    "properties" : {
+                        "bytes" : { "type": "double" },
+                        "envelope": {
+                            "properties": {
+                                "sender" : { "type" : "string", "index" : "not_analyzed" },
+                                "recipient" : {
+                                    "properties"  : {
+                                        "action"  : { "type" : "string", "index" : "not_analyzed" },
+                                        "address" : { "type" : "string", "index" : "not_analyzed" }
+                                    }
+                                }
+                            }
+                        },
+                        "header": {
+                            "properties": {
+                                "from"         : { "type" : "string", "index" : "not_analyzed" },
+                                "to"           : { "type" : "string", "index" : "not_analyzed" },
+                                "subject"      : { "type" : "string", "index" : "not_analyzed" },
+                                "message-id"   : { "type" : "string", "index" : "not_analyzed" },
+                                "date"         : { "type" : "string", "index" : "not_analyzed" },
+                                "reply-to"     : { "type" : "string", "index" : "not_analyzed" },
+                                "resent-from"  : { "type" : "string", "index" : "not_analyzed" },
+                                "resent-header": { "type" : "string", "index" : "not_analyzed" },
+                                "sender"       : { "type" : "string", "index" : "not_analyzed" }
+                            }
+                        },
+                        "body" : {
+                            "properties" : {
+                                "attachment" : {
+                                    "properties": {
+                                        "bytes" : { "type" : "float" },
+                                        "ctype" : { "type" : "string" },
+                                        "file"  : { "type" : "string" },
+                                        "md5"   : { "type" : "string", "index": "not_analyzed" }
+                                    }
+                                }
+                            }
+                        },
+                        "queue" : {
+                            "properties" : {
+
+                            }
+                        }
+                    }
+                },
+                "connection" : {
+                    "properties" : {
+                        "count" : {
+                            "properties" : {
+                                "msg" : {
+                                    "properties" : {
+                                        "accept" : { "type": "integer" },
+                                        "reject" : { "type": "integer" },
+                                        "tempfail" : { "type": "integer" }
+                                    }
+                                },
+                                "rcpt" : {
+                                    "properties" : {
+                                        "accept" : { "type": "integer" },
+                                        "reject" : { "type": "integer" },
+                                        "tempfail" : { "type": "integer" }
+                                    }
+                                },
+                                "errors" : { "type": "integer" },
+                                "trans" : { "type": "integer" }
+                            }
+                        },
+                        "early" : { "type" : "boolean" }
+                    }
+                }
+            }
+        }
+    }
+}

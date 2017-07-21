@@ -10,28 +10,12 @@ exports.register = function () {
 
     plugin.load_es_ini();
 
-    plugin.es = new elasticsearch.Client({
-        hosts: plugin.cfg.es_hosts,
-    });
-
-    plugin.es.ping({
-        // ping usually has a 100ms timeout
-        requestTimeout: 1000,
-    },
-    function (error) {
-        if (error) {
-            // we don't bother error handling hear b/c the ES library does
-            // that for us.
-            plugin.logerror('cluster is down!');
-            plugin.logerror(util.inspect(error, {depth: null}));
-        }
-        else {
-            plugin.lognotice('connected');
+    plugin.es_connect(function (err) {
+        if (!err) {
+            plugin.register_hook('reset_transaction', 'log_transaction');
+            plugin.register_hook('disconnect',        'log_connection');
         }
     });
-
-    plugin.register_hook('reset_transaction', 'log_transaction');
-    plugin.register_hook('disconnect',        'log_connection');
 };
 
 exports.load_es_ini = function () {
@@ -89,6 +73,29 @@ exports.get_es_hosts = function () {
         plugin.cfg.es_hosts.push(opts);
     });
 };
+
+exports.es_connect = function (done) {
+    let plugin = this;
+
+    plugin.es = new elasticsearch.Client({
+        hosts: plugin.cfg.es_hosts,
+    });
+
+    plugin.es.ping({
+        // ping usually has a 100ms timeout
+        requestTimeout: 1000,
+    },
+    function (error) {
+        if (error) {
+            plugin.logerror('cluster is down!');
+            plugin.logerror(util.inspect(error, {depth: null}));
+        }
+        else {
+            plugin.lognotice('connected');
+        }
+        if (done) done(error);
+    });
+}
 
 exports.log_transaction = function (next, connection) {
     var plugin = this;
@@ -171,8 +178,8 @@ exports.objToArray = function (obj) {
 exports.getIndexName = function (section) {
     var plugin = this;
 
-    // Elasticsearch indexes named like: smtp-connection-2015-05-05
-    //                                   smtp-transaction-2015-05-05
+    // Elasticsearch indexes named like: smtp-connection-2017-05-05
+    //                                   smtp-transaction-2017-05-05
     var name = 'smtp-' + section;
     if (plugin.cfg.index && plugin.cfg.index[section]) {
         name = plugin.cfg.index[section];
@@ -495,26 +502,4 @@ exports.prune_redundant_txn = function (res, name) {
             delete res.spamassassin.headers.Flag;
             break;
     }
-};
-
-exports.put_map_template = function () {
-    var plugin = this;
-    var template_name = 'smtp';
-    if (plugin.cfg.index && plugin.cfg.index.transaction) {
-        template_name = plugin.cfg.index.transaction;
-    }
-
-    var body = {
-        "dynamic_templates" : [
-            // gone until docs for putTemplate are better
-        ]
-    };
-
-    // https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference-1-3.html#api-puttemplate-1-3
-    plugin.es.indices.putTemplate({
-        id: 'haraka_results',
-        template: template_name + '-*',
-        type: 'haraka',
-        body: body,
-    });
 };
