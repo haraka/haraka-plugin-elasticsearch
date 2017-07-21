@@ -1,10 +1,10 @@
 'use strict';
 
-var path         = require('path');
+const path     = require('path');
 
-var fixtures     = require('haraka-test-fixtures');
+const fixtures = require('haraka-test-fixtures');
 
-var _set_up = function (done) {
+function _set_up (done) {
 
     try {
         this.plugin = new fixtures.plugin('../index');
@@ -15,10 +15,10 @@ var _set_up = function (done) {
     }
 
     this.connection = fixtures.connection.createConnection();
-    this.plugin.config.root_path = path.resolve(__dirname, '../../config');
+    this.plugin.config.root_path = path.resolve(__dirname, '..', '..', 'config');
 
     done();
-};
+}
 
 exports.register = {
     setUp : _set_up,
@@ -31,7 +31,9 @@ exports.register = {
     'can run register function' : function (test) {
         // this tests requires a living ES server
         test.expect(1);
-        test.doesNotThrow(this.plugin.register());
+        this.plugin.register();
+        // hasn't thrown an exception, success!
+        test.ok(1);
         test.done();
     },
 };
@@ -64,15 +66,15 @@ exports.getIndexName = {
     'gets index name for cxn or txn' : function (test) {
         test.expect(4);
         this.plugin.cfg = { index: {} };
-        test.ok( /smtp\-connection\-/
+        test.ok( /smtp-connection-/
             .test(this.plugin.getIndexName('connection')));
-        test.ok( /smtp\-transaction\-/
+        test.ok( /smtp-transaction-/
             .test(this.plugin.getIndexName('transaction')));
 
         this.plugin.cfg.index.connection = 'cxn';
         this.plugin.cfg.index.transaction = 'txn';
-        test.ok( /cxn\-/.test(this.plugin.getIndexName('connection')));
-        test.ok( /txn\-/.test(this.plugin.getIndexName('transaction')));
+        test.ok( /cxn-/.test(this.plugin.getIndexName('connection')));
+        test.ok( /txn-/.test(this.plugin.getIndexName('transaction')));
         test.done();
     }
 };

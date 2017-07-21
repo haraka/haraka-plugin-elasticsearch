@@ -1,40 +1,29 @@
 'use strict';
 // log to Elasticsearch
 
-var utils = require('haraka-utils');
+const util          = require('util');
+const utils         = require('haraka-utils');
+const elasticsearch = require('elasticsearch');
 
 exports.register = function () {
-    var plugin = this;
-
-    try {
-        var elasticsearch = require('elasticsearch');
-    }
-    catch (err) {
-        plugin.logerror(err);
-        return;
-    }
+    let plugin = this;
 
     plugin.load_es_ini();
 
     plugin.es = new elasticsearch.Client({
         hosts: plugin.cfg.es_hosts,
-        // sniffOnStart: true,     // discover the rest of the ES nodes
-        // sniffInterval: 300000,  // check every 5 min.
-        // sniffOnConnectionFault: true,
-        // log: 'trace',
     });
 
     plugin.es.ping({
         // ping usually has a 100ms timeout
         requestTimeout: 1000,
-
-        // undocumented params are appended to the query string
-        hello: "elasticsearch!"
-    }, function (error) {
+    },
+    function (error) {
         if (error) {
             // we don't bother error handling hear b/c the ES library does
             // that for us.
             plugin.logerror('cluster is down!');
+            plugin.logerror(util.inspect(error, {depth: null}));
         }
         else {
             plugin.lognotice('connected');
