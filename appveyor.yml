@@ -3,7 +3,7 @@ environment:
 
 install:
   - ps: Install-Product node $env:nodejs_version
-  - choco install elasticsearch
+  - choco install elasticsearch --version 2.3.1 -i
   - npm install
 
 before_build:
