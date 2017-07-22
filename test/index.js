@@ -1,10 +1,13 @@
 'use strict';
 
-var path         = require('path');
+const fs       = require('fs');
+const path     = require('path');
+const util     = require('util');
 
-var fixtures     = require('haraka-test-fixtures');
+const fixtures = require('haraka-test-fixtures');
+const utils    = require('haraka-utils');
 
-var _set_up = function (done) {
+function _set_up (done) {
 
     try {
         this.plugin = new fixtures.plugin('../index');
@@ -15,10 +18,10 @@ var _set_up = function (done) {
     }
 
     this.connection = fixtures.connection.createConnection();
-    this.plugin.config.root_path = path.resolve(__dirname, '../../config');
+    this.plugin.config.root_path = path.resolve(__dirname, '..', '..', 'config');
 
     done();
-};
+}
 
 exports.register = {
     setUp : _set_up,
@@ -28,14 +31,14 @@ exports.register = {
         test.equal('function', typeof this.plugin.register);
         test.done();
     },
-    /*
-     * hard to test w/o connecting to an ES server
     'can run register function' : function (test) {
+        // this tests requires a living ES server
         test.expect(1);
-        test.doesNotThrow(this.plugin.register());
+        this.plugin.register();
+        // hasn't thrown an exception, success!
+        test.ok(1);
         test.done();
     },
-    */
 };
 
 exports.load_es_ini = {
@@ -66,15 +69,13 @@ exports.getIndexName = {
     'gets index name for cxn or txn' : function (test) {
         test.expect(4);
         this.plugin.cfg = { index: {} };
-        test.ok( /smtp\-connection\-/
-            .test(this.plugin.getIndexName('connection')));
-        test.ok( /smtp\-transaction\-/
-            .test(this.plugin.getIndexName('transaction')));
+        test.ok( /smtp-connection-/.test(this.plugin.getIndexName('connection')));
+        test.ok( /smtp-transaction-/.test(this.plugin.getIndexName('transaction')));
 
         this.plugin.cfg.index.connection = 'cxn';
         this.plugin.cfg.index.transaction = 'txn';
-        test.ok( /cxn\-/.test(this.plugin.getIndexName('connection')));
-        test.ok( /txn\-/.test(this.plugin.getIndexName('transaction')));
+        test.ok( /cxn-/.test(this.plugin.getIndexName('connection')));
+        test.ok( /txn-/.test(this.plugin.getIndexName('transaction')));
         test.done();
     }
 };
@@ -169,3 +170,81 @@ exports.trimPluginName = {
         test.done();
     },
 };
+
+exports.storesIndexMapTemplate = {
+    setUp : _set_up,
+    'saves an index map template to Elasticsearch' : function (test) {
+
+        let plugin = this.plugin;
+        let filePath = path.resolve('index-map-template.json');
+        let indexMap;
+
+        plugin.load_es_ini();
+
+        plugin.es_connect(function (err) {
+            test.ifError(err);
+
+            if (err) {
+                test.done();
+                return;
+            }
+
+            fs.readFile(filePath, function (err2, data) {
+                if (err2) {
+                    console.error(err2);
+                    test.done();
+                }
+
+                indexMap = JSON.parse(data);
+
+                plugin.es.indices.putTemplate({
+                    name: indexMap.template,
+                    body: JSON.stringify(indexMap),
+                },
+                function (err3, result) {
+                    if (err3) {
+                        if (err3.status !== 404) {
+                            console.error(err3);
+                        }
+                        // other tests are running, so currently
+                        // stored mapping may conflict
+                        test.done();
+                        return;
+                    }
+                    console.log(result);
+                    test.done();
+                })
+            })
+        })
+    }
+}
+
+exports.log_connection = {
+    setUp : _set_up,
+    'saves results to Elasticsearch' : function (test) {
+
+        let plugin = this.plugin;
+
+        plugin.load_es_ini();
+        plugin.es_connect(function (err) {
+            test.ifError(err);
+
+            console.log('giving ES a few secs to start up');
+
+            let connection = fixtures.connection.createConnection();
+            connection.local.ip = '127.0.0.1';
+            connection.remote.ip = '172.1.1.1';
+            connection.uuid = utils.uuid();
+            connection.count = { msg: { accepted: 1 } };
+            connection.results.add({name: 'rspamd'}, { msg: 'test' });
+
+            // console.log(util.inspect(connection, { depth: null }));
+            plugin.log_connection(function () {
+                test.expect(1);
+                // test.ok(1);
+                test.done();
+            },
+            connection);
+        })
+    }
+}
