@@ -230,23 +230,21 @@ exports.log_connection = {
             test.ifError(err);
 
             console.log('giving ES a few secs to start up');
-            setTimeout(function () {
 
-                let connection = fixtures.connection.createConnection();
-                connection.local.ip = '127.0.0.1';
-                connection.remote.ip = '172.1.1.1';
-                connection.uuid = utils.uuid();
-                connection.count = { msg: { accepted: 1 } };
-                connection.results.add({name: 'rspamd'}, { msg: 'test' });
+            let connection = fixtures.connection.createConnection();
+            connection.local.ip = '127.0.0.1';
+            connection.remote.ip = '172.1.1.1';
+            connection.uuid = utils.uuid();
+            connection.count = { msg: { accepted: 1 } };
+            connection.results.add({name: 'rspamd'}, { msg: 'test' });
 
-                // console.log(util.inspect(connection, { depth: null }));
-                plugin.log_connection(function () {
-                    test.expect(1);
-                    // test.ok(1);
-                    test.done();
-                },
-                connection);
-            }, 4000);
+            // console.log(util.inspect(connection, { depth: null }));
+            plugin.log_connection(function () {
+                test.expect(1);
+                // test.ok(1);
+                test.done();
+            },
+            connection);
         })
     }
 }
