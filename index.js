@@ -10,7 +10,7 @@ exports.register = function () {
 
     plugin.load_es_ini();
 
-    plugin.es_connect(function (err) {
+    plugin.es_connect(err => {
         if (!err) {
             plugin.register_hook('reset_transaction', 'log_transaction');
             plugin.register_hook('disconnect',        'log_connection');
@@ -19,7 +19,7 @@ exports.register = function () {
 };
 
 exports.load_es_ini = function () {
-    var plugin = this;
+    let plugin = this;
 
     plugin.cfg = plugin.config.get('elasticsearch.ini', {
         booleans: [
@@ -34,7 +34,7 @@ exports.load_es_ini = function () {
 
     if (plugin.cfg.ignore_hosts) {
         // convert bare entries (w/undef values) to true
-        Object.keys(plugin.cfg.ignore_hosts).forEach(function (key) {
+        Object.keys(plugin.cfg.ignore_hosts).forEach(key => {
             if (plugin.cfg.ignore_hosts[key]) return;
             plugin.cfg.ignore_hosts[key]=true;
         });
@@ -53,20 +53,20 @@ exports.load_es_ini = function () {
 };
 
 exports.get_es_hosts = function () {
-    var plugin = this;
+    let plugin = this;
     plugin.cfg.es_hosts = []; // default: http://localhost:9200
 
     if (!plugin.cfg.hosts) return;   // no [hosts] config
 
-    Object.keys(plugin.cfg.hosts).forEach(function (host) {
+    Object.keys(plugin.cfg.hosts).forEach(host => {
         if (!plugin.cfg.hosts[host]) {  // no options
             plugin.cfg.es_hosts.push({host: host});
             return;
         }
 
-        var opts = { host: host };
-        plugin.cfg.hosts[host].trim().split(',').forEach(function (opt){
-            var o=opt.trim().split(':');
+        let opts = { host: host };
+        plugin.cfg.hosts[host].trim().split(',').forEach(opt => {
+            let o=opt.trim().split(':');
             opts[o[0]] = o[1];
         });
 
@@ -98,13 +98,13 @@ exports.es_connect = function (done) {
 }
 
 exports.log_transaction = function (next, connection) {
-    var plugin = this;
+    let plugin = this;
 
     if (plugin.cfg.ignore_hosts) {
         if (plugin.cfg.ignore_hosts[connection.remote_host]) return next();
     }
 
-    var res = plugin.get_plugin_results(connection);
+    let res = plugin.get_plugin_results(connection);
     if (plugin.cfg.top_level_names && plugin.cfg.top_level_names.message) {
         res[plugin.cfg.top_level_names.message] = res.message;
         delete res.message;
@@ -133,7 +133,7 @@ exports.log_transaction = function (next, connection) {
 };
 
 exports.log_connection = function (next, connection) {
-    var plugin = this;
+    let plugin = this;
     if (!plugin.cfg.main.log_connections) return next();
 
     if (plugin.cfg.ignore_hosts) {
@@ -146,7 +146,7 @@ exports.log_connection = function (next, connection) {
         return next();
     }
 
-    var res = plugin.get_plugin_results(connection);
+    let res = plugin.get_plugin_results(connection);
     res.timestamp = new Date().toISOString();
 
     plugin.populate_conn_properties(connection, res);
@@ -167,26 +167,26 @@ exports.log_connection = function (next, connection) {
 };
 
 exports.objToArray = function (obj) {
-    var arr = [];
+    let arr = [];
     if (!obj || typeof obj !== 'object') return arr;
-    Object.keys(obj).forEach(function (k) {
+    Object.keys(obj).forEach(k => {
         arr.push({ k: k, v: obj[k] });
     });
     return arr;
 };
 
 exports.getIndexName = function (section) {
-    var plugin = this;
+    let plugin = this;
 
     // Elasticsearch indexes named like: smtp-connection-2017-05-05
     //                                   smtp-transaction-2017-05-05
-    var name = 'smtp-' + section;
+    let name = 'smtp-' + section;
     if (plugin.cfg.index && plugin.cfg.index[section]) {
         name = plugin.cfg.index[section];
     }
-    var date = new Date();
-    var d = date.getUTCDate();
-    var m = date.getUTCMonth() + 1;
+    let date = new Date();
+    let d = date.getUTCDate();
+    let m = date.getUTCMonth() + 1;
     return name +
            '-' + date.getUTCFullYear() +
            '-' + (m <= 9 ? '0' + m : m) +
@@ -194,8 +194,8 @@ exports.getIndexName = function (section) {
 };
 
 exports.populate_conn_properties = function (conn, res) {
-    var plugin = this;
-    var conn_res = res;
+    let plugin = this;
+    let conn_res = res;
 
     if (plugin.cfg.top_level_names && plugin.cfg.top_level_names.connection) {
         if (!res[plugin.cfg.top_level_names.connection]) {
@@ -225,7 +225,7 @@ exports.populate_conn_properties = function (conn, res) {
     if (!conn_res.auth) {
         conn_res.auth = {};
         if (plugin.cfg.top_level_names && plugin.cfg.top_level_names.plugin) {
-            var pia = plugin.cfg.top_level_names.plugin;
+            let pia = plugin.cfg.top_level_names.plugin;
             if (res[pia] && res[pia].auth) {
                 conn_res.auth = res[pia].auth;
                 delete res[pia].auth;
@@ -246,7 +246,7 @@ exports.populate_conn_properties = function (conn, res) {
         trans: conn.tran_count,
     };
 
-    Object.keys(plugin.cfg.conn_props).forEach(function (f) {
+    Object.keys(plugin.cfg.conn_props).forEach(f => {
         if (conn[f] === undefined) return;
         if (conn[f] === 0) return;
         if (plugin.cfg.conn_props[f]) {  // alias specified
@@ -261,12 +261,12 @@ exports.populate_conn_properties = function (conn, res) {
 };
 
 exports.get_plugin_results = function (connection) {
-    var plugin = this;
+    let plugin = this;
 
-    var name;
+    let name;
     // note that we make a copy of the result store, so subsequent changes
     // here don't alter the original (by reference)
-    var pir = JSON.parse(JSON.stringify(connection.results.get_all()));
+    let pir = JSON.parse(JSON.stringify(connection.results.get_all()));
     for (name in pir) { plugin.trim_plugin_names(pir, name); }
     for (name in pir) {
         plugin.prune_noisy(pir, name);
@@ -278,7 +278,7 @@ exports.get_plugin_results = function (connection) {
     if (!connection.transaction) return plugin.nest_plugin_results(pir);
 
     try {
-        var txr = JSON.parse(JSON.stringify(
+        let txr = JSON.parse(JSON.stringify(
             connection.transaction.results.get_all()));
     }
     catch (e) {
@@ -310,7 +310,7 @@ exports.get_plugin_results = function (connection) {
 };
 
 exports.populate_message = function (pir, connection) {
-    var plugin = this;
+    let plugin = this;
     pir.message = {
         bytes: connection.transaction.data_bytes,
         envelope: {
@@ -330,7 +330,7 @@ exports.populate_message = function (pir, connection) {
     }
 
     if (pir.rcpt_to && pir.rcpt_to.recipient) {
-        for (var key in pir.rcpt_to.recipient) {
+        for (let key in pir.rcpt_to.recipient) {
             pir.rcpt_to.recipient[key].address=pir.rcpt_to.recipient[key].address.toLowerCase();
         }
         pir.message.envelope.recipient = pir.rcpt_to.recipient;
@@ -347,18 +347,18 @@ exports.populate_message = function (pir, connection) {
     }
 
     plugin.cfg.headers.forEach(function (h) {
-        var r = connection.transaction.header.get_decoded(h);
+        let r = connection.transaction.header.get_decoded(h);
         if (!r) return;
         pir.message.header[h] = r;
     });
 };
 
 exports.nest_plugin_results = function (res) {
-    var plugin = this;
+    let plugin = this;
     if (!plugin.cfg.top_level_names) return res;
     if (!plugin.cfg.top_level_names.plugin) return res;
 
-    var new_res = {};
+    let new_res = {};
     if (res.message) {
         new_res.message = res.message;
         delete res.message;
@@ -371,7 +371,7 @@ exports.trimPluginName = function (name) {
 
     // for plugins named like: data.headers or connect.geoip, strip off the
     // phase prefix and return `headers` or `geoip`
-    var parts = name.split('.');
+    let parts = name.split('.');
     if (parts.length < 2) return name;
 
     switch (parts[0]) {
@@ -387,7 +387,7 @@ exports.trimPluginName = function (name) {
 };
 
 exports.trim_plugin_names = function (res, name) {
-    var trimmed = this.trimPluginName(name);
+    let trimmed = this.trimPluginName(name);
     if (trimmed === name) return;
 
     res[trimmed] = res[name];
@@ -398,9 +398,9 @@ exports.trim_plugin_names = function (res, name) {
 exports.prune_empty = function (pi) {
 
     // remove undefined keys and empty strings, arrays, or objects
-    for (var e in pi) {
-        var val = pi[e];
-        if (val === undefined) {
+    for (let e in pi) {
+        let val = pi[e];
+        if (val === undefined || val === null) {
             delete pi[e];
             continue;
         }
@@ -427,7 +427,7 @@ exports.prune_empty = function (pi) {
 };
 
 exports.prune_noisy = function (res, pi) {
-    var plugin = this;
+    let plugin = this;
 
     if (res[pi].human) { delete res[pi].human; }
     if (res[pi].human_html) { delete res[pi].human_html; }
@@ -471,7 +471,7 @@ exports.prune_noisy = function (res, pi) {
 };
 
 exports.prune_zero = function (res, name) {
-    for (var e in res[name]) {
+    for (let e in res[name]) {
         if (res[name][e] !== 0) continue;
         delete res[name][e];
     }

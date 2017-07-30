@@ -1,6 +1,6 @@
 {
   "name": "haraka-plugin-elasticsearch",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Haraka plugin that saves logs to Elasticsearch",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,7 @@
     "plugin",
     "elasticsearch"
   ],
-  "author": "Welcome Member <happy-haraka-hacker@example.com>",
+  "author": "Haraka Team <harakamail@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/haraka/haraka-plugin-elasticsearch/issues"
@@ -31,6 +31,6 @@
     "eslint": ">=3",
     "eslint-plugin-haraka": "*",
     "haraka-test-fixtures": "*",
-    "nodeunit": "^0.11.1"
+    "nodeunit": "*"
   }
 }

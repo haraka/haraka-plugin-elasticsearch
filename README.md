@@ -1,8 +1,8 @@
 [![Build Status][ci-img]][ci-url]
+[![Windows Build Status][ci-win-img]][ci-win-url]
 [![Code Climate][clim-img]][clim-url]
 [![Greenkeeper badge][gk-img]][gk-url]
 [![NPM][npm-img]][npm-url]
-[![Windows Build Status][ci-win-img]][ci-win-url]
 <!-- doesn't work in haraka plugins... yet. [![Code Coverage][cov-img]][cov-url]-->
 
 # haraka-plugin-elasticsearch
