@@ -83,7 +83,7 @@ exports.es_connect = function (done) {
 
     plugin.es.ping({
         // ping usually has a 100ms timeout
-        requestTimeout: 1000,
+        requestTimeout: 3000,
     },
     function (error) {
         if (error) {
@@ -278,7 +278,7 @@ exports.get_plugin_results = function (connection) {
     if (!connection.transaction) return plugin.nest_plugin_results(pir);
 
     try {
-        let txr = JSON.parse(JSON.stringify(
+        var txr = JSON.parse(JSON.stringify(
             connection.transaction.results.get_all()));
     }
     catch (e) {
