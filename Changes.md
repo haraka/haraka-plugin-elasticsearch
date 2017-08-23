@@ -1,4 +1,9 @@
 
+# 1.0.3 - 2017-08-22
+
+- fix txr variable scope
+- add tests for get_es_hosts
+
 # 1.0.2 - 2017-07-29
 
 - also prune null values because typeof null === object
