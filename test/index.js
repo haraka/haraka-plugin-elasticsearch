@@ -41,17 +41,6 @@ exports.register = {
     },
 };
 
-exports.load_es_ini = {
-    setUp : _set_up,
-    'can load elasticsearch.ini' : function (test) {
-        test.expect(2);
-        this.plugin.load_es_ini();
-        test.ok(this.plugin.cfg);
-        test.ok(this.plugin.cfg.index);
-        test.done();
-    },
-};
-
 exports.objToArray = {
     setUp : _set_up,
     'converts an object to an array of key vals' : function (test) {
