@@ -6,7 +6,7 @@ const utils         = require('haraka-utils');
 const elasticsearch = require('elasticsearch');
 
 exports.register = function () {
-    let plugin = this;
+    const plugin = this;
 
     plugin.load_es_ini();
 
@@ -19,7 +19,7 @@ exports.register = function () {
 };
 
 exports.load_es_ini = function () {
-    let plugin = this;
+    const plugin = this;
 
     plugin.cfg = plugin.config.get('elasticsearch.ini', {
         booleans: [
@@ -53,7 +53,7 @@ exports.load_es_ini = function () {
 };
 
 exports.get_es_hosts = function () {
-    let plugin = this;
+    const plugin = this;
     plugin.cfg.es_hosts = []; // default: http://localhost:9200
 
     if (!plugin.cfg.hosts) return;   // no [hosts] config
@@ -64,9 +64,9 @@ exports.get_es_hosts = function () {
             return;
         }
 
-        let opts = { host: host };
+        const opts = { host: host };
         plugin.cfg.hosts[host].trim().split(',').forEach(opt => {
-            let o=opt.trim().split(':');
+            const o=opt.trim().split(':');
             opts[o[0]] = o[1];
         });
 
@@ -75,7 +75,7 @@ exports.get_es_hosts = function () {
 };
 
 exports.es_connect = function (done) {
-    let plugin = this;
+    const plugin = this;
 
     plugin.es = new elasticsearch.Client({
         hosts: plugin.cfg.es_hosts,
@@ -98,13 +98,13 @@ exports.es_connect = function (done) {
 }
 
 exports.log_transaction = function (next, connection) {
-    let plugin = this;
+    const plugin = this;
 
     if (plugin.cfg.ignore_hosts) {
         if (plugin.cfg.ignore_hosts[connection.remote_host]) return next();
     }
 
-    let res = plugin.get_plugin_results(connection);
+    const res = plugin.get_plugin_results(connection);
     if (plugin.cfg.top_level_names && plugin.cfg.top_level_names.message) {
         res[plugin.cfg.top_level_names.message] = res.message;
         delete res.message;
@@ -133,7 +133,7 @@ exports.log_transaction = function (next, connection) {
 };
 
 exports.log_connection = function (next, connection) {
-    let plugin = this;
+    const plugin = this;
     if (!plugin.cfg.main.log_connections) return next();
 
     if (plugin.cfg.ignore_hosts) {
@@ -146,7 +146,7 @@ exports.log_connection = function (next, connection) {
         return next();
     }
 
-    let res = plugin.get_plugin_results(connection);
+    const res = plugin.get_plugin_results(connection);
     res.timestamp = new Date().toISOString();
 
     plugin.populate_conn_properties(connection, res);
@@ -167,7 +167,7 @@ exports.log_connection = function (next, connection) {
 };
 
 exports.objToArray = function (obj) {
-    let arr = [];
+    const arr = [];
     if (!obj || typeof obj !== 'object') return arr;
     Object.keys(obj).forEach(k => {
         arr.push({ k: k, v: obj[k] });
@@ -176,7 +176,7 @@ exports.objToArray = function (obj) {
 };
 
 exports.getIndexName = function (section) {
-    let plugin = this;
+    const plugin = this;
 
     // Elasticsearch indexes named like: smtp-connection-2017-05-05
     //                                   smtp-transaction-2017-05-05
@@ -184,9 +184,9 @@ exports.getIndexName = function (section) {
     if (plugin.cfg.index && plugin.cfg.index[section]) {
         name = plugin.cfg.index[section];
     }
-    let date = new Date();
-    let d = date.getUTCDate();
-    let m = date.getUTCMonth() + 1;
+    const date = new Date();
+    const d = date.getUTCDate();
+    const m = date.getUTCMonth() + 1;
     return name +
            '-' + date.getUTCFullYear() +
            '-' + (m <= 9 ? '0' + m : m) +
@@ -194,7 +194,7 @@ exports.getIndexName = function (section) {
 };
 
 exports.populate_conn_properties = function (conn, res) {
-    let plugin = this;
+    const plugin = this;
     let conn_res = res;
 
     if (plugin.cfg.top_level_names && plugin.cfg.top_level_names.connection) {
@@ -225,7 +225,7 @@ exports.populate_conn_properties = function (conn, res) {
     if (!conn_res.auth) {
         conn_res.auth = {};
         if (plugin.cfg.top_level_names && plugin.cfg.top_level_names.plugin) {
-            let pia = plugin.cfg.top_level_names.plugin;
+            const pia = plugin.cfg.top_level_names.plugin;
             if (res[pia] && res[pia].auth) {
                 conn_res.auth = res[pia].auth;
                 delete res[pia].auth;
@@ -261,12 +261,12 @@ exports.populate_conn_properties = function (conn, res) {
 };
 
 exports.get_plugin_results = function (connection) {
-    let plugin = this;
+    const plugin = this;
 
     let name;
     // note that we make a copy of the result store, so subsequent changes
     // here don't alter the original (by reference)
-    let pir = JSON.parse(JSON.stringify(connection.results.get_all()));
+    const pir = JSON.parse(JSON.stringify(connection.results.get_all()));
     for (name in pir) { plugin.trim_plugin_names(pir, name); }
     for (name in pir) {
         plugin.prune_noisy(pir, name);
@@ -277,9 +277,9 @@ exports.get_plugin_results = function (connection) {
 
     if (!connection.transaction) return plugin.nest_plugin_results(pir);
 
+    let txr;
     try {
-        var txr = JSON.parse(JSON.stringify(
-            connection.transaction.results.get_all()));
+        txr = JSON.parse(JSON.stringify(connection.transaction.results.get_all()));
     }
     catch (e) {
         connection.transaction.results.add(plugin, {err: e.message });
@@ -310,7 +310,7 @@ exports.get_plugin_results = function (connection) {
 };
 
 exports.populate_message = function (pir, connection) {
-    let plugin = this;
+    const plugin = this;
     pir.message = {
         bytes: connection.transaction.data_bytes,
         envelope: {
@@ -330,7 +330,7 @@ exports.populate_message = function (pir, connection) {
     }
 
     if (pir.rcpt_to && pir.rcpt_to.recipient) {
-        for (let key in pir.rcpt_to.recipient) {
+        for (const key in pir.rcpt_to.recipient) {
             pir.rcpt_to.recipient[key].address=pir.rcpt_to.recipient[key].address.toLowerCase();
         }
         pir.message.envelope.recipient = pir.rcpt_to.recipient;
@@ -347,18 +347,18 @@ exports.populate_message = function (pir, connection) {
     }
 
     plugin.cfg.headers.forEach(function (h) {
-        let r = connection.transaction.header.get_decoded(h);
+        const r = connection.transaction.header.get_decoded(h);
         if (!r) return;
         pir.message.header[h] = r;
     });
 };
 
 exports.nest_plugin_results = function (res) {
-    let plugin = this;
+    const plugin = this;
     if (!plugin.cfg.top_level_names) return res;
     if (!plugin.cfg.top_level_names.plugin) return res;
 
-    let new_res = {};
+    const new_res = {};
     if (res.message) {
         new_res.message = res.message;
         delete res.message;
@@ -371,7 +371,7 @@ exports.trimPluginName = function (name) {
 
     // for plugins named like: data.headers or connect.geoip, strip off the
     // phase prefix and return `headers` or `geoip`
-    let parts = name.split('.');
+    const parts = name.split('.');
     if (parts.length < 2) return name;
 
     switch (parts[0]) {
@@ -387,7 +387,7 @@ exports.trimPluginName = function (name) {
 };
 
 exports.trim_plugin_names = function (res, name) {
-    let trimmed = this.trimPluginName(name);
+    const trimmed = this.trimPluginName(name);
     if (trimmed === name) return;
 
     res[trimmed] = res[name];
@@ -398,8 +398,8 @@ exports.trim_plugin_names = function (res, name) {
 exports.prune_empty = function (pi) {
 
     // remove undefined keys and empty strings, arrays, or objects
-    for (let e in pi) {
-        let val = pi[e];
+    for (const e in pi) {
+        const val = pi[e];
         if (val === undefined || val === null) {
             delete pi[e];
             continue;
@@ -427,7 +427,7 @@ exports.prune_empty = function (pi) {
 };
 
 exports.prune_noisy = function (res, pi) {
-    let plugin = this;
+    const plugin = this;
 
     if (res[pi].human) { delete res[pi].human; }
     if (res[pi].human_html) { delete res[pi].human_html; }
@@ -450,8 +450,8 @@ exports.prune_noisy = function (res, pi) {
             delete res.dnsbl.pass;
             break;
         case 'fcrdns':
-            var arr = plugin.objToArray(res.fcrdns.ptr_name_to_ip);
-            res.fcrdns.ptr_name_to_ip = arr;
+            res.fcrdns.ptr_name_to_ip =
+                plugin.objToArray(res.fcrdns.ptr_name_to_ip);
             break;
         case 'geoip':
             delete res.geoip.ll;
@@ -471,7 +471,7 @@ exports.prune_noisy = function (res, pi) {
 };
 
 exports.prune_zero = function (res, name) {
-    for (let e in res[name]) {
+    for (const e in res[name]) {
         if (res[name][e] !== 0) continue;
         delete res[name][e];
     }
