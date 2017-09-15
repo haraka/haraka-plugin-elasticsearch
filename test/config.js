@@ -47,7 +47,7 @@ exports.get_es_hosts = {
             'localhost': 'port:9200,protocol:https',
             '172.16.15.27': 'protocol:https'
         }};
-        let expected = [
+        const expected = [
             { host: 'localhost', port: '9200', protocol: 'https' },
             { host: '172.16.15.27', protocol: 'https' }
         ];

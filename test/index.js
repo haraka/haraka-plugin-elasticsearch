@@ -2,7 +2,6 @@
 
 const fs       = require('fs');
 const path     = require('path');
-const util     = require('util');
 
 const fixtures = require('haraka-test-fixtures');
 const utils    = require('haraka-utils');
@@ -75,8 +74,8 @@ exports.populate_conn_properties = {
         test.expect(1);
         this.connection.local.ip= '127.0.0.3';
         this.connection.local.port= '25';
-        var result = {};
-        var expected = { ip: '127.0.0.3', port: '25' };
+        const result = {};
+        const expected = { ip: '127.0.0.3', port: '25' };
         this.plugin.load_es_ini();
         this.plugin.populate_conn_properties(this.connection, result);
         delete result.local.host;
@@ -87,8 +86,8 @@ exports.populate_conn_properties = {
         test.expect(1);
         this.connection.remote.ip='127.0.0.4';
         this.connection.remote.port='2525';
-        var result = {};
-        var expected = { ip: '127.0.0.4', port: '2525' };
+        const result = {};
+        const expected = { ip: '127.0.0.4', port: '2525' };
         this.plugin.load_es_ini();
         this.plugin.populate_conn_properties(this.connection, result);
         delete result.remote.host;
@@ -99,8 +98,8 @@ exports.populate_conn_properties = {
         test.expect(1);
         this.connection.hello.host='testimerson';
         this.connection.hello.verb='EHLO';
-        var result = {};
-        var expected = { host: 'testimerson', verb: 'EHLO' };
+        const result = {};
+        const expected = { host: 'testimerson', verb: 'EHLO' };
         this.plugin.load_es_ini();
         this.plugin.populate_conn_properties(this.connection, result);
         delete result.remote.host;
@@ -113,8 +112,8 @@ exports.populate_conn_properties = {
         this.connection.tran_count=2;
         this.connection.msg_count= { accept: 0 };
         this.connection.rcpt_count= { reject: 1 };
-        var result = {};
-        var expected = {errors: 1, trans: 2,
+        const result = {};
+        const expected = {errors: 1, trans: 2,
             msg: { accept: 0 }, rcpt: { reject: 1 }
         };
         this.plugin.load_es_ini();
@@ -133,12 +132,12 @@ exports.get_plugin_results = {
         this.connection.start_time = Date.now() - 1000;
         this.connection.results.add(this.plugin, { pass: 'test' });
         this.connection.results.add({name: 'queue'}, { pass: 'delivered' });
-        var expected_result = {
+        const expected_result = {
             '../index': { pass: [ 'test' ] },
             'queue': { pass: [ 'delivered' ] },
         };
         delete this.plugin.cfg.top_level_names;
-        var result = this.plugin.get_plugin_results(this.connection);
+        const result = this.plugin.get_plugin_results(this.connection);
         test.deepEqual(expected_result, result);
         test.done();
     },
@@ -164,8 +163,8 @@ exports.storesIndexMapTemplate = {
     setUp : _set_up,
     'saves an index map template to Elasticsearch' : function (test) {
 
-        let plugin = this.plugin;
-        let filePath = path.resolve('index-map-template.json');
+        const plugin = this.plugin;
+        const filePath = path.resolve('index-map-template.json');
         let indexMap;
 
         plugin.load_es_ini();
@@ -212,7 +211,7 @@ exports.log_connection = {
     setUp : _set_up,
     'saves results to Elasticsearch' : function (test) {
 
-        let plugin = this.plugin;
+        const plugin = this.plugin;
 
         plugin.load_es_ini();
         plugin.es_connect(function (err) {
@@ -220,7 +219,7 @@ exports.log_connection = {
 
             console.log('giving ES a few secs to start up');
 
-            let connection = fixtures.connection.createConnection();
+            const connection = fixtures.connection.createConnection();
             connection.local.ip = '127.0.0.1';
             connection.remote.ip = '172.1.1.1';
             connection.uuid = utils.uuid();
