@@ -180,17 +180,17 @@ exports.getIndexName = function (section) {
 
     // Elasticsearch indexes named like: smtp-connection-2017-05-05
     //                                   smtp-transaction-2017-05-05
-    let name = 'smtp-' + section;
+    let name = `smtp-${section}`;
     if (plugin.cfg.index && plugin.cfg.index[section]) {
         name = plugin.cfg.index[section];
     }
     const date = new Date();
     const d = date.getUTCDate();
     const m = date.getUTCMonth() + 1;
-    return name +
-           '-' + date.getUTCFullYear() +
-           '-' + (m <= 9 ? '0' + m : m) +
-           '-' + (d <= 9 ? '0' + d : d);
+    return `${name}` +
+           `-${date.getUTCFullYear()}` +
+           `-${(m <= 9 ? '0' + m : m)}` +
+           `-${(d <= 9 ? '0' + d : d)}`;
 };
 
 exports.populate_conn_properties = function (conn, res) {
