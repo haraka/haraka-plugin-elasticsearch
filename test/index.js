@@ -169,7 +169,7 @@ exports.storesIndexMapTemplate = {
 
         plugin.load_es_ini();
 
-        plugin.es_connect(function (err) {
+        plugin.es_connect((err) => {
             test.ifError(err);
 
             if (err) {
@@ -177,7 +177,7 @@ exports.storesIndexMapTemplate = {
                 return;
             }
 
-            fs.readFile(filePath, function (err2, data) {
+            fs.readFile(filePath, (err2, data) => {
                 if (err2) {
                     console.error(err2);
                     test.done();
@@ -186,7 +186,7 @@ exports.storesIndexMapTemplate = {
                 indexMap = JSON.parse(data);
 
                 plugin.es.indices.putTemplate({
-                    name: indexMap.template,
+                    name: 'smtp-*'
                     body: JSON.stringify(indexMap),
                 },
                 function (err3, result) {
