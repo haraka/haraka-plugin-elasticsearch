@@ -21,7 +21,7 @@ function _set_up (done) {
 
 exports.load_es_ini = {
     setUp : _set_up,
-    'can load elasticsearch.ini' : function (test) {
+    'can load elasticsearch.ini' (test) {
         test.expect(3);
         this.plugin.load_es_ini();
         // console.log(this.plugin.cfg);
@@ -34,14 +34,14 @@ exports.load_es_ini = {
 
 exports.get_es_hosts = {
     setUp : _set_up,
-    'converts bare host to hosts format': function (test) {
+    'converts bare host to hosts format' (test) {
         test.expect(1);
         this.plugin.cfg = { hosts: { 'localhost': undefined } };
         this.plugin.get_es_hosts();
         test.deepEqual([{host: 'localhost'}], this.plugin.cfg.es_hosts);
         test.done();
     },
-    'converts host:$options to hosts format': function (test) {
+    'converts host:$options to hosts format' (test) {
         test.expect(1);
         this.plugin.cfg = { hosts: {
             'localhost': 'port:9200,protocol:https',

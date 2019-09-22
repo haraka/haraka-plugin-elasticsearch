@@ -60,11 +60,11 @@ exports.get_es_hosts = function () {
 
     Object.keys(plugin.cfg.hosts).forEach(host => {
         if (!plugin.cfg.hosts[host]) {  // no options
-            plugin.cfg.es_hosts.push({host: host});
+            plugin.cfg.es_hosts.push({host});
             return;
         }
 
-        const opts = { host: host };
+        const opts = { host };
         plugin.cfg.hosts[host].trim().split(',').forEach(opt => {
             const o=opt.trim().split(':');
             opts[o[0]] = o[1];
@@ -170,7 +170,7 @@ exports.objToArray = function (obj) {
     const arr = [];
     if (!obj || typeof obj !== 'object') return arr;
     Object.keys(obj).forEach(k => {
-        arr.push({ k: k, v: obj[k] });
+        arr.push({ k, v: obj[k] });
     });
     return arr;
 };

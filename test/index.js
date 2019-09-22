@@ -24,13 +24,13 @@ function _set_up (done) {
 
 exports.register = {
     setUp : _set_up,
-    'has a register function' : function (test) {
+    'has a register function' (test) {
         test.expect(2);
         test.ok(this.plugin);
         test.equal('function', typeof this.plugin.register);
         test.done();
     },
-    'can run register function' : function (test) {
+    'can run register function' (test) {
         // this tests requires a living ES server
         test.expect(1);
         this.plugin.register();
@@ -42,7 +42,7 @@ exports.register = {
 
 exports.objToArray = {
     setUp : _set_up,
-    'converts an object to an array of key vals' : function (test) {
+    'converts an object to an array of key vals' (test) {
         test.expect(2);
         test.deepEqual([{k: 'foo', v: 'bar'}],
             this.plugin.objToArray({ foo: 'bar' }));
@@ -54,7 +54,7 @@ exports.objToArray = {
 
 exports.getIndexName = {
     setUp : _set_up,
-    'gets index name for cxn or txn' : function (test) {
+    'gets index name for cxn or txn' (test) {
         test.expect(4);
         this.plugin.cfg = { index: {} };
         test.ok( /smtp-connection-/.test(this.plugin.getIndexName('connection')));
@@ -70,7 +70,7 @@ exports.getIndexName = {
 
 exports.populate_conn_properties = {
     setUp : _set_up,
-    'adds conn.local' : function (test) {
+    'adds conn.local' (test) {
         test.expect(1);
         this.connection.local.ip= '127.0.0.3';
         this.connection.local.port= '25';
@@ -82,7 +82,7 @@ exports.populate_conn_properties = {
         test.deepEqual(expected, result.local);
         test.done();
     },
-    'adds conn.remote' : function (test) {
+    'adds conn.remote' (test) {
         test.expect(1);
         this.connection.remote.ip='127.0.0.4';
         this.connection.remote.port='2525';
@@ -94,7 +94,7 @@ exports.populate_conn_properties = {
         test.deepEqual(expected, result.remote);
         test.done();
     },
-    'adds conn.helo' : function (test) {
+    'adds conn.helo' (test) {
         test.expect(1);
         this.connection.hello.host='testimerson';
         this.connection.hello.verb='EHLO';
@@ -106,7 +106,7 @@ exports.populate_conn_properties = {
         test.deepEqual(expected, result.hello);
         test.done();
     },
-    'adds conn.count' : function (test) {
+    'adds conn.count' (test) {
         test.expect(1);
         this.connection.errors=1;
         this.connection.tran_count=2;
@@ -126,7 +126,7 @@ exports.populate_conn_properties = {
 
 exports.get_plugin_results = {
     setUp : _set_up,
-    'adds plugin results to results object' : function (test) {
+    'adds plugin results to results object' (test) {
         test.expect(1);
         this.plugin.load_es_ini();
         this.connection.start_time = Date.now() - 1000;
@@ -145,7 +145,7 @@ exports.get_plugin_results = {
 
 exports.trimPluginName = {
     setUp : _set_up,
-    'trims off connection phase prefixes' : function (test) {
+    'trims off connection phase prefixes' (test) {
         test.expect(6);
         test.equal('headers', this.plugin.trimPluginName('data.headers'));
         test.equal('geoip', this.plugin.trimPluginName('connect.geoip'));
@@ -161,7 +161,7 @@ exports.trimPluginName = {
 
 exports.storesIndexMapTemplate = {
     setUp : _set_up,
-    'saves an index map template to Elasticsearch' : function (test) {
+    'saves an index map template to Elasticsearch' (test) {
 
         const plugin = this.plugin;
         const filePath = path.resolve('index-map-template.json');
@@ -209,7 +209,7 @@ exports.storesIndexMapTemplate = {
 
 exports.log_connection = {
     setUp : _set_up,
-    'saves results to Elasticsearch' : function (test) {
+    'saves results to Elasticsearch' (test) {
 
         const plugin = this.plugin;
 
