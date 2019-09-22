@@ -186,7 +186,7 @@ exports.storesIndexMapTemplate = {
                 indexMap = JSON.parse(data);
 
                 plugin.es.indices.putTemplate({
-                    name: 'smtp-*'
+                    name: 'smtp-*',
                     body: JSON.stringify(indexMap),
                 },
                 function (err3, result) {

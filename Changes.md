@@ -1,4 +1,9 @@
 
+# 1.0.4 - 2019-09-22
+
+- update index template for ES 6
+- 
+
 # 1.0.3 - 2017-08-22
 
 - fix txr variable scope
