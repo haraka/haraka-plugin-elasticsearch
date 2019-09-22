@@ -92,8 +92,7 @@ match the pattern/name in the template setting. This is how to manually apply
 an index map template from the sample file in this package:
 
 ```json
-curl -XPUT localhost:9200/_template/haraka_results -d @index-map-template.json
-
+curl -XPUT 'http://localhost:9200/_template/haraka_results' -d @index-map-template.json
 ```
 
 

@@ -457,8 +457,7 @@ exports.prune_noisy = function (res, pi) {
             delete res.geoip.ll;
             break;
         case 'max_unrecognized_commands':
-            res.unrecognized_commands =
-                res.max_unrecognized_commands.count;
+            res.unrecognized_commands = res.max_unrecognized_commands.count;
             delete res.max_unrecognized_commands;
             break;
         case 'spamassassin':
