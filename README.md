@@ -91,8 +91,8 @@ Creating a map template will apply the template(s) to any future indexes that
 match the pattern/name in the template setting. This is how to manually apply
 an index map template from the sample file in this package:
 
-```json
-curl -XPUT 'http://localhost:9200/_template/haraka_results' -d @index-map-template.json
+```sh
+curl -X PUT 'http://localhost:9200/_template/haraka_results' -H 'Content-Type: application/json' -d @index-map-template.json
 ```
 
 

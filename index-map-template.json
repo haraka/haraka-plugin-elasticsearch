@@ -13,35 +13,35 @@
                 { "fail_results" : {
                         "match" : "fail",
                         "mapping" : {
-                            "type" : "text", "index" : "not_analyzed"
+                            "type" : "text", "index" : false
                         }
                     }
                 },
                 { "pass_results" : {
                         "match" : "pass",
                         "mapping" : {
-                            "type" : "text", "index" : "not_analyzed"
+                            "type" : "text", "index" : false
                         }
                     }
                 },
                 { "skip_results" : {
                         "match" : "skip",
                         "mapping" : {
-                            "type" : "text", "index" : "not_analyzed"
+                            "type" : "text", "index" : false
                         }
                     }
                 },
                 { "msg_results" : {
                         "match" : "plugin.*.msg",
                         "mapping" : {
-                            "type" : "text", "index" : "not_analyzed"
+                            "type" : "text", "index" : false
                         }
                     }
                 },
                 { "err_results" : {
                         "match" : "err",
                         "mapping" : {
-                            "type" : "text", "index" : "not_analyzed"
+                            "type" : "text", "index" : false
                         }
                     }
                 },
@@ -53,7 +53,7 @@
                 { "hostnames" : {
                         "match" : "host",
                         "mapping" : {
-                            "type" : "text", "index" : "not_analyzed"
+                            "type" : "text", "index" : false
                         }
                     }
                 }
@@ -63,7 +63,7 @@
                     "properties" : {
                         "asn" : {
                             "properties" : {
-                                "org" : { "type" : "text", "index" : "not_analyzed" },
+                                "org" : { "type" : "text", "index" : false },
                                 "asn_good"        : { "type" : "double" },
                                 "asn_bad"         : { "type" : "double" },
                                 "asn_score"       : { "type" : "double" },
@@ -72,33 +72,33 @@
                         },
                         "geoip" : {
                             "properties" : {
-                                "org"      : { "type" : "text", "index" : "not_analyzed" },
+                                "org"      : { "type" : "text", "index" : false },
                                 "geo"      : { "type" : "geo_point" },
                                 "distance" : { "type" : "float" }
                             }
                         },
                         "helo" : {
                             "properties"   : {
-                                "ips"      : { "type" : "text", "index" : "not_analyzed" }
+                                "ips"      : { "type" : "text", "index" : false }
                             }
                         },
                         "fcrdns" : {
                             "properties"    : {
-                                "fcrdns"    : { "type" : "text", "index" : "not_analyzed" },
-                                "other_ips" : { "type" : "text", "index" : "not_analyzed" },
-                                "ptr_names" : { "type" : "text", "index" : "not_analyzed" }
+                                "fcrdns"    : { "type" : "text", "index" : false },
+                                "other_ips" : { "type" : "text", "index" : false },
+                                "ptr_names" : { "type" : "text", "index" : false }
                             }
                         },
                         "p0f" : {
                             "properties" : {
-                                "os_flavor" : { "type" : "text", "index" : "not_analyzed" }
+                                "os_flavor" : { "type" : "text", "index" : false }
                             }
                         },
                         "rspamd" : {
                             "properties"   : {
-                                "emails"   : { "type" : "text", "index" : "not_analyzed" },
-                                "urls"     : { "type" : "text", "index" : "not_analyzed" },
-                                "messages" : { "type" : "text", "index" : "not_analyzed" }
+                                "emails"   : { "type" : "text", "index" : false },
+                                "urls"     : { "type" : "text", "index" : false },
+                                "messages" : { "type" : "text", "index" : false }
                             }
                         },
                         "karma" : {
@@ -117,19 +117,19 @@
                             "properties" : {
                                 "headers": {
                                     "properties" : {
-                                        "report" : { "type" : "text", "index" : "not_analyzed" },
-                                        "Status" : { "type" : "text", "index" : "not_analyzed" }
+                                        "report" : { "type" : "text", "index" : false },
+                                        "Status" : { "type" : "text", "index" : false }
                                     }
                                 },
-                                "line0" : { "type" : "text", "index" : "not_analyzed" },
+                                "line0" : { "type" : "text", "index" : false },
                                 "reqd"  : { "type" : "double" },
                                 "score" : { "type" : "double" },
-                                "tests" : { "type" : "text", "index" : "not_analyzed" }
+                                "tests" : { "type" : "text", "index" : false }
                             }
                         },
                         "spf" : {
                             "properties" : {
-                                "domain" : { "type" : "text", "index" : "not_analyzed" }
+                                "domain" : { "type" : "text", "index" : false }
                             }
                         }
                     }
@@ -139,26 +139,26 @@
                         "bytes" : { "type": "double" },
                         "envelope": {
                             "properties": {
-                                "sender" : { "type" : "text", "index" : "not_analyzed" },
+                                "sender" : { "type" : "text", "index" : false },
                                 "recipient" : {
                                     "properties"  : {
-                                        "action"  : { "type" : "text", "index" : "not_analyzed" },
-                                        "address" : { "type" : "text", "index" : "not_analyzed" }
+                                        "action"  : { "type" : "text", "index" : false },
+                                        "address" : { "type" : "text", "index" : false }
                                     }
                                 }
                             }
                         },
                         "header": {
                             "properties": {
-                                "from"         : { "type" : "text", "index" : "not_analyzed" },
-                                "to"           : { "type" : "text", "index" : "not_analyzed" },
-                                "subject"      : { "type" : "text", "index" : "not_analyzed" },
-                                "message-id"   : { "type" : "text", "index" : "not_analyzed" },
-                                "date"         : { "type" : "text", "index" : "not_analyzed" },
-                                "reply-to"     : { "type" : "text", "index" : "not_analyzed" },
-                                "resent-from"  : { "type" : "text", "index" : "not_analyzed" },
-                                "resent-header": { "type" : "text", "index" : "not_analyzed" },
-                                "sender"       : { "type" : "text", "index" : "not_analyzed" }
+                                "from"         : { "type" : "text", "index" : false },
+                                "to"           : { "type" : "text", "index" : false },
+                                "subject"      : { "type" : "text", "index" : false },
+                                "message-id"   : { "type" : "text", "index" : false },
+                                "date"         : { "type" : "text", "index" : false },
+                                "reply-to"     : { "type" : "text", "index" : false },
+                                "resent-from"  : { "type" : "text", "index" : false },
+                                "resent-header": { "type" : "text", "index" : false },
+                                "sender"       : { "type" : "text", "index" : false }
                             }
                         },
                         "body" : {
@@ -168,7 +168,7 @@
                                         "bytes" : { "type" : "float" },
                                         "ctype" : { "type" : "text" },
                                         "file"  : { "type" : "text" },
-                                        "md5"   : { "type" : "text", "index": "not_analyzed" }
+                                        "md5"   : { "type" : "text", "index": false }
                                     }
                                 }
                             }
