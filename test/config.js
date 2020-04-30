@@ -38,7 +38,7 @@ describe('get_es_hosts', function () {
     it('converts bare host to hosts format', function (done) {
         this.plugin.cfg = { hosts: { 'localhost': undefined } };
         this.plugin.get_es_hosts();
-        assert.deepEqual([{host: 'localhost'}], this.plugin.cfg.es_hosts);
+        assert.deepEqual(["http://localhost:9200"], this.plugin.cfg.es_hosts);
         done();
     })
 

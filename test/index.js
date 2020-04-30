@@ -173,7 +173,7 @@ describe('storesIndexMapTemplate', function () {
         plugin.load_es_ini();
 
         plugin.es_connect((err) => {
-            test.ifError(err);
+            assert.ifError(err);
 
             if (err) {
                 done()
@@ -219,7 +219,7 @@ describe('log_connection', function () {
 
         plugin.load_es_ini();
         plugin.es_connect(function (err) {
-            test.ifError(err);
+            assert.ifError(err);
 
             console.log('giving ES a few secs to start up');
 

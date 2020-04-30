@@ -55,7 +55,7 @@ exports.get_es_hosts = function () {
 
     Object.keys(plugin.cfg.hosts).forEach(host => {
         if (!plugin.cfg.hosts[host]) {  // no options
-            plugin.cfg.es_hosts.push({host});
+            plugin.cfg.es_hosts.push(`http://${host}:9200`);
             return;
         }
 
@@ -76,11 +76,7 @@ exports.es_connect = function (done) {
         nodes: plugin.cfg.es_hosts,
     });
 
-    plugin.es.ping({
-        // ping usually has a 100ms timeout
-        requestTimeout: 3000,
-    },
-    function (error) {
+    plugin.es.ping({}, function (error) {
         if (error) {
             plugin.logerror('cluster is down!');
             plugin.logerror(util.inspect(error, {depth: null}));
