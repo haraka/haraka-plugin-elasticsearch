@@ -3,48 +3,43 @@
 
 const util          = require('util');
 const utils         = require('haraka-utils');
-const { Elasticsearch } = require('@elastic/elasticsearch');
+const Elasticsearch = require('@elastic/elasticsearch');
 
 exports.register = function () {
-    const plugin = this;
 
-    plugin.load_es_ini();
+    this.load_es_ini();
 
-    plugin.es_connect(err => {
-        if (!err) {
-            plugin.register_hook('reset_transaction', 'log_transaction');
-            plugin.register_hook('disconnect',        'log_connection');
-        }
-    });
+    this.es_connect(err => {
+        if (err) return;
+        this.register_hook('reset_transaction', 'log_transaction');
+        this.register_hook('disconnect',        'log_connection');
+    })
 }
 
 exports.load_es_ini = function () {
-    const plugin = this;
 
-    plugin.cfg = plugin.config.get('elasticsearch.ini', {
+    this.cfg = this.config.get('elasticsearch.ini', {
         booleans: [
             '+main.log_connections',
         ]
     },
     function () {
-        plugin.load_es_ini();
-    });
+        this.load_es_ini();
+    })
 
-    plugin.get_es_hosts();
+    this.get_es_hosts();
 
-    if (plugin.cfg.ignore_hosts) {
+    if (this.cfg.ignore_hosts) {
         // convert bare entries (w/undef values) to true
-        Object.keys(plugin.cfg.ignore_hosts).forEach(key => {
-            if (plugin.cfg.ignore_hosts[key]) return;
-            plugin.cfg.ignore_hosts[key]=true;
+        Object.keys(this.cfg.ignore_hosts).forEach(key => {
+            if (this.cfg.ignore_hosts[key]) return;
+            this.cfg.ignore_hosts[key]=true;
         });
     }
 
-    plugin.cfg.headers = plugin.cfg.headers ?
-        Object.keys(plugin.cfg.headers)     :
-        ['From', 'To', 'Subject'];
+    this.cfg.headers = this.cfg.headers ? Object.keys(this.cfg.headers) : ['From', 'To', 'Subject'];
 
-    plugin.cfg.conn_props = plugin.cfg.connection_properties ||
+    this.cfg.conn_props = this.cfg.connection_properties ||
         {   relaying:undefined,
             totalbytes:undefined,
             pipelining:undefined,
@@ -77,7 +72,7 @@ exports.get_es_hosts = function () {
 exports.es_connect = function (done) {
     const plugin = this;
 
-    plugin.es = new Elasticsearch({
+    plugin.es = new Elasticsearch.Client({
         nodes: plugin.cfg.es_hosts,
     });
 
