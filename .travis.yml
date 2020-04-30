@@ -4,6 +4,10 @@ node_js:
     - "12"
     - "14"
 
+before_install:
+  - curl https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.6.2-amd64.deb | sudo dpkg -i --force-confnew -
+  - sudo service elasticsearch restart
+
 services:
 # https://docs.travis-ci.com/user/database-setup/
    - elasticsearch
