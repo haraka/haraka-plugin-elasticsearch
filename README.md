@@ -1,9 +1,7 @@
 [![Build Status][ci-img]][ci-url]
 [![Windows Build Status][ci-win-img]][ci-win-url]
 [![Code Climate][clim-img]][clim-url]
-[![Greenkeeper badge][gk-img]][gk-url]
 [![NPM][npm-img]][npm-url]
-<!-- doesn't work in haraka plugins... yet. [![Code Coverage][cov-img]][cov-url]-->
 
 # haraka-plugin-elasticsearch
 
@@ -105,7 +103,5 @@ curl -X PUT 'http://localhost:9200/_template/haraka_results' -H 'Content-Type: a
 [cov-url]: https://codecov.io/github/haraka/haraka-plugin-elasticsearch
 [clim-img]: https://codeclimate.com/github/haraka/haraka-plugin-elasticsearch/badges/gpa.svg
 [clim-url]: https://codeclimate.com/github/haraka/haraka-plugin-elasticsearch
-[gk-img]: https://badges.greenkeeper.io/haraka/haraka-plugin-elasticsearch.svg
-[gk-url]: https://greenkeeper.io/
 [npm-img]: https://nodei.co/npm/haraka-plugin-elasticsearch.png
 [npm-url]: https://www.npmjs.com/package/haraka-plugin-elasticsearch

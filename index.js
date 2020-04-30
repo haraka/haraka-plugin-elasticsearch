@@ -3,7 +3,7 @@
 
 const util          = require('util');
 const utils         = require('haraka-utils');
-const elasticsearch = require('elasticsearch');
+const elasticsearch = require('@elastic/elasticsearch');
 
 exports.register = function () {
     const plugin = this;

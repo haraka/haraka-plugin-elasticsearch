@@ -1,12 +1,13 @@
 'use strict';
 
-const fs       = require('fs');
-const path     = require('path');
+const assert   = require('assert')
+const fs       = require('fs')
+const path     = require('path')
 
-const fixtures = require('haraka-test-fixtures');
-const utils    = require('haraka-utils');
+const fixtures = require('haraka-test-fixtures')
+const utils    = require('haraka-utils')
 
-function _set_up (done) {
+function setup (done) {
 
     try {
         this.plugin = new fixtures.plugin('../index');
@@ -22,56 +23,58 @@ function _set_up (done) {
     done();
 }
 
-exports.register = {
-    setUp : _set_up,
-    'has a register function' (test) {
-        test.expect(2);
-        test.ok(this.plugin);
-        test.equal('function', typeof this.plugin.register);
-        test.done();
-    },
-    'can run register function' (test) {
+
+describe('register', function () {
+
+    beforeEach(setup)
+
+    it('has a register function', function (done) {
+        assert.ok(this.plugin);
+        assert.equal('function', typeof this.plugin.register);
+        done()
+    })
+
+    it('can run register function', function (done) {
         // this tests requires a living ES server
-        test.expect(1);
         this.plugin.register();
         // hasn't thrown an exception, success!
-        test.ok(1);
-        test.done();
-    },
-};
+        assert.ok(1);
+        done()
+    })
+})
 
-exports.objToArray = {
-    setUp : _set_up,
-    'converts an object to an array of key vals' (test) {
-        test.expect(2);
-        test.deepEqual([{k: 'foo', v: 'bar'}],
+describe('objToArray', function () {
+    beforeEach(setup)
+
+    it('converts an object to an array of key vals', function (done) {
+        assert.deepEqual([{k: 'foo', v: 'bar'}],
             this.plugin.objToArray({ foo: 'bar' }));
-        test.deepEqual([{k: 'foo', v: 'bar'}, {k: 'baz', v: 'wuz'}],
+        assert.deepEqual([{k: 'foo', v: 'bar'}, {k: 'baz', v: 'wuz'}],
             this.plugin.objToArray({ foo: 'bar', baz: 'wuz' }));
-        test.done();
-    },
-};
+        done()
+    })
+})
 
-exports.getIndexName = {
-    setUp : _set_up,
-    'gets index name for cxn or txn' (test) {
-        test.expect(4);
+describe('getIndexName', function () {
+    beforeEach(setup)
+
+    it('gets index name for cxn or txn', function (done) {
         this.plugin.cfg = { index: {} };
-        test.ok( /smtp-connection-/.test(this.plugin.getIndexName('connection')));
-        test.ok( /smtp-transaction-/.test(this.plugin.getIndexName('transaction')));
+        assert.ok( /smtp-connection-/.test(this.plugin.getIndexName('connection')));
+        assert.ok( /smtp-transaction-/.test(this.plugin.getIndexName('transaction')));
 
         this.plugin.cfg.index.connection = 'cxn';
         this.plugin.cfg.index.transaction = 'txn';
-        test.ok( /cxn-/.test(this.plugin.getIndexName('connection')));
-        test.ok( /txn-/.test(this.plugin.getIndexName('transaction')));
-        test.done();
-    }
-};
+        assert.ok( /cxn-/.test(this.plugin.getIndexName('connection')));
+        assert.ok( /txn-/.test(this.plugin.getIndexName('transaction')));
+        done()
+    })
+})
 
-exports.populate_conn_properties = {
-    setUp : _set_up,
-    'adds conn.local' (test) {
-        test.expect(1);
+describe('populate_conn_properties', function () {
+    beforeEach(setup)
+
+    it('adds conn.local', function (done) {
         this.connection.local.ip= '127.0.0.3';
         this.connection.local.port= '25';
         const result = {};
@@ -79,11 +82,11 @@ exports.populate_conn_properties = {
         this.plugin.load_es_ini();
         this.plugin.populate_conn_properties(this.connection, result);
         delete result.local.host;
-        test.deepEqual(expected, result.local);
-        test.done();
-    },
-    'adds conn.remote' (test) {
-        test.expect(1);
+        assert.deepEqual(expected, result.local);
+        done()
+    })
+
+    it('adds conn.remote', function (done) {
         this.connection.remote.ip='127.0.0.4';
         this.connection.remote.port='2525';
         const result = {};
@@ -91,11 +94,11 @@ exports.populate_conn_properties = {
         this.plugin.load_es_ini();
         this.plugin.populate_conn_properties(this.connection, result);
         delete result.remote.host;
-        test.deepEqual(expected, result.remote);
-        test.done();
-    },
-    'adds conn.helo' (test) {
-        test.expect(1);
+        assert.deepEqual(expected, result.remote);
+        done()
+    })
+
+    it('adds conn.helo', function (done) {
         this.connection.hello.host='testimerson';
         this.connection.hello.verb='EHLO';
         const result = {};
@@ -103,11 +106,11 @@ exports.populate_conn_properties = {
         this.plugin.load_es_ini();
         this.plugin.populate_conn_properties(this.connection, result);
         delete result.remote.host;
-        test.deepEqual(expected, result.hello);
-        test.done();
-    },
-    'adds conn.count' (test) {
-        test.expect(1);
+        assert.deepEqual(expected, result.hello);
+        done()
+    })
+
+    it('adds conn.count', function (done) {
         this.connection.errors=1;
         this.connection.tran_count=2;
         this.connection.msg_count= { accept: 0 };
@@ -119,15 +122,15 @@ exports.populate_conn_properties = {
         this.plugin.load_es_ini();
         this.plugin.populate_conn_properties(this.connection, result);
         delete result.remote.host;
-        test.deepEqual(expected, result.count);
-        test.done();
-    },
-};
+        assert.deepEqual(expected, result.count);
+        done()
+    })
+})
 
-exports.get_plugin_results = {
-    setUp : _set_up,
-    'adds plugin results to results object' (test) {
-        test.expect(1);
+describe('get_plugin_results', function () {
+    beforeEach(setup)
+
+    it('adds plugin results to results object', function (done) {
         this.plugin.load_es_ini();
         this.connection.start_time = Date.now() - 1000;
         this.connection.results.add(this.plugin, { pass: 'test' });
@@ -138,30 +141,31 @@ exports.get_plugin_results = {
         };
         delete this.plugin.cfg.top_level_names;
         const result = this.plugin.get_plugin_results(this.connection);
-        test.deepEqual(expected_result, result);
-        test.done();
-    },
-};
+        assert.deepEqual(expected_result, result);
+        done()
+    })
+})
 
-exports.trimPluginName = {
-    setUp : _set_up,
-    'trims off connection phase prefixes' (test) {
-        test.expect(6);
-        test.equal('headers', this.plugin.trimPluginName('data.headers'));
-        test.equal('geoip', this.plugin.trimPluginName('connect.geoip'));
-        test.equal('asn', this.plugin.trimPluginName('connect.asn'));
-        test.equal('helo', this.plugin.trimPluginName('helo.checks'));
-        test.equal('qmail_deliverable',
+describe('trimPluginName', function () {
+    beforeEach(setup)
+
+    it('trims off connection phase prefixes', function (done) {
+        assert.equal('headers', this.plugin.trimPluginName('data.headers'));
+        assert.equal('geoip', this.plugin.trimPluginName('connect.geoip'));
+        assert.equal('asn', this.plugin.trimPluginName('connect.asn'));
+        assert.equal('helo', this.plugin.trimPluginName('helo.checks'));
+        assert.equal('qmail_deliverable',
             this.plugin.trimPluginName('rcpt_to.qmail_deliverable'));
-        test.equal('is_resolvable',
+        assert.equal('is_resolvable',
             this.plugin.trimPluginName('mail_from.is_resolvable'));
-        test.done();
-    },
-};
+        done()
+    })
+})
 
-exports.storesIndexMapTemplate = {
-    setUp : _set_up,
-    'saves an index map template to Elasticsearch' (test) {
+describe('storesIndexMapTemplate', function () {
+    beforeEach(setup)
+
+    it('saves an index map template to Elasticsearch', function (done) {
 
         const plugin = this.plugin;
         const filePath = path.resolve('index-map-template.json');
@@ -173,14 +177,14 @@ exports.storesIndexMapTemplate = {
             test.ifError(err);
 
             if (err) {
-                test.done();
+                done()
                 return;
             }
 
             fs.readFile(filePath, (err2, data) => {
                 if (err2) {
                     console.error(err2);
-                    test.done();
+                    done()
                 }
 
                 indexMap = JSON.parse(data);
@@ -196,20 +200,21 @@ exports.storesIndexMapTemplate = {
                         }
                         // other tests are running, so currently
                         // stored mapping may conflict
-                        test.done();
+                        done()
                         return;
                     }
                     console.log(result);
-                    test.done();
+                    done()
                 })
             })
         })
-    }
-}
+    })
+})
 
-exports.log_connection = {
-    setUp : _set_up,
-    'saves results to Elasticsearch' (test) {
+describe('log_connection', function () {
+    beforeEach(setup)
+
+    it('saves results to Elasticsearch', function (done) {
 
         const plugin = this.plugin;
 
@@ -228,11 +233,10 @@ exports.log_connection = {
 
             // console.log(util.inspect(connection, { depth: null }));
             plugin.log_connection(function () {
-                test.expect(1);
-                // test.ok(1);
-                test.done();
+                // assert.ok(1);
+                done()
             },
             connection);
         })
-    }
-}
+    })
+})
