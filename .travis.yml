@@ -5,11 +5,12 @@ node_js:
     - "14"
 
 before_install:
-  - curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.8.8.deb && sudo dpkg -i --force-confnew elasticsearch-6.8.8.deb && sudo service elasticsearch restart
+  - curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.8.8.deb && sudo dpkg -i --force-confnew elasticsearch-6.8.8.deb
+  - sudo service elasticsearch restart
 
 services:
 # https://docs.travis-ci.com/user/database-setup/
-   - elasticsearch
+#  - elasticsearch
 
 before_script:
 
