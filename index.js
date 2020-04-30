@@ -176,9 +176,9 @@ exports.getIndexName = function (section) {
         name = plugin.cfg.index[section];
     }
     const date = new Date();
-    const d = date.getUTCDate();
-    const m = date.getUTCMonth() + 1;
-    return `${name}-${date.getUTCFullYear()}-${(m <= 9 ? '0' + m : m)}-${(d <= 9 ? '0' + d : d)}`;
+    const d = date.getUTCDate().toString().padStart(2, '0');
+    const m = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+    return `${name}-${date.getUTCFullYear()}-${m}-${d}`;
 }
 
 exports.populate_conn_properties = function (conn, res) {
