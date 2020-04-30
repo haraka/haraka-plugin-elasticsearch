@@ -31,9 +31,9 @@ exports.load_es_ini = function () {
 
     if (this.cfg.ignore_hosts) {
         // convert bare entries (w/undef values) to true
-        Object.keys(this.cfg.ignore_hosts).forEach(key => {
-            if (!this.cfg.ignore_hosts[key]) this.cfg.ignore_hosts[key]=true;
-        });
+        for (const h in this.cfg.ignore_hosts) {
+            if (!this.cfg.ignore_hosts[h]) this.cfg.ignore_hosts[h]=true;
+        }
     }
 
     this.cfg.headers = this.cfg.headers ? Object.keys(this.cfg.headers) : ['From', 'To', 'Subject'];
@@ -53,9 +53,9 @@ exports.get_es_hosts = function () {
     if (!plugin.cfg.hosts) return;   // no [hosts] config
 
     // ignore all options
-    Object.keys(plugin.cfg.hosts).forEach(host => {
+    for (const host in plugin.cfg.hosts) {
         plugin.cfg.es_hosts.push(`http://${host}:9200`);
-    });
+    }
 }
 
 exports.es_connect = function (done) {
@@ -149,9 +149,9 @@ exports.log_connection = function (next, connection) {
 exports.objToArray = function (obj) {
     const arr = [];
     if (!obj || typeof obj !== 'object') return arr;
-    Object.keys(obj).forEach(k => {
+    for (const k in obj) {
         arr.push({ k, v: obj[k] });
-    });
+    }
     return arr;
 }
 
@@ -223,7 +223,7 @@ exports.populate_conn_properties = function (conn, res) {
         trans: conn.tran_count,
     };
 
-    Object.keys(plugin.cfg.conn_props).forEach(f => {
+    for (const f in plugin.cfg.conn_props) {
         if (conn[f] === undefined) return;
         if (conn[f] === 0) return;
         if (plugin.cfg.conn_props[f]) {  // alias specified
@@ -232,7 +232,7 @@ exports.populate_conn_properties = function (conn, res) {
         else {
             conn_res[f] = conn[f];
         }
-    });
+    }
 
     conn_res.duration = (Date.now() - conn.start_time)/1000;
 }
