@@ -10,8 +10,19 @@ jobs:
 
     steps:
 
+    - name: Configure sysctl limits
+      run: |
+        sudo swapoff -a
+        sudo sysctl -w vm.swappiness=1
+        sudo sysctl -w fs.file-max=262144
+        sudo sysctl -w vm.max_map_count=262144
+
+    - uses: miyataka/elasticsearch-github-actions@1
+      with:
+        stack-version: '6.8.8'
+
     - uses: actions/checkout@master
-      name: Checkout Haraka
+      name: Checkout
       with:
         fetch-depth: 1
 
