@@ -16,7 +16,7 @@ exports.register = function () {
             plugin.register_hook('disconnect',        'log_connection');
         }
     });
-};
+}
 
 exports.load_es_ini = function () {
     const plugin = this;
@@ -50,7 +50,7 @@ exports.load_es_ini = function () {
             pipelining:undefined,
             early_talker:undefined,
         };
-};
+}
 
 exports.get_es_hosts = function () {
     const plugin = this;
@@ -72,7 +72,7 @@ exports.get_es_hosts = function () {
 
         plugin.cfg.es_hosts.push(opts);
     });
-};
+}
 
 exports.es_connect = function (done) {
     const plugin = this;
@@ -130,7 +130,7 @@ exports.log_transaction = function (next, connection) {
     // to ES (so connection isn't saved) and hope for the best.
     connection.notes.elasticsearch=connection.tran_count;
     next();
-};
+}
 
 exports.log_connection = function (next, connection) {
     const plugin = this;
@@ -164,7 +164,7 @@ exports.log_connection = function (next, connection) {
         // connection.loginfo(plugin, response);
     });
     next();
-};
+}
 
 exports.objToArray = function (obj) {
     const arr = [];
@@ -173,7 +173,7 @@ exports.objToArray = function (obj) {
         arr.push({ k, v: obj[k] });
     });
     return arr;
-};
+}
 
 exports.getIndexName = function (section) {
     const plugin = this;
@@ -187,11 +187,8 @@ exports.getIndexName = function (section) {
     const date = new Date();
     const d = date.getUTCDate();
     const m = date.getUTCMonth() + 1;
-    return `${name}` +
-           `-${date.getUTCFullYear()}` +
-           `-${(m <= 9 ? '0' + m : m)}` +
-           `-${(d <= 9 ? '0' + d : d)}`;
-};
+    return `${name}-${date.getUTCFullYear()}-${(m <= 9 ? '0' + m : m)}-${(d <= 9 ? '0' + d : d)}`;
+}
 
 exports.populate_conn_properties = function (conn, res) {
     const plugin = this;
@@ -258,7 +255,7 @@ exports.populate_conn_properties = function (conn, res) {
     });
 
     conn_res.duration = (Date.now() - conn.start_time)/1000;
-};
+}
 
 exports.get_plugin_results = function (connection) {
     const plugin = this;
@@ -307,7 +304,7 @@ exports.get_plugin_results = function (connection) {
 
     plugin.populate_message(pir, connection);
     return plugin.nest_plugin_results(pir);
-};
+}
 
 exports.populate_message = function (pir, connection) {
     const plugin = this;
@@ -351,7 +348,7 @@ exports.populate_message = function (pir, connection) {
         if (!r) return;
         pir.message.header[h] = r;
     });
-};
+}
 
 exports.nest_plugin_results = function (res) {
     const plugin = this;
@@ -365,7 +362,7 @@ exports.nest_plugin_results = function (res) {
     }
     new_res[plugin.cfg.top_level_names.plugin] = res;
     return new_res;
-};
+}
 
 exports.trimPluginName = function (name) {
 
@@ -384,7 +381,7 @@ exports.trimPluginName = function (name) {
             return parts.slice(1).join('.');
     }
     return name;
-};
+}
 
 exports.trim_plugin_names = function (res, name) {
     const trimmed = this.trimPluginName(name);
@@ -393,7 +390,7 @@ exports.trim_plugin_names = function (res, name) {
     res[trimmed] = res[name];
     delete res[name];
     name = trimmed;
-};
+}
 
 exports.prune_empty = function (pi) {
 
@@ -424,7 +421,7 @@ exports.prune_empty = function (pi) {
             }
         }
     }
-};
+}
 
 exports.prune_noisy = function (res, pi) {
     const plugin = this;
@@ -467,14 +464,14 @@ exports.prune_noisy = function (res, pi) {
                 delete res.spamassassin.headers.Level;
             }
     }
-};
+}
 
 exports.prune_zero = function (res, name) {
     for (const e in res[name]) {
         if (res[name][e] !== 0) continue;
         delete res[name][e];
     }
-};
+}
 
 exports.prune_redundant_cxn = function (res, name) {
     switch (name) {
@@ -489,7 +486,7 @@ exports.prune_redundant_cxn = function (res, name) {
             }
             break;
     }
-};
+}
 
 exports.prune_redundant_txn = function (res, name) {
     switch (name) {
@@ -501,4 +498,4 @@ exports.prune_redundant_txn = function (res, name) {
             delete res.spamassassin.headers.Flag;
             break;
     }
-};
+}

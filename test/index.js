@@ -13,16 +13,15 @@ function setup (done) {
         this.plugin = new fixtures.plugin('../index');
     }
     catch (e) {
-        console.error('unable to load elasticsearch plugin');
+        console.error(`unable to load elasticsearch plugin: ${e}`);
         return done('failed to load elasticsearch');
     }
 
     this.connection = fixtures.connection.createConnection();
     this.plugin.config.root_path = path.resolve(__dirname, '..', '..', 'config');
 
-    done();
+    done()
 }
-
 
 describe('register', function () {
 
