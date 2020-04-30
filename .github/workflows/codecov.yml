@@ -35,7 +35,7 @@ jobs:
       run: |
         npm install
         npm install --no-save nyc codecov
-        npm run cover
+        NODE_ENV=cov npx nyc --reporter=lcovonly -x test --hook-run-in-context=true npm run test
 
     - name: Coveralls
       uses: coverallsapp/github-action@master

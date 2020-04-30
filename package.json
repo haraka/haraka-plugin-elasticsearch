@@ -6,8 +6,7 @@
   "scripts": {
     "lint": "npx eslint *.js test/*.js",
     "lintfix": "npx eslint --fix *.js test/*.js",
-    "test": "npx mocha",
-    "cover": "NODE_ENV=cov npx nyc --reporter=lcovonly -x test npm run test"
+    "test": "npx mocha"
   },
   "repository": {
     "type": "git",
@@ -26,7 +25,8 @@
   "homepage": "https://github.com/haraka/-haraka-plugin-elasticsearch#readme",
   "dependencies": {
     "@elastic/elasticsearch": "^6.8",
-    "haraka-utils": "*"
+    "haraka-utils": "*",
+    "nyc": "^15.0.1"
   },
   "devDependencies": {
     "eslint": "*",
