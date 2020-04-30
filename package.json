@@ -25,8 +25,7 @@
   "homepage": "https://github.com/haraka/-haraka-plugin-elasticsearch#readme",
   "dependencies": {
     "@elastic/elasticsearch": "^6.8",
-    "haraka-utils": "*",
-    "nyc": "^15.0.1"
+    "haraka-utils": "*"
   },
   "devDependencies": {
     "eslint": "*",

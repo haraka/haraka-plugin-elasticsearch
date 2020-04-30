@@ -23,7 +23,7 @@ exports.load_es_ini = function () {
             '+main.log_connections',
         ]
     },
-    function () {
+    () => {
         this.load_es_ini();
     })
 
@@ -32,8 +32,7 @@ exports.load_es_ini = function () {
     if (this.cfg.ignore_hosts) {
         // convert bare entries (w/undef values) to true
         Object.keys(this.cfg.ignore_hosts).forEach(key => {
-            if (this.cfg.ignore_hosts[key]) return;
-            this.cfg.ignore_hosts[key]=true;
+            if (!this.cfg.ignore_hosts[key]) this.cfg.ignore_hosts[key]=true;
         });
     }
 
@@ -53,19 +52,9 @@ exports.get_es_hosts = function () {
 
     if (!plugin.cfg.hosts) return;   // no [hosts] config
 
+    // ignore all options
     Object.keys(plugin.cfg.hosts).forEach(host => {
-        if (!plugin.cfg.hosts[host]) {  // no options
-            plugin.cfg.es_hosts.push(`http://${host}:9200`);
-            return;
-        }
-
-        const opts = { host };
-        plugin.cfg.hosts[host].trim().split(',').forEach(opt => {
-            const o=opt.trim().split(':');
-            opts[o[0]] = o[1];
-        });
-
-        plugin.cfg.es_hosts.push(opts);
+        plugin.cfg.es_hosts.push(`http://${host}:9200`);
     });
 }
 
@@ -92,7 +81,7 @@ exports.log_transaction = function (next, connection) {
     const plugin = this;
 
     if (plugin.cfg.ignore_hosts) {
-        if (plugin.cfg.ignore_hosts[connection.remote_host]) return next();
+        if (plugin.cfg.ignore_hosts[connection.remote.host]) return next();
     }
 
     const res = plugin.get_plugin_results(connection);
@@ -108,7 +97,7 @@ exports.log_transaction = function (next, connection) {
         type: 'haraka',
         id: connection.transaction.uuid,
         body: JSON.stringify(res),
-    }, function (error, response) {
+    }, (error, response) => {
         if (error) {
             connection.logerror(plugin, error.message);
         }
@@ -274,6 +263,8 @@ exports.get_plugin_results = function (connection) {
 
     for (name in txr) {
         this.trim_plugin_name(txr, name);
+    }
+    for (name in txr) {
         this.prune_noisy(txr, name);
         this.prune_empty(txr[name]);
         this.prune_zero(txr, name);
@@ -438,6 +429,9 @@ exports.prune_noisy = function (res, pi) {
                 delete res.spamassassin.headers.Tests;
                 delete res.spamassassin.headers.Level;
             }
+            break;
+        case 'rspamd':
+            if (res.rspamd.symbols) delete res.rspamd.symbols;
             break;
     }
 }
