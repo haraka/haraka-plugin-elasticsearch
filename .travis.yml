@@ -6,8 +6,12 @@ node_js:
 
 before_install:
   - curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.8.8.deb && sudo dpkg -i --force-confnew elasticsearch-6.8.8.deb
+  - sudo swapoff -a
+  - sudo sysctl -w vm.swappiness=1
+  - sudo sysctl -w fs.file-max=262144
+  - sudo sysctl -w vm.max_map_count=262144
   - sudo service elasticsearch start
-  - sleep 3
+  - sleep 5
 
 services:
 # https://docs.travis-ci.com/user/database-setup/
@@ -20,4 +24,4 @@ script:
 
 after_success:
 
-sudo: false
+#sudo: false
