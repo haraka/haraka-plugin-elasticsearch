@@ -1,5 +1,6 @@
 [![Build Status][ci-img]][ci-url]
 [![Code Climate][clim-img]][clim-url]
+[![Test Coverage][cov-img]][cov-url]
 [![NPM][npm-img]][npm-url]
 
 # haraka-plugin-elasticsearch
