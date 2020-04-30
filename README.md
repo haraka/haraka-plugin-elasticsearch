@@ -1,9 +1,6 @@
 [![Build Status][ci-img]][ci-url]
-[![Windows Build Status][ci-win-img]][ci-win-url]
 [![Code Climate][clim-img]][clim-url]
-[![Greenkeeper badge][gk-img]][gk-url]
 [![NPM][npm-img]][npm-url]
-<!-- doesn't work in haraka plugins... yet. [![Code Coverage][cov-img]][cov-url]-->
 
 # haraka-plugin-elasticsearch
 
@@ -97,15 +94,9 @@ curl -X PUT 'http://localhost:9200/_template/haraka_results' -H 'Content-Type: a
 
 
 <!-- leave these buried at the bottom of the document -->
-[ci-img]: https://travis-ci.org/haraka/haraka-plugin-elasticsearch.svg
-[ci-url]: https://travis-ci.org/haraka/haraka-plugin-elasticsearch
-[ci-win-img]: https://ci.appveyor.com/api/projects/status/lpo93lu5b4wx5do5?svg=true
-[ci-win-url]: https://ci.appveyor.com/project/msimerson/haraka-plugin-elasticsearch
-[cov-img]: https://codecov.io/github/haraka/haraka-plugin-elasticsearch/coverage.svg
-[cov-url]: https://codecov.io/github/haraka/haraka-plugin-elasticsearch
+[ci-img]: https://github.com/haraka/haraka-plugin-elasticsearch/workflows/Unit%20Tests/badge.svg
+[ci-url]: https://github.com/haraka/haraka-plugin-elasticsearch/actions?query=workflow%3A%22Unit+Tests%22
 [clim-img]: https://codeclimate.com/github/haraka/haraka-plugin-elasticsearch/badges/gpa.svg
 [clim-url]: https://codeclimate.com/github/haraka/haraka-plugin-elasticsearch
-[gk-img]: https://badges.greenkeeper.io/haraka/haraka-plugin-elasticsearch.svg
-[gk-url]: https://greenkeeper.io/
 [npm-img]: https://nodei.co/npm/haraka-plugin-elasticsearch.png
 [npm-url]: https://www.npmjs.com/package/haraka-plugin-elasticsearch

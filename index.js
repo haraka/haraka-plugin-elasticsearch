@@ -3,54 +3,49 @@
 
 const util          = require('util');
 const utils         = require('haraka-utils');
-const elasticsearch = require('elasticsearch');
+const Elasticsearch = require('@elastic/elasticsearch');
 
 exports.register = function () {
-    const plugin = this;
 
-    plugin.load_es_ini();
+    this.load_es_ini();
 
-    plugin.es_connect(err => {
-        if (!err) {
-            plugin.register_hook('reset_transaction', 'log_transaction');
-            plugin.register_hook('disconnect',        'log_connection');
-        }
-    });
-};
+    this.es_connect(err => {
+        if (err) return;
+        this.register_hook('reset_transaction', 'log_transaction');
+        this.register_hook('disconnect',        'log_connection');
+    })
+}
 
 exports.load_es_ini = function () {
-    const plugin = this;
 
-    plugin.cfg = plugin.config.get('elasticsearch.ini', {
+    this.cfg = this.config.get('elasticsearch.ini', {
         booleans: [
             '+main.log_connections',
         ]
     },
     function () {
-        plugin.load_es_ini();
-    });
+        this.load_es_ini();
+    })
 
-    plugin.get_es_hosts();
+    this.get_es_hosts();
 
-    if (plugin.cfg.ignore_hosts) {
+    if (this.cfg.ignore_hosts) {
         // convert bare entries (w/undef values) to true
-        Object.keys(plugin.cfg.ignore_hosts).forEach(key => {
-            if (plugin.cfg.ignore_hosts[key]) return;
-            plugin.cfg.ignore_hosts[key]=true;
+        Object.keys(this.cfg.ignore_hosts).forEach(key => {
+            if (this.cfg.ignore_hosts[key]) return;
+            this.cfg.ignore_hosts[key]=true;
         });
     }
 
-    plugin.cfg.headers = plugin.cfg.headers ?
-        Object.keys(plugin.cfg.headers)     :
-        ['From', 'To', 'Subject'];
+    this.cfg.headers = this.cfg.headers ? Object.keys(this.cfg.headers) : ['From', 'To', 'Subject'];
 
-    plugin.cfg.conn_props = plugin.cfg.connection_properties ||
+    this.cfg.conn_props = this.cfg.connection_properties ||
         {   relaying:undefined,
             totalbytes:undefined,
             pipelining:undefined,
             early_talker:undefined,
         };
-};
+}
 
 exports.get_es_hosts = function () {
     const plugin = this;
@@ -60,7 +55,7 @@ exports.get_es_hosts = function () {
 
     Object.keys(plugin.cfg.hosts).forEach(host => {
         if (!plugin.cfg.hosts[host]) {  // no options
-            plugin.cfg.es_hosts.push({host});
+            plugin.cfg.es_hosts.push(`http://${host}:9200`);
             return;
         }
 
@@ -72,20 +67,16 @@ exports.get_es_hosts = function () {
 
         plugin.cfg.es_hosts.push(opts);
     });
-};
+}
 
 exports.es_connect = function (done) {
     const plugin = this;
 
-    plugin.es = new elasticsearch.Client({
-        hosts: plugin.cfg.es_hosts,
+    plugin.es = new Elasticsearch.Client({
+        nodes: plugin.cfg.es_hosts,
     });
 
-    plugin.es.ping({
-        // ping usually has a 100ms timeout
-        requestTimeout: 3000,
-    },
-    function (error) {
+    plugin.es.ping({}, function (error) {
         if (error) {
             plugin.logerror('cluster is down!');
             plugin.logerror(util.inspect(error, {depth: null}));
@@ -130,7 +121,7 @@ exports.log_transaction = function (next, connection) {
     // to ES (so connection isn't saved) and hope for the best.
     connection.notes.elasticsearch=connection.tran_count;
     next();
-};
+}
 
 exports.log_connection = function (next, connection) {
     const plugin = this;
@@ -164,7 +155,7 @@ exports.log_connection = function (next, connection) {
         // connection.loginfo(plugin, response);
     });
     next();
-};
+}
 
 exports.objToArray = function (obj) {
     const arr = [];
@@ -173,7 +164,7 @@ exports.objToArray = function (obj) {
         arr.push({ k, v: obj[k] });
     });
     return arr;
-};
+}
 
 exports.getIndexName = function (section) {
     const plugin = this;
@@ -185,13 +176,10 @@ exports.getIndexName = function (section) {
         name = plugin.cfg.index[section];
     }
     const date = new Date();
-    const d = date.getUTCDate();
-    const m = date.getUTCMonth() + 1;
-    return `${name}` +
-           `-${date.getUTCFullYear()}` +
-           `-${(m <= 9 ? '0' + m : m)}` +
-           `-${(d <= 9 ? '0' + d : d)}`;
-};
+    const d = date.getUTCDate().toString().padStart(2, '0');
+    const m = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+    return `${name}-${date.getUTCFullYear()}-${m}-${d}`;
+}
 
 exports.populate_conn_properties = function (conn, res) {
     const plugin = this;
@@ -258,40 +246,38 @@ exports.populate_conn_properties = function (conn, res) {
     });
 
     conn_res.duration = (Date.now() - conn.start_time)/1000;
-};
+}
 
 exports.get_plugin_results = function (connection) {
-    const plugin = this;
-
     let name;
-    // note that we make a copy of the result store, so subsequent changes
-    // here don't alter the original (by reference)
+
+    // make a copy of the result store, so subsequent changes don't alter the original (by reference)
     const pir = JSON.parse(JSON.stringify(connection.results.get_all()));
-    for (name in pir) { plugin.trim_plugin_names(pir, name); }
+    for (name in pir) { this.trim_plugin_name(pir, name); }
     for (name in pir) {
-        plugin.prune_noisy(pir, name);
-        plugin.prune_empty(pir[name]);
-        plugin.prune_zero(pir, name);
-        plugin.prune_redundant_cxn(pir, name);
+        this.prune_noisy(pir, name);
+        this.prune_empty(pir[name]);
+        this.prune_zero(pir, name);
+        this.prune_redundant_cxn(pir, name);
     }
 
-    if (!connection.transaction) return plugin.nest_plugin_results(pir);
+    if (!connection.transaction) return this.nest_plugin_results(pir);
 
     let txr;
     try {
         txr = JSON.parse(JSON.stringify(connection.transaction.results.get_all()));
     }
     catch (e) {
-        connection.transaction.results.add(plugin, {err: e.message });
-        return plugin.nest_plugin_results(pir);
+        connection.transaction.results.add(this, {err: e.message });
+        return this.nest_plugin_results(pir);
     }
 
-    for (name in txr) { plugin.trim_plugin_names(txr, name); }
     for (name in txr) {
-        plugin.prune_noisy(txr, name);
-        plugin.prune_empty(txr[name]);
-        plugin.prune_zero(txr, name);
-        plugin.prune_redundant_txn(txr, name);
+        this.trim_plugin_name(txr, name);
+        this.prune_noisy(txr, name);
+        this.prune_empty(txr[name]);
+        this.prune_zero(txr, name);
+        this.prune_redundant_txn(txr, name);
     }
 
     // merge transaction results into connection results
@@ -305,9 +291,9 @@ exports.get_plugin_results = function (connection) {
         delete txr[name];
     }
 
-    plugin.populate_message(pir, connection);
-    return plugin.nest_plugin_results(pir);
-};
+    this.populate_message(pir, connection);
+    return this.nest_plugin_results(pir);
+}
 
 exports.populate_message = function (pir, connection) {
     const plugin = this;
@@ -351,7 +337,7 @@ exports.populate_message = function (pir, connection) {
         if (!r) return;
         pir.message.header[h] = r;
     });
-};
+}
 
 exports.nest_plugin_results = function (res) {
     const plugin = this;
@@ -365,35 +351,31 @@ exports.nest_plugin_results = function (res) {
     }
     new_res[plugin.cfg.top_level_names.plugin] = res;
     return new_res;
-};
+}
 
-exports.trimPluginName = function (name) {
+exports.trim_plugin_name = function (res, name) {
+    let trimmed = name;
 
-    // for plugins named like: data.headers or connect.geoip, strip off the
-    // phase prefix and return `headers` or `geoip`
     const parts = name.split('.');
-    if (parts.length < 2) return name;
-
-    switch (parts[0]) {
-        case 'helo':
-            return 'helo';
-        case 'connect':
-        case 'mail_from':
-        case 'rcpt_to':
-        case 'data':
-            return parts.slice(1).join('.');
+    if (parts.length > 1) {
+        switch (parts[0]) {
+            case 'helo':
+                trimmed = 'helo';
+                break;
+            // for names like: data.headers or connect.geoip, strip off the phase prefix
+            case 'connect':
+            case 'mail_from':
+            case 'rcpt_to':
+            case 'data':
+                trimmed = parts.slice(1).join('.');
+        }
     }
-    return name;
-};
-
-exports.trim_plugin_names = function (res, name) {
-    const trimmed = this.trimPluginName(name);
     if (trimmed === name) return;
 
     res[trimmed] = res[name];
     delete res[name];
     name = trimmed;
-};
+}
 
 exports.prune_empty = function (pi) {
 
@@ -406,32 +388,23 @@ exports.prune_empty = function (pi) {
         }
 
         if (typeof val === 'string') {
-            if (val === '') {
-                delete pi[e];
-                continue;
-            }
+            if (val === '') delete pi[e];
         }
         else if (Array.isArray(val)) {
-            if (val.length === 0) {
-                delete pi[e];
-                continue;
-            }
+            if (val.length === 0) delete pi[e];
         }
         else if (typeof val === 'object') {
-            if (Object.keys(val).length === 0) {
-                delete pi[e];
-                continue;
-            }
+            if (Object.keys(val).length === 0) delete pi[e];
         }
     }
-};
+}
 
 exports.prune_noisy = function (res, pi) {
     const plugin = this;
 
-    if (res[pi].human) { delete res[pi].human; }
-    if (res[pi].human_html) { delete res[pi].human_html; }
-    if (res[pi]._watch_saw) { delete res[pi]._watch_saw; }
+    if (res[pi].human)      delete res[pi].human;
+    if (res[pi].human_html) delete res[pi].human_html;
+    if (res[pi]._watch_saw) delete res[pi]._watch_saw;
 
     switch (pi) {
         case 'karma':
@@ -450,8 +423,7 @@ exports.prune_noisy = function (res, pi) {
             delete res.dnsbl.pass;
             break;
         case 'fcrdns':
-            res.fcrdns.ptr_name_to_ip =
-                plugin.objToArray(res.fcrdns.ptr_name_to_ip);
+            res.fcrdns.ptr_name_to_ip = plugin.objToArray(res.fcrdns.ptr_name_to_ip);
             break;
         case 'geoip':
             delete res.geoip.ll;
@@ -466,30 +438,26 @@ exports.prune_noisy = function (res, pi) {
                 delete res.spamassassin.headers.Tests;
                 delete res.spamassassin.headers.Level;
             }
+            break;
     }
-};
+}
 
 exports.prune_zero = function (res, name) {
     for (const e in res[name]) {
-        if (res[name][e] !== 0) continue;
-        delete res[name][e];
+        if (res[name][e] === 0) delete res[name][e];
     }
-};
+}
 
 exports.prune_redundant_cxn = function (res, name) {
     switch (name) {
         case 'helo':
-            if (res.helo && res.helo.helo_host) {
-                delete res.helo.helo_host;
-            }
+            if (res.helo && res.helo.helo_host) delete res.helo.helo_host;
             break;
         case 'p0f':
-            if (res.p0f && res.p0f.query) {
-                delete res.p0f.query;
-            }
+            if (res.p0f && res.p0f.query) delete res.p0f.query;
             break;
     }
-};
+}
 
 exports.prune_redundant_txn = function (res, name) {
     switch (name) {
@@ -501,4 +469,4 @@ exports.prune_redundant_txn = function (res, name) {
             delete res.spamassassin.headers.Flag;
             break;
     }
-};
+}
