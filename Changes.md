@@ -1,9 +1,10 @@
 
 ## 1.0.5 - 2020-04-29
 
-- update to upstream @elastic/elasticsearch
+- update to upstream @elastic/elasticsearch@6
 - convert test runner to mocha
-- depend on latest eslint
+- use GitHub actions instead of Travis & AppVeyor
+- package.json: depend on latest eslint
 
 
 ## 1.0.4 - 2019-09-22
