@@ -25,7 +25,7 @@ jobs:
 
     - uses: getong/elasticsearch-action@v1.2
       with:
-        elasticsearch version: 'latest'
+        elasticsearch version: '6.8.8'
         discovery type: 'single-node'
 
     - uses: actions/checkout@v1
