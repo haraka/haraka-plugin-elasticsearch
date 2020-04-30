@@ -5,14 +5,11 @@ node_js:
     - "14"
 
 before_install:
-  - curl https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.6.2-amd64.deb | sudo dpkg -i --force-confnew -
-  - sudo service elasticsearch restart
+  - curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.8.8-amd64.deb && sudo dpkg -i --force-confnew elasticsearch-6.8.8-amd64.deb && sudo service elasticsearch restart
 
 services:
 # https://docs.travis-ci.com/user/database-setup/
    - elasticsearch
-#  - mongodb
-#  - redis-server
 
 before_script:
 
@@ -21,12 +18,5 @@ script:
     - npm test
 
 after_success:
-
-# enable codecov, which doesn't currently work for plugins because
-# plugins are run in vm.runInNewContext()
-#
-#   - npm install istanbul codecov
-#   - npm run cover
-#   - ./node_modules/.bin/codecov
 
 sudo: false

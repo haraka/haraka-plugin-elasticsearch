@@ -3,7 +3,7 @@
 
 const util          = require('util');
 const utils         = require('haraka-utils');
-const elasticsearch = require('@elastic/elasticsearch');
+const { Elasticsearch } = require('@elastic/elasticsearch');
 
 exports.register = function () {
     const plugin = this;
@@ -77,8 +77,8 @@ exports.get_es_hosts = function () {
 exports.es_connect = function (done) {
     const plugin = this;
 
-    plugin.es = new elasticsearch.Client({
-        hosts: plugin.cfg.es_hosts,
+    plugin.es = new Elasticsearch({
+        nodes: plugin.cfg.es_hosts,
     });
 
     plugin.es.ping({
