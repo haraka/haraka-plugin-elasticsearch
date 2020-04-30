@@ -1,5 +1,4 @@
 [![Build Status][ci-img]][ci-url]
-[![Windows Build Status][ci-win-img]][ci-win-url]
 [![Code Climate][clim-img]][clim-url]
 [![NPM][npm-img]][npm-url]
 
@@ -95,10 +94,8 @@ curl -X PUT 'http://localhost:9200/_template/haraka_results' -H 'Content-Type: a
 
 
 <!-- leave these buried at the bottom of the document -->
-[ci-img]: https://travis-ci.org/haraka/haraka-plugin-elasticsearch.svg
-[ci-url]: https://travis-ci.org/haraka/haraka-plugin-elasticsearch
-[ci-win-img]: https://ci.appveyor.com/api/projects/status/lpo93lu5b4wx5do5?svg=true
-[ci-win-url]: https://ci.appveyor.com/project/msimerson/haraka-plugin-elasticsearch
+[ci-img]: https://github.com/haraka/haraka-plugin-elasticsearch/workflows/Unit%20Tests/badge.svg
+[ci-url]: https://github.com/haraka/haraka-plugin-elasticsearch/actions?query=workflow%3A%22Unit+Tests%22
 [cov-img]: https://codecov.io/github/haraka/haraka-plugin-elasticsearch/coverage.svg
 [cov-url]: https://codecov.io/github/haraka/haraka-plugin-elasticsearch
 [clim-img]: https://codeclimate.com/github/haraka/haraka-plugin-elasticsearch/badges/gpa.svg
