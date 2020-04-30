@@ -41,18 +41,4 @@ describe('get_es_hosts', function () {
         assert.deepEqual(["http://localhost:9200"], this.plugin.cfg.es_hosts);
         done();
     })
-
-    it('converts host:$options to hosts format', function (done) {
-        this.plugin.cfg = { hosts: {
-            'localhost': 'port:9200,protocol:https',
-            '172.16.15.27': 'protocol:https'
-        }};
-        const expected = [
-            { host: 'localhost', port: '9200', protocol: 'https' },
-            { host: '172.16.15.27', protocol: 'https' }
-        ];
-        this.plugin.get_es_hosts();
-        assert.deepEqual(expected, this.plugin.cfg.es_hosts);
-        done();
-    })
 })
