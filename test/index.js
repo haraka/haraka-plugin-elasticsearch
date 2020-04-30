@@ -43,7 +43,10 @@ describe('register', function () {
 })
 
 describe('objToArray', function () {
-    beforeEach(setup)
+    beforeEach(function (done) {
+        this.plugin = new fixtures.plugin('../index');
+        done()
+    })
 
     it('converts an object to an array of key vals', function (done) {
         assert.deepEqual([{k: 'foo', v: 'bar'}],
@@ -55,7 +58,10 @@ describe('objToArray', function () {
 })
 
 describe('getIndexName', function () {
-    beforeEach(setup)
+    beforeEach(function (done) {
+        this.plugin = new fixtures.plugin('../index');
+        done()
+    })
 
     it('gets index name for cxn or txn', function (done) {
         this.plugin.cfg = { index: {} };
@@ -145,18 +151,51 @@ describe('get_plugin_results', function () {
     })
 })
 
-describe('trimPluginName', function () {
-    beforeEach(setup)
+describe('trim_plugin_name', function () {
+    beforeEach(function (done) {
+        this.plugin = new fixtures.plugin('../index');
+        done()
+    })
 
-    it('trims off connection phase prefixes', function (done) {
-        assert.equal('headers', this.plugin.trimPluginName('data.headers'));
-        assert.equal('geoip', this.plugin.trimPluginName('connect.geoip'));
-        assert.equal('asn', this.plugin.trimPluginName('connect.asn'));
-        assert.equal('helo', this.plugin.trimPluginName('helo.checks'));
-        assert.equal('qmail_deliverable',
-            this.plugin.trimPluginName('rcpt_to.qmail_deliverable'));
-        assert.equal('is_resolvable',
-            this.plugin.trimPluginName('mail_from.is_resolvable'));
+    const testObj = {
+        'data.headers': {},
+        'connect.geoip': {},
+        'connect.asn': {},
+        'helo.checks': {},
+        'rcpt_to.qmail_deliverable': {},
+        'mail_from.is_resolvable': {},
+    };
+
+    it(`trims connection phase prefix: data`, function (done) {
+        this.plugin.trim_plugin_name(testObj, 'data.headers');
+        assert.deepEqual(testObj.headers, {});
+        done()
+    })
+
+    it(`trims connection phase prefix: connect`, function (done) {
+        this.plugin.trim_plugin_name(testObj, 'connect.geoip');
+        assert.deepEqual(testObj.geoip, {});
+
+        this.plugin.trim_plugin_name(testObj, 'connect.asn');
+        assert.deepEqual(testObj.asn, {});
+        done()
+    })
+
+    it(`trims connection phase prefix: rcpt_to`, function (done) {
+        this.plugin.trim_plugin_name(testObj, 'rcpt_to.qmail_deliverable');
+        assert.deepEqual(testObj.qmail_deliverable, {});
+        done()
+    })
+
+    it(`trims connection phase prefix: mail_from`, function (done) {
+        this.plugin.trim_plugin_name(testObj, 'mail_from.is_resolvable');
+        assert.deepEqual(testObj.is_resolvable, {});
+        done()
+    })
+
+    it(`trims connection phase prefix: helo`, function (done) {
+        this.plugin.trim_plugin_name(testObj, 'helo.checks');
+        assert.deepEqual(testObj.helo, {});
         done()
     })
 })

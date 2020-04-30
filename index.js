@@ -249,37 +249,35 @@ exports.populate_conn_properties = function (conn, res) {
 }
 
 exports.get_plugin_results = function (connection) {
-    const plugin = this;
-
     let name;
-    // note that we make a copy of the result store, so subsequent changes
-    // here don't alter the original (by reference)
+
+    // make a copy of the result store, so subsequent changes don't alter the original (by reference)
     const pir = JSON.parse(JSON.stringify(connection.results.get_all()));
-    for (name in pir) { plugin.trim_plugin_names(pir, name); }
+    for (name in pir) { this.trim_plugin_name(pir, name); }
     for (name in pir) {
-        plugin.prune_noisy(pir, name);
-        plugin.prune_empty(pir[name]);
-        plugin.prune_zero(pir, name);
-        plugin.prune_redundant_cxn(pir, name);
+        this.prune_noisy(pir, name);
+        this.prune_empty(pir[name]);
+        this.prune_zero(pir, name);
+        this.prune_redundant_cxn(pir, name);
     }
 
-    if (!connection.transaction) return plugin.nest_plugin_results(pir);
+    if (!connection.transaction) return this.nest_plugin_results(pir);
 
     let txr;
     try {
         txr = JSON.parse(JSON.stringify(connection.transaction.results.get_all()));
     }
     catch (e) {
-        connection.transaction.results.add(plugin, {err: e.message });
-        return plugin.nest_plugin_results(pir);
+        connection.transaction.results.add(this, {err: e.message });
+        return this.nest_plugin_results(pir);
     }
 
-    for (name in txr) { plugin.trim_plugin_names(txr, name); }
     for (name in txr) {
-        plugin.prune_noisy(txr, name);
-        plugin.prune_empty(txr[name]);
-        plugin.prune_zero(txr, name);
-        plugin.prune_redundant_txn(txr, name);
+        this.trim_plugin_name(txr, name);
+        this.prune_noisy(txr, name);
+        this.prune_empty(txr[name]);
+        this.prune_zero(txr, name);
+        this.prune_redundant_txn(txr, name);
     }
 
     // merge transaction results into connection results
@@ -293,8 +291,8 @@ exports.get_plugin_results = function (connection) {
         delete txr[name];
     }
 
-    plugin.populate_message(pir, connection);
-    return plugin.nest_plugin_results(pir);
+    this.populate_message(pir, connection);
+    return this.nest_plugin_results(pir);
 }
 
 exports.populate_message = function (pir, connection) {
@@ -355,27 +353,23 @@ exports.nest_plugin_results = function (res) {
     return new_res;
 }
 
-exports.trimPluginName = function (name) {
+exports.trim_plugin_name = function (res, name) {
+    let trimmed = name;
 
-    // for plugins named like: data.headers or connect.geoip, strip off the
-    // phase prefix and return `headers` or `geoip`
     const parts = name.split('.');
-    if (parts.length < 2) return name;
-
-    switch (parts[0]) {
-        case 'helo':
-            return 'helo';
-        case 'connect':
-        case 'mail_from':
-        case 'rcpt_to':
-        case 'data':
-            return parts.slice(1).join('.');
+    if (parts.length > 1) {
+        switch (parts[0]) {
+            case 'helo':
+                trimmed = 'helo';
+                break;
+            // for names like: data.headers or connect.geoip, strip off the phase prefix
+            case 'connect':
+            case 'mail_from':
+            case 'rcpt_to':
+            case 'data':
+                trimmed = parts.slice(1).join('.');
+        }
     }
-    return name;
-}
-
-exports.trim_plugin_names = function (res, name) {
-    const trimmed = this.trimPluginName(name);
     if (trimmed === name) return;
 
     res[trimmed] = res[name];
@@ -394,22 +388,13 @@ exports.prune_empty = function (pi) {
         }
 
         if (typeof val === 'string') {
-            if (val === '') {
-                delete pi[e];
-                continue;
-            }
+            if (val === '') delete pi[e];
         }
         else if (Array.isArray(val)) {
-            if (val.length === 0) {
-                delete pi[e];
-                continue;
-            }
+            if (val.length === 0) delete pi[e];
         }
         else if (typeof val === 'object') {
-            if (Object.keys(val).length === 0) {
-                delete pi[e];
-                continue;
-            }
+            if (Object.keys(val).length === 0) delete pi[e];
         }
     }
 }
@@ -417,9 +402,9 @@ exports.prune_empty = function (pi) {
 exports.prune_noisy = function (res, pi) {
     const plugin = this;
 
-    if (res[pi].human) { delete res[pi].human; }
-    if (res[pi].human_html) { delete res[pi].human_html; }
-    if (res[pi]._watch_saw) { delete res[pi]._watch_saw; }
+    if (res[pi].human)      delete res[pi].human;
+    if (res[pi].human_html) delete res[pi].human_html;
+    if (res[pi]._watch_saw) delete res[pi]._watch_saw;
 
     switch (pi) {
         case 'karma':
@@ -438,8 +423,7 @@ exports.prune_noisy = function (res, pi) {
             delete res.dnsbl.pass;
             break;
         case 'fcrdns':
-            res.fcrdns.ptr_name_to_ip =
-                plugin.objToArray(res.fcrdns.ptr_name_to_ip);
+            res.fcrdns.ptr_name_to_ip = plugin.objToArray(res.fcrdns.ptr_name_to_ip);
             break;
         case 'geoip':
             delete res.geoip.ll;
@@ -454,27 +438,23 @@ exports.prune_noisy = function (res, pi) {
                 delete res.spamassassin.headers.Tests;
                 delete res.spamassassin.headers.Level;
             }
+            break;
     }
 }
 
 exports.prune_zero = function (res, name) {
     for (const e in res[name]) {
-        if (res[name][e] !== 0) continue;
-        delete res[name][e];
+        if (res[name][e] === 0) delete res[name][e];
     }
 }
 
 exports.prune_redundant_cxn = function (res, name) {
     switch (name) {
         case 'helo':
-            if (res.helo && res.helo.helo_host) {
-                delete res.helo.helo_host;
-            }
+            if (res.helo && res.helo.helo_host) delete res.helo.helo_host;
             break;
         case 'p0f':
-            if (res.p0f && res.p0f.query) {
-                delete res.p0f.query;
-            }
+            if (res.p0f && res.p0f.query) delete res.p0f.query;
             break;
     }
 }
