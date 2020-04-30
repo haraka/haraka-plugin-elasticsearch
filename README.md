@@ -1,6 +1,5 @@
 [![Build Status][ci-img]][ci-url]
 [![Code Climate][clim-img]][clim-url]
-[![Test Coverage][cov-img]][cov-url]
 [![NPM][npm-img]][npm-url]
 
 # haraka-plugin-elasticsearch
@@ -97,8 +96,6 @@ curl -X PUT 'http://localhost:9200/_template/haraka_results' -H 'Content-Type: a
 <!-- leave these buried at the bottom of the document -->
 [ci-img]: https://github.com/haraka/haraka-plugin-elasticsearch/workflows/Unit%20Tests/badge.svg
 [ci-url]: https://github.com/haraka/haraka-plugin-elasticsearch/actions?query=workflow%3A%22Unit+Tests%22
-[cov-img]: https://codecov.io/github/haraka/haraka-plugin-elasticsearch/coverage.svg
-[cov-url]: https://codecov.io/github/haraka/haraka-plugin-elasticsearch
 [clim-img]: https://codeclimate.com/github/haraka/haraka-plugin-elasticsearch/badges/gpa.svg
 [clim-url]: https://codeclimate.com/github/haraka/haraka-plugin-elasticsearch
 [npm-img]: https://nodei.co/npm/haraka-plugin-elasticsearch.png
