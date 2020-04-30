@@ -1,4 +1,4 @@
-name: Haraka Lint
+name: Lint
 
 on: [ push ]
 
@@ -14,7 +14,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-      name: Checkout Haraka
+      name: Checkout
       with:
         fetch-depth: 1
 
