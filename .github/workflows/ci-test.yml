@@ -25,11 +25,7 @@ jobs:
 
     - uses: getong/elasticsearch-action@v1.2
       with:
-        elasticsearch version: '6.8.6'
-        host port: 9200
-        container port: 9200
-        host node port: 9300
-        node port: 9300
+        elasticsearch version: 'latest'
         discovery type: 'single-node'
 
     - uses: actions/checkout@v1
