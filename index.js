@@ -21,6 +21,7 @@ exports.load_es_ini = function () {
     this.cfg = this.config.get('elasticsearch.ini', {
         booleans: [
             '+main.log_connections',
+            '*.rejectUnauthorized'
         ]
     },
     () => {
@@ -52,18 +53,24 @@ exports.get_es_hosts = function () {
 
     if (!plugin.cfg.hosts) return;   // no [hosts] config
 
-    // ignore all options
     for (const host in plugin.cfg.hosts) {
-        plugin.cfg.es_hosts.push(`http://${host}:9200`);
+        if (plugin.cfg.hosts[host]) {
+            plugin.cfg.es_hosts.push(plugin.cfg.hosts[host]);
+        }
+        else {
+            plugin.cfg.es_hosts.push(`http://${host}:9200`);
+        }
     }
+
+    plugin.clientArgs = { nodes: plugin.cfg.es_hosts };
+    if (plugin.cfg.auth) plugin.clientArgs.auth = plugin.cfg.auth;
+    if (plugin.cfg.ssl)  plugin.clientArgs.ssl = plugin.cfg.ssl;
 }
 
 exports.es_connect = function (done) {
     const plugin = this;
 
-    plugin.es = new Elasticsearch.Client({
-        nodes: plugin.cfg.es_hosts,
-    });
+    plugin.es = new Elasticsearch.Client(plugin.clientArgs);
 
     plugin.es.ping({}, function (error) {
         if (error) {
