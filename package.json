@@ -22,7 +22,7 @@
   "bugs": {
     "url": "https://github.com/haraka/haraka-plugin-elasticsearch/issues"
   },
-  "homepage": "https://github.com/haraka/-haraka-plugin-elasticsearch#readme",
+  "homepage": "https://github.com/haraka/haraka-plugin-elasticsearch#readme",
   "dependencies": {
     "@elastic/elasticsearch": "^7.8",
     "haraka-utils": "*"
