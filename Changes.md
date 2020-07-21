@@ -1,4 +1,11 @@
 
+## 1.0.6 - 2020-07-21
+
+- add URI for connection settings
+- add options to specify user & ssl connection settings
+- bump elasticsearch client to version 7.8
+
+
 ## 1.0.5 - 2020-04-29
 
 - update to upstream @elastic/elasticsearch@6
