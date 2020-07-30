@@ -3,211 +3,482 @@
         "smtp-*"
     ],
     "settings" : {
-      "index" : {
-        "number_of_shards" : "2"
-      }
+        "index" : {
+            "number_of_shards" : "1"
+        }
     },
     "mappings" : {
-        "haraka" : {
-            "dynamic_templates" : [
-                { "fail_results" : {
-                        "match" : "fail",
-                        "mapping" : {
-                            "type" : "text", "index" : false
-                        }
+        "haraka": {
+            "dynamic_templates": [
+                {
+                    "fail_results": {
+                        "mapping": {
+                            "type": "text"
+                        },
+                        "match": "fail"
                     }
                 },
-                { "pass_results" : {
-                        "match" : "pass",
-                        "mapping" : {
-                            "type" : "text", "index" : false
-                        }
+                {
+                    "pass_results": {
+                        "mapping": {
+                            "type": "text"
+                        },
+                        "match": "pass"
                     }
                 },
-                { "skip_results" : {
-                        "match" : "skip",
-                        "mapping" : {
-                            "type" : "text", "index" : false
-                        }
+                {
+                    "skip_results": {
+                        "mapping": {
+                            "type": "text"
+                        },
+                        "match": "skip"
                     }
                 },
-                { "msg_results" : {
-                        "match" : "plugin.*.msg",
-                        "mapping" : {
-                            "type" : "text", "index" : false
-                        }
+                {
+                    "msg_results": {
+                        "mapping": {
+                            "type": "text"
+                        },
+                        "match": "plugin.*.msg"
                     }
                 },
-                { "err_results" : {
-                        "match" : "err",
-                        "mapping" : {
-                            "type" : "text", "index" : false
-                        }
+                {
+                    "err_results": {
+                        "mapping": {
+                            "index": false,
+                            "type": "text"
+                        },
+                        "match": "err"
                     }
                 },
-                { "ip_addrs" : {
-                        "match" : "ip",
-                        "mapping" : { "type" : "ip" }
+                {
+                    "ip_addrs": {
+                        "mapping": {
+                            "type": "ip"
+                        },
+                        "match": "ip"
                     }
                 },
-                { "hostnames" : {
-                        "match" : "host",
-                        "mapping" : {
-                            "type" : "text", "index" : false
-                        }
+                {
+                    "hostnames": {
+                        "mapping": {
+                            "type": "text"
+                        },
+                        "match": "host"
                     }
                 }
             ],
-            "properties" : {
-                "plugin" : {
-                    "properties" : {
-                        "asn" : {
-                            "properties" : {
-                                "org" : { "type" : "text", "index" : false },
-                                "asn_good"        : { "type" : "double" },
-                                "asn_bad"         : { "type" : "double" },
-                                "asn_score"       : { "type" : "double" },
-                                "asn_connections" : { "type" : "double" }
+            "properties": {
+                "plugin": {
+                    "dynamic": true,
+                    "type": "object",
+                    "enabled": true,
+                    "properties": {
+                        "asn": {
+                            "type": "object",
+                            "properties": {
+                                "org": {
+                                    "eager_global_ordinals": false,
+                                    "index_phrases": false,
+                                    "fielddata": false,
+                                    "norms": true,
+                                    "index": true,
+                                    "store": false,
+                                    "type": "text",
+                                    "index_options": "positions"
+                                },
+                                "asn_bad": {
+                                    "type": "double"
+                                },
+                                "asn_connections": {
+                                    "type": "double"
+                                },
+                                "asn_score": {
+                                    "type": "double"
+                                },
+                                "asn_good": {
+                                    "type": "double"
+                                }
                             }
                         },
-                        "geoip" : {
-                            "properties" : {
-                                "org"      : { "type" : "text", "index" : false },
-                                "geo"      : { "type" : "geo_point" },
-                                "distance" : { "type" : "float" }
+                        "geoip": {
+                            "type": "object",
+                            "properties": {
+                                "geo": {
+                                    "type": "geo_point"
+                                },
+                                "distance": {
+                                    "type": "float"
+                                },
+                                "org": {
+                                    "eager_global_ordinals": false,
+                                    "index_phrases": false,
+                                    "fielddata": false,
+                                    "norms": true,
+                                    "index": true,
+                                    "store": false,
+                                    "type": "text",
+                                    "index_options": "positions"
+                                }
                             }
                         },
-                        "helo" : {
-                            "properties"   : {
-                                "ips"      : { "type" : "text", "index" : false }
+                        "helo": {
+                            "type": "object",
+                            "properties": {
+                                "ips": {
+                                    "index": "false",
+                                    "type": "text"
+                                }
                             }
                         },
-                        "fcrdns" : {
-                            "properties"    : {
-                                "fcrdns"    : { "type" : "text", "index" : false },
-                                "other_ips" : { "type" : "text", "index" : false },
-                                "ptr_names" : { "type" : "text", "index" : false }
+                        "fcrdns": {
+                            "type": "object",
+                            "properties": {
+                                "ptr_names": {
+                                    "index": false,
+                                    "type": "text"
+                                },
+                                "fcrdns": {
+                                    "eager_global_ordinals": false,
+                                    "index_phrases": false,
+                                    "fielddata": false,
+                                    "norms": true,
+                                    "index": true,
+                                    "store": false,
+                                    "type": "text",
+                                    "index_options": "positions"
+                                },
+                                "other_ips": {
+                                    "index": false,
+                                    "type": "text"
+                                }
                             }
                         },
-                        "p0f" : {
-                            "properties" : {
-                                "os_flavor" : { "type" : "text", "index" : false }
+                        "karma": {
+                            "type": "object",
+                            "properties": {
+                                "score": {
+                                    "type": "double"
+                                },
+                                "bad": {
+                                    "type": "double"
+                                },
+                                "total_connects": {
+                                    "type": "double"
+                                },
+                                "neighbors": {
+                                    "type": "double"
+                                },
+                                "history": {
+                                    "type": "double"
+                                },
+                                "good": {
+                                    "type": "double"
+                                },
+                                "connect": {
+                                    "type": "double"
+                                },
+                                "connections": {
+                                    "type": "double"
+                                }
                             }
                         },
-                        "rspamd" : {
-                            "properties"   : {
-                                "emails"   : { "type" : "text", "index" : false },
-                                "urls"     : { "type" : "text", "index" : false },
-                                "messages" : { "type" : "text", "index" : false }
+                        "p0f": {
+                            "type": "object",
+                            "properties": {
+                                "os_flavor": {
+                                    "eager_global_ordinals": false,
+                                    "index_phrases": false,
+                                    "fielddata": false,
+                                    "norms": true,
+                                    "index": true,
+                                    "store": false,
+                                    "type": "text",
+                                    "index_options": "positions"
+                                }
                             }
                         },
-                        "karma" : {
-                            "properties" : {
-                                "connect"   : { "type" : "double" },
-                                "score"     : { "type" : "double" },
-                                "good"      : { "type" : "double" },
-                                "bad"       : { "type" : "double" },
-                                "history"   : { "type" : "double" },
-                                "connections" : { "type" : "double" },
-                                "total_connects" : { "type" : "double" },
-                                "neighbors" : { "type" : "double" }
+                        "rspamd": {
+                            "type": "object",
+                            "properties": {
+                                "emails": {
+                                    "index": false,
+                                    "type": "text"
+                                },
+                                "urls": {
+                                    "index": false,
+                                    "type": "text"
+                                },
+                                "messages": {
+                                    "index": false,
+                                    "type": "text"
+                                }
                             }
                         },
-                        "spamassassin" : {
-                            "properties" : {
+                        "spamassassin": {
+                            "type": "object",
+                            "properties": {
                                 "headers": {
-                                    "properties" : {
-                                        "report" : { "type" : "text", "index" : false },
-                                        "Status" : { "type" : "text", "index" : false }
+                                    "type": "object",
+                                    "properties": {
+                                        "Status": {
+                                            "index": false,
+                                            "type": "text"
+                                        },
+                                        "report": {
+                                            "index": false,
+                                            "type": "text"
+                                        }
                                     }
                                 },
-                                "line0" : { "type" : "text", "index" : false },
-                                "reqd"  : { "type" : "double" },
-                                "score" : { "type" : "double" },
-                                "tests" : { "type" : "text", "index" : false }
+                                "score": {
+                                    "type": "double"
+                                },
+                                "reqd": {
+                                    "type": "double"
+                                },
+                                "tests": {
+                                    "eager_global_ordinals": false,
+                                    "index_phrases": false,
+                                    "fielddata": false,
+                                    "norms": true,
+                                    "index": true,
+                                    "store": false,
+                                    "type": "text",
+                                    "index_options": "positions"
+                                },
+                                "line0": {
+                                    "index": false,
+                                    "type": "text"
+                                }
                             }
                         },
-                        "spf" : {
-                            "properties" : {
-                                "domain" : { "type" : "text", "index" : false }
+                        "spf": {
+                            "type": "object",
+                            "properties": {
+                                "domain": {
+                                    "eager_global_ordinals": false,
+                                    "norms": false,
+                                    "index": true,
+                                    "store": false,
+                                    "type": "keyword",
+                                    "split_queries_on_whitespace": false,
+                                    "index_options": "docs",
+                                    "doc_values": true
+                                }
                             }
                         }
                     }
                 },
-                "message" : {
-                    "properties" : {
-                        "bytes" : { "type": "double" },
+                "message": {
+                    "dynamic": true,
+                    "type": "object",
+                    "enabled": true,
+                    "properties": {
                         "envelope": {
+                            "type": "object",
                             "properties": {
-                                "sender" : { "type" : "text", "index" : false },
-                                "recipient" : {
-                                    "properties"  : {
-                                        "action"  : { "type" : "text", "index" : false },
-                                        "address" : { "type" : "text", "index" : false }
+                                "sender": {
+                                    "eager_global_ordinals": false,
+                                    "index_phrases": false,
+                                    "fielddata": false,
+                                    "norms": true,
+                                    "index": true,
+                                    "store": false,
+                                    "type": "text",
+                                    "index_options": "positions"
+                                },
+                                "recipient": {
+                                    "type": "object",
+                                    "properties": {
+                                        "address": {
+                                            "eager_global_ordinals": false,
+                                            "index_phrases": false,
+                                            "fielddata": false,
+                                            "norms": true,
+                                            "index": true,
+                                            "store": false,
+                                            "type": "text",
+                                            "index_options": "positions"
+                                        },
+                                        "action": {
+                                            "eager_global_ordinals": false,
+                                            "norms": false,
+                                            "index": true,
+                                            "store": false,
+                                            "type": "keyword",
+                                            "split_queries_on_whitespace": false,
+                                            "index_options": "docs",
+                                            "doc_values": true
+                                        }
                                     }
                                 }
                             }
+                        },
+                        "bytes": {
+                            "type": "double"
                         },
                         "header": {
+                            "type": "object",
                             "properties": {
-                                "from"         : { "type" : "text", "index" : false },
-                                "to"           : { "type" : "text", "index" : false },
-                                "subject"      : { "type" : "text", "index" : false },
-                                "message-id"   : { "type" : "text", "index" : false },
-                                "date"         : { "type" : "text", "index" : false },
-                                "reply-to"     : { "type" : "text", "index" : false },
-                                "resent-from"  : { "type" : "text", "index" : false },
-                                "resent-header": { "type" : "text", "index" : false },
-                                "sender"       : { "type" : "text", "index" : false }
+                                "date": {
+                                    "index": false,
+                                    "type": "text"
+                                },
+                                "resent-from": {
+                                    "index": false,
+                                    "type": "text"
+                                },
+                                "sender": {
+                                    "eager_global_ordinals": false,
+                                    "index_phrases": false,
+                                    "fielddata": false,
+                                    "norms": true,
+                                    "index": true,
+                                    "store": false,
+                                    "type": "text",
+                                    "index_options": "positions"
+                                },
+                                "subject": {
+                                    "eager_global_ordinals": false,
+                                    "index_phrases": false,
+                                    "fielddata": false,
+                                    "norms": true,
+                                    "index": true,
+                                    "store": false,
+                                    "type": "text",
+                                    "index_options": "positions"
+                                },
+                                "message-id": {
+                                    "index": false,
+                                    "type": "text"
+                                },
+                                "from": {
+                                    "eager_global_ordinals": false,
+                                    "index_phrases": false,
+                                    "fielddata": false,
+                                    "norms": true,
+                                    "index": true,
+                                    "store": false,
+                                    "type": "text",
+                                    "index_options": "positions"
+                                },
+                                "to": {
+                                    "eager_global_ordinals": false,
+                                    "index_phrases": false,
+                                    "fielddata": false,
+                                    "norms": true,
+                                    "index": true,
+                                    "store": false,
+                                    "type": "text",
+                                    "index_options": "positions"
+                                },
+                                "reply-to": {
+                                    "index": false,
+                                    "type": "text"
+                                },
+                                "resent-header": {
+                                    "index": false,
+                                    "type": "text"
+                                }
                             }
                         },
-                        "body" : {
-                            "properties" : {
-                                "attachment" : {
+                        "body": {
+                            "type": "object",
+                            "properties": {
+                                "attachment": {
+                                    "type": "object",
                                     "properties": {
-                                        "bytes" : { "type" : "float" },
-                                        "ctype" : { "type" : "text" },
-                                        "file"  : { "type" : "text" },
-                                        "md5"   : { "type" : "text", "index": false }
+                                        "file": {
+                                            "type": "text"
+                                        },
+                                        "ctype": {
+                                            "type": "text"
+                                        },
+                                        "bytes": {
+                                            "type": "float"
+                                        },
+                                        "md5": {
+                                            "eager_global_ordinals": false,
+                                            "norms": false,
+                                            "index": true,
+                                            "store": false,
+                                            "type": "keyword",
+                                            "split_queries_on_whitespace": false,
+                                            "index_options": "docs",
+                                            "doc_values": true
+                                        }
                                     }
                                 }
                             }
                         },
-                        "queue" : {
-                            "properties" : {
-
-                            }
+                        "queue": {
+                            "type": "object"
                         }
                     }
                 },
-                "connection" : {
-                    "properties" : {
-                        "count" : {
-                            "properties" : {
-                                "msg" : {
-                                    "properties" : {
-                                        "accept" : { "type": "integer" },
-                                        "reject" : { "type": "integer" },
-                                        "tempfail" : { "type": "integer" }
+                "connection": {
+                    "dynamic": true,
+                    "type": "object",
+                    "enabled": true,
+                    "properties": {
+                        "relay": {
+                            "type": "boolean"
+                        },
+                        "relaying": {
+                            "type": "boolean"
+                        },
+                        "count": {
+                            "type": "object",
+                            "properties": {
+                                "msg": {
+                                    "type": "object",
+                                    "properties": {
+                                        "reject": {
+                                            "type": "integer"
+                                        },
+                                        "tempfail": {
+                                            "type": "integer"
+                                        },
+                                        "accept": {
+                                            "type": "integer"
+                                        }
                                     }
                                 },
-                                "rcpt" : {
-                                    "properties" : {
-                                        "accept" : { "type": "integer" },
-                                        "reject" : { "type": "integer" },
-                                        "tempfail" : { "type": "integer" }
+                                "rcpt": {
+                                    "type": "object",
+                                    "properties": {
+                                        "reject": {
+                                            "type": "integer"
+                                        },
+                                        "tempfail": {
+                                            "type": "integer"
+                                        },
+                                        "accept": {
+                                            "type": "integer"
+                                        }
                                     }
                                 },
-                                "errors" : { "type": "integer" },
-                                "trans" : { "type": "integer" }
+                                "errors": {
+                                    "type": "integer"
+                                },
+                                "trans": {
+                                    "type": "integer"
+                                }
                             }
                         },
-                        "early" : { "type" : "boolean" },
-                        "early_talker" : { "type" : "boolean" },
-                        "relay" : { "type" : "boolean" },
-                        "relaying" : { "type" : "boolean" },
-                        "tls" : { "type" : "boolean" },
-                        "using_tls" : { "type" : "boolean" }
+                        "using_tls": {
+                            "type": "boolean"
+                        },
+                        "tls": {
+                            "type": "boolean"
+                        },
+                        "early": {
+                            "type": "boolean"
+                        },
+                        "early_talker": {
+                            "type": "boolean"
+                        }
                     }
                 }
             }
