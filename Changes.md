@@ -1,6 +1,12 @@
 ### Unreleased
 
 
+### [1.0.8] - 2022-06-06
+
+- ci: add .npmignore
+- ci: publish needs es started up too
+
+
 ### [1.0.7] - 2022-06-06
 
 - ci: use shared GHA workflows
@@ -51,3 +57,4 @@
 - initial release
 
 [1.0.7]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/1.0.7
+[1.0.8]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/1.0.8

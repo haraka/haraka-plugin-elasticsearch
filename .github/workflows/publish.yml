@@ -7,8 +7,68 @@ on:
 
 env:
   CI: true
+  node-version: 16
 
 jobs:
-  publish:
-    uses: haraka/.github/.github/workflows/publish.yml@master
-    secrets: inherit
+  build:
+    runs-on: ubuntu-latest
+    # services:
+    #   redis:
+    #     image: redis
+    #     ports:
+    #       - 6379:6379
+    steps:
+      - name: Configure sysctl limits
+        run: |
+           sudo swapoff -a
+           sudo sysctl -w vm.swappiness=1
+           sudo sysctl -w fs.file-max=262144
+           sudo sysctl -w vm.max_map_count=262144
+      - uses: miyataka/elasticsearch-github-actions@1
+        with:
+          stack-version: '7.6.2'
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node-version }}
+      - uses: actions/checkout@v3
+      - run: npm install
+      - run: npm test
+
+  publish-npm:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    environment: npm
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node-version }}
+          registry-url: https://registry.npmjs.org/
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0    #  needed by GitHub Release
+      - name: publish to NPM
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+
+  publish-gpr:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    environment: ghpm
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node-version }}
+          registry-url: https://npm.pkg.github.com/
+          scope: "@haraka"
+      - name: rename package with @haraka scope
+        run: node .release/npm/prepend-scope.cjs @haraka
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
