@@ -1,6 +1,6 @@
 {
   "name": "haraka-plugin-elasticsearch",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Haraka plugin that saves logs to Elasticsearch",
   "main": "index.js",
   "scripts": {
