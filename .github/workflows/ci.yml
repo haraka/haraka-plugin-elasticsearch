@@ -1,0 +1,50 @@
+name: CI
+
+on: [ push ]
+
+env:
+  CI: true
+
+jobs:
+
+  lint:
+    uses: haraka/.github/.github/workflows/lint.yml@master
+
+  # coverage:
+  #   uses: haraka/.github/.github/workflows/coverage.yml@master
+  #   secrets: inherit
+
+  test:
+    needs: [ lint, get-lts ]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        node-version: ${{ fromJson(needs.get-lts.outputs.active) }}
+      fail-fast: false
+    steps:
+    - name: Configure sysctl limits
+      run: |
+         sudo swapoff -a
+         sudo sysctl -w vm.swappiness=1
+         sudo sysctl -w fs.file-max=262144
+         sudo sysctl -w vm.max_map_count=262144
+    - uses: miyataka/elasticsearch-github-actions@1
+      with:
+        stack-version: '7.6.2'
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      name: Node ${{ matrix.node-version }} on ${{ matrix.os }}
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm install
+    - run: npm test
+
+  get-lts:
+    runs-on: ubuntu-latest
+    steps:
+      - id: get
+        uses: msimerson/node-lts-versions@v1
+    outputs:
+      active: ${{ steps.get.outputs.active }}
+      lts: ${{ steps.get.outputs.lts }}
