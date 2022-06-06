@@ -94,8 +94,8 @@ curl -X PUT 'http://localhost:9200/_template/haraka_results' -H 'Content-Type: a
 
 
 <!-- leave these buried at the bottom of the document -->
-[ci-img]: https://github.com/haraka/haraka-plugin-elasticsearch/workflows/Unit%20Tests/badge.svg
-[ci-url]: https://github.com/haraka/haraka-plugin-elasticsearch/actions?query=workflow%3A%22Unit+Tests%22
+[ci-img]: https://github.com/haraka/haraka-plugin-elasticsearch/workflows/ci.yml/badge.svg
+[ci-url]: https://github.com/haraka/haraka-plugin-elasticsearch/workflows/ci.yml
 [clim-img]: https://codeclimate.com/github/haraka/haraka-plugin-elasticsearch/badges/gpa.svg
 [clim-url]: https://codeclimate.com/github/haraka/haraka-plugin-elasticsearch
 [npm-img]: https://nodei.co/npm/haraka-plugin-elasticsearch.png
