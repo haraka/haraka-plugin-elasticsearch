@@ -1,6 +1,22 @@
 ### Unreleased
 
 
+### [1.1.0] - 2023-06-08
+
+#### Added
+
+- 
+
+#### Fixed
+
+- 
+
+#### Changed
+
+- 
+
+
+
 ### [1.0.8] - 2022-06-06
 
 - ci: add .npmignore
@@ -58,3 +74,4 @@
 
 [1.0.7]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/1.0.7
 [1.0.8]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/1.0.8
+[1.1.0]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/1.1.0
