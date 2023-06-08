@@ -3,16 +3,7 @@
 
 ### [1.1.0] - 2023-06-08
 
-#### Added
-
-- 
-
-#### Fixed
-
-- 
-
-#### Changed
-
+- dep(elastic): dump dep version to 8.8
 - 
 
 
