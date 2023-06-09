@@ -229,17 +229,17 @@ describe('storesIndexMapTemplate', function () {
                     name: 'smtp-*',
                     body: JSON.stringify(indexMap),
                 })
-                .then(result => {
-                    console.log(result);
-                })
-                .catch(err3 => {
-                    if (err3.status !== 404) {
-                        console.error(err3);
-                    }
-                    // other tests are running, so currently
-                    // stored mapping may conflict
-                })
-                .finally(done)
+                    .then(result => {
+                        console.log(result);
+                    })
+                    .catch(err3 => {
+                        if (err3.status !== 404) {
+                            console.error(err3);
+                        }
+                        // other tests are running, so currently
+                        // stored mapping may conflict
+                    })
+                    .finally(done)
             })
         })
     })
