@@ -1,6 +1,19 @@
 ### Unreleased
 
 
+### [8.0.0] - 2023-06-NN
+
+- dep(elastic): bump dep version to 8.8
+- 
+
+
+### [7.0.0] - 2023-06-08
+
+- chore: update ci & packaging
+- dep(elastic): bump dep version to 7.17
+- bump major version to match ES major version
+
+
 ### [1.1.0] - 2023-06-08
 
 - dep(elastic): dump dep version to 8.8
@@ -64,3 +77,5 @@
 [1.0.7]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/1.0.7
 [1.0.8]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/1.0.8
 [1.1.0]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/1.1.0
+[7.0.0]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/7.0.0
+[8.0.0]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/8.0.0
