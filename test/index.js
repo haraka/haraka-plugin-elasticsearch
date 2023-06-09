@@ -215,10 +215,7 @@ describe('storesIndexMapTemplate', function () {
         plugin.es_connect((err) => {
             assert.ifError(err);
 
-            if (err) {
-                done()
-                return;
-            }
+            if (err) { done(); return; }
 
             fs.readFile(filePath, (err2, data) => {
                 if (err2) {
@@ -231,20 +228,18 @@ describe('storesIndexMapTemplate', function () {
                 plugin.es.indices.putTemplate({
                     name: 'smtp-*',
                     body: JSON.stringify(indexMap),
-                },
-                function (err3, result) {
-                    if (err3) {
+                })
+                    .then(result => {
+                        console.log(result);
+                    })
+                    .catch(err3 => {
                         if (err3.status !== 404) {
                             console.error(err3);
                         }
                         // other tests are running, so currently
                         // stored mapping may conflict
-                        done()
-                        return;
-                    }
-                    console.log(result);
-                    done()
-                })
+                    })
+                    .finally(done)
             })
         })
     })

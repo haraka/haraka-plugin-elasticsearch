@@ -72,16 +72,17 @@ exports.es_connect = function (done) {
 
     plugin.es = new Elasticsearch.Client(plugin.clientArgs);
 
-    plugin.es.ping({}, function (error) {
-        if (error) {
-            plugin.logerror('cluster is down!');
-            plugin.logerror(util.inspect(error, {depth: null}));
-        }
-        else {
-            plugin.lognotice('connected');
-        }
-        if (done) done(error);
-    });
+    plugin.es.ping()
+        .then(() => {
+            plugin.lognotice('connected')
+        })
+        .catch(error => {
+            plugin.logerror('cluster is down!')
+            plugin.logerror(util.inspect(error, {depth: null}))
+        })
+        .finally(() => {
+            if (done) done()
+        })
 }
 
 exports.log_transaction = function (next, connection) {
@@ -104,12 +105,13 @@ exports.log_transaction = function (next, connection) {
         type: 'haraka',
         id: connection.transaction.uuid,
         body: JSON.stringify(res),
-    }, (error, response) => {
-        if (error) {
+    })
+        .then((response) => {
+            // connection.loginfo(plugin, response);
+        })
+        .catch(error => {
             connection.logerror(plugin, error.message);
-        }
-        // connection.loginfo(plugin, response);
-    });
+        })
 
     // hook reset_transaction doesn't seem to wait for next(). If I
     // wait until after I get a response back from ES, Haraka throws
@@ -144,13 +146,15 @@ exports.log_connection = function (next, connection) {
         type: 'haraka',
         id: connection.uuid,
         body: JSON.stringify(res),
-    }, function (error, response) {
-        if (error) {
+    })
+        .then((response) => {
+            // connection.loginfo(plugin, response);
+        })
+        .catch(error => {
             connection.logerror(plugin, error.message);
-        }
-        // connection.loginfo(plugin, response);
-    });
-    next();
+        })
+
+    next()
 }
 
 exports.objToArray = function (obj) {
