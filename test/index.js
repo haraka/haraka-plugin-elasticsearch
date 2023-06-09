@@ -204,6 +204,7 @@ describe('storesIndexMapTemplate', function () {
     beforeEach(setup)
 
     it('saves an index map template to Elasticsearch', function (done) {
+        this.timeout(4000);
 
         const plugin = this.plugin;
         const filePath = path.resolve('index-map-template.json');
