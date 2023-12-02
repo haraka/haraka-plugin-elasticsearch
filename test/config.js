@@ -53,7 +53,7 @@ describe('get_es_hosts', function () {
         done();
     })
 
-    it('applies auth & ssl config to client config', function (done) {
+    it('applies auth & tls config to client config', function (done) {
         console.log(this.plugin.cfg);
         this.plugin.config.root_path = path.resolve('test', 'fixtures');
         this.plugin.load_es_ini();
@@ -67,7 +67,7 @@ describe('get_es_hosts', function () {
                 "https://user:password@172.16.10.1:9200",
                 "http://127.0.0.1:9200"
             ],
-            "ssl": {
+            "tls": {
                 "rejectUnauthorized": false
             }
         });

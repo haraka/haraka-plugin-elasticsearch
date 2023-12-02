@@ -64,7 +64,7 @@ exports.get_es_hosts = function () {
 
     plugin.clientArgs = { nodes: plugin.cfg.es_hosts };
     if (plugin.cfg.auth) plugin.clientArgs.auth = plugin.cfg.auth;
-    if (plugin.cfg.ssl)  plugin.clientArgs.ssl = plugin.cfg.ssl;
+    if (plugin.cfg.tls)  plugin.clientArgs.tls = plugin.cfg.tls;
 }
 
 exports.es_connect = function (done) {
