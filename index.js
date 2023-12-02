@@ -102,9 +102,8 @@ exports.log_transaction = function (next, connection) {
     plugin.populate_conn_properties(connection, res);
     plugin.es.create({
         index: plugin.getIndexName('transaction'),
-        type: 'haraka',
         id: connection.transaction.uuid,
-        body: JSON.stringify(res),
+        document: res,
     })
         .then((response) => {
             // connection.loginfo(plugin, response);
@@ -143,9 +142,8 @@ exports.log_connection = function (next, connection) {
     // connection.lognotice(plugin, JSON.stringify(res));
     plugin.es.create({
         index: plugin.getIndexName('connection'),
-        type: 'haraka',
         id: connection.uuid,
-        body: JSON.stringify(res),
+        document: res,
     })
         .then((response) => {
             // connection.loginfo(plugin, response);
