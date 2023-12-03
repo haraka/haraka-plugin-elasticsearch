@@ -1,10 +1,16 @@
 ### Unreleased
 
 
-### [8.0.0] - 2023-06-NN
+### [8.0.2] - 2023-12-03
+
+- Update auth example for ES 8.x (#51)
+- Update tls connection options for ES 8 (#49)
+
+
+### [8.0.0] - 2023-06-09
 
 - dep(elastic): bump dep version to 8.8
-- 
+- update @elastic syntax to promise API
 
 
 ### [7.0.0] - 2023-06-08
@@ -79,3 +85,4 @@
 [1.1.0]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/1.1.0
 [7.0.0]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/7.0.0
 [8.0.0]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/8.0.0
+[8.0.2]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/8.0.2
