@@ -8,30 +8,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 #### Added
 
-- 
+-
 
 #### Fixed
 
-- 
+-
 
 #### Changed
 
-- 
+-
 - Create index-template-map_es8.json (#54)
-Template for Elastic Search 8
-
+  Template for Elastic Search 8
 
 ### [8.0.2] - 2023-12-03
 
 - Update auth example for ES 8.x (#51)
 - Update tls connection options for ES 8 (#49)
 
-
 ### [8.0.0] - 2023-06-09
 
 - dep(elastic): bump dep version to 8.8
 - update @elastic syntax to promise API
-
 
 ### [7.0.0] - 2023-06-08
 
@@ -39,17 +36,14 @@ Template for Elastic Search 8
 - dep(elastic): bump dep version to 7.17
 - bump major version to match ES major version
 
-
 ### [1.1.0] - 2023-06-08
 
 - dep(elastic): dump dep version to 8.8
-
 
 ### [1.0.8] - 2022-06-06
 
 - ci: add .npmignore
 - ci: publish needs es started up too
-
 
 ### [1.0.7] - 2022-06-06
 
@@ -57,13 +51,11 @@ Template for Elastic Search 8
 - ci: add submodule .release
 - es7: update index map template
 
-
 ### 1.0.6 - 2020-07-21
 
 - add URI for connection settings
 - add options to specify user & ssl connection settings
 - bump elasticsearch client to version 7.8
-
 
 ### 1.0.5 - 2020-04-29
 
@@ -72,17 +64,14 @@ Template for Elastic Search 8
 - use GitHub actions instead of Travis & AppVeyor
 - package.json: depend on latest eslint
 
-
 ### 1.0.4 - 2019-09-22
 
 - update index template for ES 6
-
 
 ### 1.0.3 - 2017-08-22
 
 - fix txr variable scope
 - add tests for get_es_hosts
-
 
 ### 1.0.2 - 2017-07-29
 
@@ -90,11 +79,9 @@ Template for Elastic Search 8
 - add test storing doc against index template
 - get ES testing working on AppVeyor (windows)
 
-
 ### 1.0.1 - 2017-07-29
 
 - qualify the path to plugin.\*.msg to avoid collision
-
 
 ### 1.0.0 - 2017-07-14
 

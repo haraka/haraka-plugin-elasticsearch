@@ -21,10 +21,10 @@ jobs:
     steps:
       - name: Configure sysctl limits
         run: |
-           sudo swapoff -a
-           sudo sysctl -w vm.swappiness=1
-           sudo sysctl -w fs.file-max=262144
-           sudo sysctl -w vm.max_map_count=262144
+          sudo swapoff -a
+          sudo sysctl -w vm.swappiness=1
+          sudo sysctl -w fs.file-max=262144
+          sudo sysctl -w vm.max_map_count=262144
       - uses: miyataka/elasticsearch-github-actions@1
         with:
           stack-version: '7.6.2'
@@ -34,7 +34,7 @@ jobs:
       - run: npm test
 
   publish-npm:
-    needs: [ build ]
+    needs: [build]
     runs-on: ubuntu-latest
     environment: npm
     steps:
@@ -43,14 +43,14 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0    #  needed by GitHub Release
+          fetch-depth: 0 #  needed by GitHub Release
       - name: publish to NPM
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
   publish-gpr:
-    needs: [ build ]
+    needs: [build]
     runs-on: ubuntu-latest
     environment: ghpm
     permissions:
@@ -63,7 +63,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           registry-url: https://npm.pkg.github.com/
-          scope: "@haraka"
+          scope: '@haraka'
       - name: rename package with @haraka scope
         run: node .release/npm/prepend-scope.cjs @haraka
       - run: npm publish
