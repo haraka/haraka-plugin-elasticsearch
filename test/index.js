@@ -214,7 +214,7 @@ describe('storesIndexMapTemplate', function () {
     this.timeout(4000)
 
     const plugin = this.plugin
-    const filePath = path.resolve('index-map-template.json')
+    const filePath = path.resolve('index-templates', 'v8.json')
     let indexMap
 
     plugin.load_es_ini()

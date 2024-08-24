@@ -38,10 +38,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: npm
     steps:
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           registry-url: https://registry.npmjs.org/
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0 #  needed by GitHub Release
       - name: publish to NPM
@@ -57,10 +57,10 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           registry-url: https://npm.pkg.github.com/
           scope: '@haraka'

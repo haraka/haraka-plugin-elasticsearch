@@ -6,19 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### [8.0.3] - 2024-08-23
 
-#### Added
-
--
-
-#### Fixed
-
--
-
-#### Changed
-
--
-- Create index-template-map_es8.json (#54)
-  Template for Elastic Search 8
+- Create index-template-map_es8.json for ES 8 (#54)
+- move index templates into directory
+- chore: prettier automated code formatting
+- dep: eslint-plugin-haraka -> @haraka/eslint-config
+- update 'lint' script in package.json
+- populate [files] in package.json. Delete .npmignore.
+- ci: only publish when package.json modified
+- doc(CONTRIBUTORS): added
 
 ### [8.0.2] - 2023-12-03
 
