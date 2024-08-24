@@ -4,10 +4,11 @@ on:
   push:
     branches:
       - master
+    paths:
+      - package.json
 
 env:
   CI: true
-  node-version: 16
 
 jobs:
   build:
@@ -28,8 +29,6 @@ jobs:
         with:
           stack-version: '7.6.2'
       - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.node-version }}
       - uses: actions/checkout@v3
       - run: npm install
       - run: npm test
@@ -41,7 +40,6 @@ jobs:
     steps:
       - uses: actions/setup-node@v3
         with:
-          node-version: ${{ env.node-version }}
           registry-url: https://registry.npmjs.org/
       - uses: actions/checkout@v3
         with:
@@ -64,7 +62,6 @@ jobs:
           submodules: true
       - uses: actions/setup-node@v3
         with:
-          node-version: ${{ env.node-version }}
           registry-url: https://npm.pkg.github.com/
           scope: "@haraka"
       - name: rename package with @haraka scope

@@ -1,4 +1,24 @@
+# Changelog
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/).
+
 ### Unreleased
+
+### [8.0.3] - 2024-08-23
+
+#### Added
+
+- 
+
+#### Fixed
+
+- 
+
+#### Changed
+
+- 
+- Create index-template-map_es8.json (#54)
+Template for Elastic Search 8
 
 
 ### [8.0.2] - 2023-12-03
@@ -86,3 +106,5 @@
 [7.0.0]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/7.0.0
 [8.0.0]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/8.0.0
 [8.0.2]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/8.0.2
+[8.0.3]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.0.3
+[1.0.6]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/1.0.6
