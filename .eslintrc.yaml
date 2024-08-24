@@ -2,17 +2,9 @@ env:
   node: true
   es6: true
   mocha: true
+  es2022: true
 
-plugins: [ haraka ]
+extends: '@haraka'
 
-extends: [ eslint:recommended, plugin:haraka/recommended ]
-
-root: true
-
-globals:
-  OK: true
-  CONT: true
-  DENY: true
-  DENYSOFT: true
-  DENYDISCONNECT: true
-  DENYSOFTDISCONNECT: true
+rules:
+  no-unused-vars: 0

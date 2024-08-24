@@ -1,17 +1,29 @@
+# Changelog
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/).
+
 ### Unreleased
 
+### [8.0.3] - 2024-08-23
+
+- Create index-template-map_es8.json for ES 8 (#54)
+- move index templates into directory
+- chore: prettier automated code formatting
+- dep: eslint-plugin-haraka -> @haraka/eslint-config
+- update 'lint' script in package.json
+- populate [files] in package.json. Delete .npmignore.
+- ci: only publish when package.json modified
+- doc(CONTRIBUTORS): added
 
 ### [8.0.2] - 2023-12-03
 
 - Update auth example for ES 8.x (#51)
 - Update tls connection options for ES 8 (#49)
 
-
 ### [8.0.0] - 2023-06-09
 
 - dep(elastic): bump dep version to 8.8
 - update @elastic syntax to promise API
-
 
 ### [7.0.0] - 2023-06-08
 
@@ -19,17 +31,14 @@
 - dep(elastic): bump dep version to 7.17
 - bump major version to match ES major version
 
-
 ### [1.1.0] - 2023-06-08
 
 - dep(elastic): dump dep version to 8.8
-
 
 ### [1.0.8] - 2022-06-06
 
 - ci: add .npmignore
 - ci: publish needs es started up too
-
 
 ### [1.0.7] - 2022-06-06
 
@@ -37,13 +46,11 @@
 - ci: add submodule .release
 - es7: update index map template
 
-
 ### 1.0.6 - 2020-07-21
 
 - add URI for connection settings
 - add options to specify user & ssl connection settings
 - bump elasticsearch client to version 7.8
-
 
 ### 1.0.5 - 2020-04-29
 
@@ -52,17 +59,14 @@
 - use GitHub actions instead of Travis & AppVeyor
 - package.json: depend on latest eslint
 
-
 ### 1.0.4 - 2019-09-22
 
 - update index template for ES 6
-
 
 ### 1.0.3 - 2017-08-22
 
 - fix txr variable scope
 - add tests for get_es_hosts
-
 
 ### 1.0.2 - 2017-07-29
 
@@ -70,11 +74,9 @@
 - add test storing doc against index template
 - get ES testing working on AppVeyor (windows)
 
-
 ### 1.0.1 - 2017-07-29
 
 - qualify the path to plugin.\*.msg to avoid collision
-
 
 ### 1.0.0 - 2017-07-14
 
@@ -86,3 +88,5 @@
 [7.0.0]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/7.0.0
 [8.0.0]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/8.0.0
 [8.0.2]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/8.0.2
+[8.0.3]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.0.3
+[1.0.6]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/1.0.6
