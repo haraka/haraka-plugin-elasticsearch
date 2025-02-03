@@ -1,6 +1,5 @@
 [![Build Status][ci-img]][ci-url]
 [![Code Climate][clim-img]][clim-url]
-[![NPM][npm-img]][npm-url]
 
 # haraka-plugin-elasticsearch
 
@@ -95,5 +94,3 @@ curl -X PUT 'http://localhost:9200/_template/haraka_results' -H 'Content-Type: a
 [ci-url]: https://github.com/haraka/haraka-plugin-elasticsearch/actions/workflows/ci.yml
 [clim-img]: https://codeclimate.com/github/haraka/haraka-plugin-elasticsearch/badges/gpa.svg
 [clim-url]: https://codeclimate.com/github/haraka/haraka-plugin-elasticsearch
-[npm-img]: https://nodei.co/npm/haraka-plugin-elasticsearch.png
-[npm-url]: https://www.npmjs.com/package/haraka-plugin-elasticsearch

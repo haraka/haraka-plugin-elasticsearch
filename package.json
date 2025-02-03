@@ -13,7 +13,7 @@
     "lint:fix": "npx eslint@^8 --fix *.js test",
     "prettier": "npx prettier . --check",
     "prettier:fix": "npx prettier . --write --log-level=warn",
-    "test": "npx mocha@^10",
+    "test": "npx mocha@^11",
     "versions": "npx dependency-version-checker check"
   },
   "repository": {
