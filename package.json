@@ -1,6 +1,6 @@
 {
   "name": "haraka-plugin-elasticsearch",
-  "version": "8.0.3",
+  "version": "8.0.4",
   "description": "Haraka plugin that saves logs to Elasticsearch",
   "files": [
     "CHANGELOG.md",
@@ -9,12 +9,14 @@
   ],
   "main": "index.js",
   "scripts": {
-    "lint": "npx eslint@^8 *.js test",
-    "lint:fix": "npx eslint@^8 --fix *.js test",
+    "lint": "npx eslint@^9 *.js test",
+    "lint:fix": "npx eslint@^9 --fix *.js test",
     "prettier": "npx prettier . --check",
     "prettier:fix": "npx prettier . --write --log-level=warn",
-    "test": "npx mocha@^10",
-    "versions": "npx dependency-version-checker check"
+    "test": "npx mocha@^11",
+    "versions": "npx dependency-version-checker check",
+    "format": "npm run prettier:fix && npm run lint:fix",
+    "versions:fix": "npx dependency-version-checker update"
   },
   "repository": {
     "type": "git",
@@ -32,11 +34,15 @@
   },
   "homepage": "https://github.com/haraka/haraka-plugin-elasticsearch#readme",
   "dependencies": {
-    "@elastic/elasticsearch": "^8.15.0",
-    "haraka-utils": "^1.1.3"
+    "@elastic/elasticsearch": "^8.17.0",
+    "haraka-utils": "^1.1.4"
   },
   "devDependencies": {
-    "@haraka/eslint-config": "^1.1.5",
-    "haraka-test-fixtures": "^1.3.7"
+    "@haraka/eslint-config": "^2.0.2",
+    "haraka-test-fixtures": "^1.3.9"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": false
   }
 }
