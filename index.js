@@ -48,37 +48,34 @@ exports.load_es_ini = function () {
 }
 
 exports.get_es_hosts = function () {
-  const plugin = this
-  plugin.cfg.es_hosts = [] // default: http://localhost:9200
+  this.cfg.es_hosts = [] // default: http://localhost:9200
 
-  if (!plugin.cfg.hosts) return // no [hosts] config
+  if (!this.cfg.hosts) return // no [hosts] config
 
-  for (const host in plugin.cfg.hosts) {
-    if (plugin.cfg.hosts[host]) {
-      plugin.cfg.es_hosts.push(plugin.cfg.hosts[host])
+  for (const host in this.cfg.hosts) {
+    if (this.cfg.hosts[host]) {
+      this.cfg.es_hosts.push(this.cfg.hosts[host])
     } else {
-      plugin.cfg.es_hosts.push(`http://${host}:9200`)
+      this.cfg.es_hosts.push(`http://${host}:9200`)
     }
   }
 
-  plugin.clientArgs = { nodes: plugin.cfg.es_hosts }
-  if (plugin.cfg.auth) plugin.clientArgs.auth = plugin.cfg.auth
-  if (plugin.cfg.tls) plugin.clientArgs.tls = plugin.cfg.tls
+  this.clientArgs = { nodes: this.cfg.es_hosts }
+  if (this.cfg.auth) this.clientArgs.auth = this.cfg.auth
+  if (this.cfg.tls) this.clientArgs.tls = this.cfg.tls
 }
 
 exports.es_connect = function (done) {
-  const plugin = this
+  this.es = new Elasticsearch.Client(this.clientArgs)
 
-  plugin.es = new Elasticsearch.Client(plugin.clientArgs)
-
-  plugin.es
+  this.es
     .ping()
     .then(() => {
-      plugin.lognotice('connected')
+      this.lognotice('connected')
     })
     .catch((error) => {
-      plugin.logerror('cluster is down!')
-      plugin.logerror(util.inspect(error, { depth: null }))
+      this.logerror('cluster is down!')
+      this.logerror(util.inspect(error, { depth: null }))
     })
     .finally(() => {
       if (done) done()
@@ -86,31 +83,29 @@ exports.es_connect = function (done) {
 }
 
 exports.log_transaction = function (next, connection) {
-  const plugin = this
-
-  if (plugin.cfg.ignore_hosts) {
-    if (plugin.cfg.ignore_hosts[connection.remote.host]) return next()
+  if (this.cfg.ignore_hosts) {
+    if (this.cfg.ignore_hosts[connection.remote.host]) return next()
   }
 
-  const res = plugin.get_plugin_results(connection)
-  if (plugin.cfg.top_level_names && plugin.cfg.top_level_names.message) {
-    res[plugin.cfg.top_level_names.message] = res.message
+  const res = this.get_plugin_results(connection)
+  if (this.cfg.top_level_names && this.cfg.top_level_names.message) {
+    res[this.cfg.top_level_names.message] = res.message
     delete res.message
   }
   res.timestamp = new Date().toISOString()
 
-  plugin.populate_conn_properties(connection, res)
-  plugin.es
+  this.populate_conn_properties(connection, res)
+  this.es
     .create({
-      index: plugin.getIndexName('transaction'),
+      index: this.getIndexName('transaction'),
       id: connection.transaction.uuid,
       document: res,
     })
     .then((response) => {
-      // connection.loginfo(plugin, response);
+      // connection.loginfo(this, response);
     })
     .catch((error) => {
-      connection.logerror(plugin, error.message)
+      connection.logerror(this, error.message)
     })
 
   // hook reset_transaction doesn't seem to wait for next(). If I
@@ -122,38 +117,37 @@ exports.log_transaction = function (next, connection) {
 }
 
 exports.log_connection = function (next, connection) {
-  const plugin = this
-  if (!plugin.cfg.main.log_connections) return next()
+  if (!this.cfg.main.log_connections) return next()
 
-  if (plugin.cfg.ignore_hosts) {
-    if (plugin.cfg.ignore_hosts[connection.remote_host]) return next()
+  if (this.cfg.ignore_hosts) {
+    if (this.cfg.ignore_hosts[connection.remote_host]) return next()
   }
 
   if (
     connection.notes.elasticsearch &&
     connection.notes.elasticsearch === connection.tran_count
   ) {
-    connection.logdebug(plugin, 'skipping already logged txn')
+    connection.logdebug(this, 'skipping already logged txn')
     return next()
   }
 
-  const res = plugin.get_plugin_results(connection)
+  const res = this.get_plugin_results(connection)
   res.timestamp = new Date().toISOString()
 
-  plugin.populate_conn_properties(connection, res)
+  this.populate_conn_properties(connection, res)
 
-  // connection.lognotice(plugin, JSON.stringify(res));
-  plugin.es
+  // connection.lognotice(this, JSON.stringify(res));
+  this.es
     .create({
-      index: plugin.getIndexName('connection'),
+      index: this.getIndexName('connection'),
       id: connection.uuid,
       document: res,
     })
     .then((response) => {
-      // connection.loginfo(plugin, response);
+      // connection.loginfo(this, response);
     })
     .catch((error) => {
-      connection.logerror(plugin, error.message)
+      connection.logerror(this, error.message)
     })
 
   next()
@@ -169,35 +163,43 @@ exports.objToArray = function (obj) {
 }
 
 exports.getIndexName = function (section) {
-  const plugin = this
 
-  // Elasticsearch indexes named like: smtp-connection-2017-05-05
-  //                                   smtp-transaction-2017-05-05
+  // Elasticsearch indexes named like: smtp-connection-yyyy-mm-dd
+  //                                   smtp-transaction-yyyy-mm-dd
   let name = `smtp-${section}`
-  if (plugin.cfg.index && plugin.cfg.index[section]) {
-    name = plugin.cfg.index[section]
+  if (this.cfg.index && this.cfg.index[section]) {
+    name = this.cfg.index[section]
   }
   const date = new Date()
+
   const d = date.getUTCDate().toString().padStart(2, '0')
   const m = (date.getUTCMonth() + 1).toString().padStart(2, '0')
-  return `${name}-${date.getUTCFullYear()}-${m}-${d}`
+  const y = date.getUTCFullYear()
+
+  switch (this.cfg.index.interval) {
+    case 'year':
+      return `${name}-${y}`
+    case 'month':
+      return `${name}-${y}-${m}`
+    default:
+      return `${name}-${y}-${m}-${d}`
+  }
 }
 
 exports.populate_conn_properties = function (conn, res) {
-  const plugin = this
   let conn_res = res
 
-  if (plugin.cfg.top_level_names && plugin.cfg.top_level_names.connection) {
-    if (!res[plugin.cfg.top_level_names.connection]) {
-      res[plugin.cfg.top_level_names.connection] = {}
+  if (this.cfg.top_level_names?.connection) {
+    if (!res[this.cfg.top_level_names.connection]) {
+      res[this.cfg.top_level_names.connection] = {}
     }
-    conn_res = res[plugin.cfg.top_level_names.connection]
+    conn_res = res[this.cfg.top_level_names.connection]
   }
 
   conn_res.local = {
     ip: conn.local.ip,
     port: conn.local.port,
-    host: plugin.cfg.hostname || require('os').hostname(),
+    host: this.cfg.hostname || require('os').hostname(),
   }
   conn_res.remote = {
     ip: conn.remote.ip,
@@ -214,8 +216,8 @@ exports.populate_conn_properties = function (conn, res) {
 
   if (!conn_res.auth) {
     conn_res.auth = {}
-    if (plugin.cfg.top_level_names && plugin.cfg.top_level_names.plugin) {
-      const pia = plugin.cfg.top_level_names.plugin
+    if (this.cfg.top_level_names && this.cfg.top_level_names.plugin) {
+      const pia = this.cfg.top_level_names.plugin
       if (res[pia] && res[pia].auth) {
         conn_res.auth = res[pia].auth
         delete res[pia].auth
@@ -235,12 +237,12 @@ exports.populate_conn_properties = function (conn, res) {
     trans: conn.tran_count,
   }
 
-  for (const f in plugin.cfg.conn_props) {
+  for (const f in this.cfg.conn_props) {
     if (conn[f] === undefined) return
     if (conn[f] === 0) return
-    if (plugin.cfg.conn_props[f]) {
+    if (this.cfg.conn_props[f]) {
       // alias specified
-      conn_res[plugin.cfg.conn_props[f]] = conn[f]
+      conn_res[this.cfg.conn_props[f]] = conn[f]
     } else {
       conn_res[f] = conn[f]
     }
@@ -299,7 +301,6 @@ exports.get_plugin_results = function (connection) {
 }
 
 exports.populate_message = function (pir, connection) {
-  const plugin = this
   pir.message = {
     bytes: connection.transaction.data_bytes,
     envelope: {
@@ -336,24 +337,23 @@ exports.populate_message = function (pir, connection) {
     delete pir.queue
   }
 
-  plugin.cfg.headers.forEach(function (h) {
+  for (const h of this.cfg.headers) {
     const r = connection.transaction.header.get_decoded(h)
     if (!r) return
     pir.message.header[h] = r
-  })
+  }
 }
 
 exports.nest_plugin_results = function (res) {
-  const plugin = this
-  if (!plugin.cfg.top_level_names) return res
-  if (!plugin.cfg.top_level_names.plugin) return res
+  if (!this.cfg.top_level_names) return res
+  if (!this.cfg.top_level_names.plugin) return res
 
   const new_res = {}
   if (res.message) {
     new_res.message = res.message
     delete res.message
   }
-  new_res[plugin.cfg.top_level_names.plugin] = res
+  new_res[this.cfg.top_level_names.plugin] = res
   return new_res
 }
 
@@ -401,7 +401,6 @@ exports.prune_empty = function (pi) {
 }
 
 exports.prune_noisy = function (res, pi) {
-  const plugin = this
 
   if (res[pi].human) delete res[pi].human
   if (res[pi].human_html) delete res[pi].human_html
@@ -424,7 +423,7 @@ exports.prune_noisy = function (res, pi) {
       delete res.dnsbl.pass
       break
     case 'fcrdns':
-      res.fcrdns.ptr_name_to_ip = plugin.objToArray(res.fcrdns.ptr_name_to_ip)
+      res.fcrdns.ptr_name_to_ip = this.objToArray(res.fcrdns.ptr_name_to_ip)
       break
     case 'geoip':
       delete res.geoip.ll
