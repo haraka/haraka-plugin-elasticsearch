@@ -4,6 +4,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
+### [8.0.4] - 2025-02-03
+
+- dep(eslint): upgraded to v9
+- style(prettier): moved config into package.json
+
 ### [8.0.3] - 2024-08-23
 
 - Create index-template-map_es8.json for ES 8 (#54)
@@ -82,11 +87,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 - initial release
 
+[1.0.6]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/1.0.6
 [1.0.7]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/1.0.7
 [1.0.8]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/1.0.8
 [1.1.0]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/1.1.0
-[7.0.0]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/7.0.0
-[8.0.0]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/8.0.0
-[8.0.2]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/8.0.2
+[7.0.0]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v7.0.0
+[8.0.0]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.0.0
+[8.0.2]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.0.2
 [8.0.3]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.0.3
-[1.0.6]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/1.0.6
+[8.0.4]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.0.4
