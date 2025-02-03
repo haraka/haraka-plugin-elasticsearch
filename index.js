@@ -163,7 +163,6 @@ exports.objToArray = function (obj) {
 }
 
 exports.getIndexName = function (section) {
-
   // Elasticsearch indexes named like: smtp-connection-yyyy-mm-dd
   //                                   smtp-transaction-yyyy-mm-dd
   let name = `smtp-${section}`
@@ -401,7 +400,6 @@ exports.prune_empty = function (pi) {
 }
 
 exports.prune_noisy = function (res, pi) {
-
   if (res[pi].human) delete res[pi].human
   if (res[pi].human_html) delete res[pi].human_html
   if (res[pi]._watch_saw) delete res[pi]._watch_saw
