@@ -34,12 +34,12 @@
   },
   "homepage": "https://github.com/haraka/haraka-plugin-elasticsearch#readme",
   "dependencies": {
-    "@elastic/elasticsearch": "^8.15.0",
-    "haraka-utils": "^1.1.3"
+    "@elastic/elasticsearch": "^8.17.0",
+    "haraka-utils": "^1.1.4"
   },
   "devDependencies": {
     "@haraka/eslint-config": "^2.0.2",
-    "haraka-test-fixtures": "^1.3.7"
+    "haraka-test-fixtures": "^1.3.9"
   },
   "prettier": {
     "singleQuote": true,
