@@ -120,7 +120,7 @@ exports.log_connection = function (next, connection) {
   if (!this.cfg.main.log_connections) return next()
 
   if (this.cfg.ignore_hosts) {
-    if (this.cfg.ignore_hosts[connection.remote_host]) return next()
+    if (this.cfg.ignore_hosts[connection.remote.host]) return next()
   }
 
   if (
