@@ -45,8 +45,10 @@ exports.load_es_ini = function () {
     pipelining: undefined,
     early_talker: undefined,
   }
-  // Moving clientArgs to this function and adding support for Cloud ID
-  // Cloud ID support
+
+  if(!this.cfg.index.timestamp) this.cfg.index.timestamp = 'timestamp'
+
+  // Cloud ID overrides hosts
   this.clientArgs = { maxRetries: 5 }
   if (this.cfg.cloud.id) {
     this.loginfo('Using Cloud ID')
@@ -58,12 +60,6 @@ exports.load_es_ini = function () {
   if (this.cfg.auth) this.clientArgs.auth = this.cfg.auth
   if (this.cfg.tls) this.clientArgs.tls = this.cfg.tls
 
-  // Adding support for the @timestamp field
-  if (this.cfg.index.modern_timestamp) {
-    this.cfg.tsField = '@timestamp'
-  } else {
-    this.cfg.tsField = 'timestamp'
-  }
 }
 
 exports.get_es_hosts = function () {
@@ -108,7 +104,7 @@ exports.log_transaction = function (next, connection) {
     delete res.message
   }
   // Timestamp
-  res[this.cfg.tsField] = new Date().toISOString()
+  res[this.cfg.index.timestamp] = new Date().toISOString()
 
   this.populate_conn_properties(connection, res)
   this.es
@@ -149,7 +145,7 @@ exports.log_connection = function (next, connection) {
 
   const res = this.get_plugin_results(connection)
   // Timestamp
-  res[this.cfg.tsField] = new Date().toISOString()
+  res[this.cfg.index.timestamp] = new Date().toISOString()
 
   this.populate_conn_properties(connection, res)
 
