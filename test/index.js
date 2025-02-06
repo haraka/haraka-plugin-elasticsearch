@@ -145,6 +145,7 @@ describe('get_plugin_results', function () {
   it('adds plugin results to results object', function (done) {
     this.plugin.load_es_ini()
     this.connection.start_time = Date.now() - 1000
+    this.connection.remote = { ip: '127.0.0.3', host: 'localmail' }
     this.connection.results.add(this.plugin, { pass: 'test' })
     this.connection.results.add({ name: 'queue' }, { pass: 'delivered' })
     const expected_result = {
@@ -214,7 +215,7 @@ describe('storesIndexMapTemplate', function () {
     this.timeout(4000)
 
     const plugin = this.plugin
-    const filePath = path.resolve('index-templates', 'v8.json')
+    const filePath = path.resolve('templates', 'index', 'v8.json')
     let indexMap
 
     plugin.load_es_ini()

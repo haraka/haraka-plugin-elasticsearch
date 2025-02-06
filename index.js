@@ -46,7 +46,7 @@ exports.load_es_ini = function () {
     early_talker: undefined,
   }
 
-  if(!this.cfg.index.timestamp) this.cfg.index.timestamp = 'timestamp'
+  if (!this.cfg.index.timestamp) this.cfg.index.timestamp = 'timestamp'
 
   // Cloud ID overrides hosts
   this.clientArgs = { maxRetries: 5 }
@@ -59,7 +59,6 @@ exports.load_es_ini = function () {
   }
   if (this.cfg.auth) this.clientArgs.auth = this.cfg.auth
   if (this.cfg.tls) this.clientArgs.tls = this.cfg.tls
-
 }
 
 exports.get_es_hosts = function () {
