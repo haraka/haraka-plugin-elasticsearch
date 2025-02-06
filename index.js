@@ -50,7 +50,7 @@ exports.load_es_ini = function () {
 
   // Cloud ID overrides hosts
   this.clientArgs = { maxRetries: 5 }
-  if (this.cfg.cloud.id) {
+  if (this.cfg.cloud?.id) {
     this.loginfo('Using Cloud ID')
     this.clientArgs.cloud = { id: this.cfg.cloud.id }
   } else {
