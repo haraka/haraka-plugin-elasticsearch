@@ -54,7 +54,7 @@ exports.load_es_ini = function () {
     this.loginfo('Using Cloud ID')
     this.clientArgs.cloud = { id: this.cfg.cloud.id }
   } else {
-    this.loginfo('Using nodes')
+    this.logdebug('Using nodes')
     this.clientArgs = { nodes: this.cfg.es_hosts }
   }
   if (this.cfg.auth) this.clientArgs.auth = this.cfg.auth
@@ -417,17 +417,8 @@ exports.prune_noisy = function (res, pi) {
   if (res[pi]._watch_saw) delete res[pi]._watch_saw
 
   switch (pi) {
-    case 'karma':
-      delete res.karma.todo
-      delete res.karma.pass
-      delete res.karma.skip
-      break
     case 'access':
       delete res.access.pass
-      break
-    case 'uribl':
-      delete res.uribl.skip
-      delete res.uribl.pass
       break
     case 'dnsbl':
       delete res.dnsbl.pass
@@ -438,9 +429,25 @@ exports.prune_noisy = function (res, pi) {
     case 'geoip':
       delete res.geoip.ll
       break
+    case 'helo':
+      delete res._skip_hooks
+    case 'karma':
+      delete res.karma.todo
+      delete res.karma.pass
+      delete res.karma.skip
+      break
+    case 'p0f':
+      for (const f of ['distance', 'first_seen', 'last_chg', 'last_nat', 'last_seen', 'total_conn', 'up_mod_days']) {
+        delete res.p0f[f]
+      }
+      break
     case 'max_unrecognized_commands':
       res.unrecognized_commands = res.max_unrecognized_commands.count
       delete res.max_unrecognized_commands
+      break
+    case 'rspamd':
+      if (res.rspamd.symbols) delete res.rspamd.symbols
+      delete res.rspamd.is_skipped
       break
     case 'spamassassin':
       delete res.spamassassin.line0
@@ -449,8 +456,9 @@ exports.prune_noisy = function (res, pi) {
         delete res.spamassassin.headers.Level
       }
       break
-    case 'rspamd':
-      if (res.rspamd.symbols) delete res.rspamd.symbols
+    case 'uribl':
+      delete res.uribl.skip
+      delete res.uribl.pass
       break
   }
 }
@@ -463,6 +471,10 @@ exports.prune_zero = function (res, name) {
 
 exports.prune_redundant_cxn = function (res, name) {
   switch (name) {
+    case 'local':
+    case 'remote':
+    case 'reset':
+      delete res[name];
     case 'helo':
       if (res.helo && res.helo.helo_host) delete res.helo.helo_host
       break
@@ -474,6 +486,10 @@ exports.prune_redundant_cxn = function (res, name) {
 
 exports.prune_redundant_txn = function (res, name) {
   switch (name) {
+    case 'local':
+    case 'remote':
+    case 'reset':
+      delete res[name];
     case 'spamassassin':
       if (!res.spamassassin) break
       delete res.spamassassin.hits
