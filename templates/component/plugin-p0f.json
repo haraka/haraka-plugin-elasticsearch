@@ -1,31 +1,31 @@
 {
   "component_templates": [
     {
-      "name": "haraka-plugin-access",
       "component_template": {
         "template": {
           "mappings": {
             "properties": {
-              "p.access.fail": {
+              "p.p0f.link_type": {
                 "type": "text"
               },
-              "p.access.msg": {
+              "p.p0f.os_flavor": {
                 "type": "text"
               },
-              "p.access.skip": {
-                "type": "text"
+              "p.p0f.os_match_q": {
+                "type": "integer"
               },
-              "p.access.whitelist": {
-                "type": "boolean"
+              "p.p0f.os_name": {
+                "type": "keyword"
               },
-              "p.access.blacklist": {
-                "type": "boolean"
+              "p.p0f.uptime_min": {
+                "type": "double"
               }
             }
           }
         },
         "version": 1
-      }
+      },
+      "name": "haraka-plugin-p0f"
     }
   ]
 }

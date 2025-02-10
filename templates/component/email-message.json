@@ -1,18 +1,17 @@
 {
   "component_templates": [
     {
-      "name": "haraka-email-message",
       "component_template": {
         "template": {
           "mappings": {
             "properties": {
               "msg.body.attachment.bytes": {
                 "coerce": true,
-                "index": true,
+                "doc_values": true,
                 "ignore_malformed": false,
+                "index": true,
                 "store": false,
-                "type": "long",
-                "doc_values": true
+                "type": "long"
               },
               "msg.body.attachment.ctype": {
                 "type": "text"
@@ -39,6 +38,10 @@
                 "type": "text"
               },
               "msg.header.date": {
+                "doc_values": false,
+                "ignore_malformed": false,
+                "index": true,
+                "store": false,
                 "type": "date"
               },
               "msg.header.from": {
@@ -72,7 +75,8 @@
           }
         },
         "version": 1
-      }
+      },
+      "name": "haraka-email-message"
     }
   ]
 }

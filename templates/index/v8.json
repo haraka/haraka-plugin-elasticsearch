@@ -6,7 +6,7 @@
           "index": "true",
           "type": "keyword"
         },
-        "match": "fail"
+        "path_match": "*.fail"
       }
     },
     {
@@ -15,7 +15,7 @@
           "index": "true",
           "type": "keyword"
         },
-        "match": "pass"
+        "path_match": "*.pass"
       }
     },
     {
@@ -24,7 +24,7 @@
           "index": "true",
           "type": "keyword"
         },
-        "match": "skip"
+        "path_match": "*.skip"
       }
     },
     {
@@ -33,7 +33,8 @@
           "index": "true",
           "type": "keyword"
         },
-        "match": "msg"
+        "path_match": "*.msg",
+        "path_unmatch": "count.msg"
       }
     },
     {
@@ -42,7 +43,7 @@
           "index": "true",
           "type": "keyword"
         },
-        "match": "err"
+        "path_match": "*.err"
       }
     },
     {

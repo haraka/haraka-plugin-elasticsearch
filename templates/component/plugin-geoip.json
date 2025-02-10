@@ -1,0 +1,41 @@
+{
+  "component_templates": [
+    {
+      "component_template": {
+        "template": {
+          "mappings": {
+            "properties": {
+              "p.geoip.city": {
+                "doc_values": true,
+                "eager_global_ordinals": false,
+                "index": true,
+                "index_options": "docs",
+                "norms": false,
+                "split_queries_on_whitespace": false,
+                "store": false,
+                "type": "keyword"
+              },
+              "p.geoip.continent": {
+                "type": "keyword"
+              },
+              "p.geoip.country": {
+                "type": "keyword"
+              },
+              "p.geoip.distance": {
+                "type": "float"
+              },
+              "p.geoip.geo": {
+                "type": "geo_point"
+              },
+              "p.geoip.region": {
+                "type": "keyword"
+              }
+            }
+          }
+        },
+        "version": 1
+      },
+      "name": "haraka-plugin-geoip"
+    }
+  ]
+}

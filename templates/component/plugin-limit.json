@@ -1,0 +1,37 @@
+{
+  "component_templates": [
+    {
+      "component_template": {
+        "template": {
+          "mappings": {
+            "properties": {
+              "p.limit.concurrent": {
+                "type": "double"
+              },
+              "p.limit.concurrent_count": {
+                "type": "integer"
+              },
+              "p.limit.rate_rcpt": {
+                "type": "double"
+              },
+              "p.limit.rate_rcpt_host": {
+                "type": "text"
+              },
+              "p.limit.rate_rcpt_null": {
+                "type": "double"
+              },
+              "p.limit.rate_rcpt_sender": {
+                "type": "double"
+              },
+              "p.limit_rate_conn": {
+                "type": "text"
+              }
+            }
+          }
+        },
+        "version": 1
+      },
+      "name": "haraka-plugin-limit"
+    }
+  ]
+}

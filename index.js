@@ -57,8 +57,8 @@ exports.load_es_ini = function () {
     this.logdebug('Using nodes')
     this.clientArgs = { nodes: this.cfg.es_hosts }
   }
-  if (this.cfg.auth) this.clientArgs.auth = this.cfg.auth
-  if (this.cfg.tls) this.clientArgs.tls = this.cfg.tls
+  if (Object.keys(this.cfg.auth).length > 0) this.clientArgs.auth = this.cfg.auth
+  if (Object.keys(this.cfg.tls).length > 0) this.clientArgs.tls = this.cfg.tls
 }
 
 exports.get_es_hosts = function () {
@@ -349,8 +349,9 @@ exports.populate_message = function (pir, connection) {
   }
 
   for (const h of this.cfg.headers) {
-    const r = connection.transaction.header.get_decoded(h)
+    let r = connection.transaction.header.get_decoded(h)
     if (!r) return
+    if (h.toLowerCase() === 'date') r = new Date(r).toISOString()
     pir.message.header[h.toLowerCase()] = r
   }
 }
@@ -473,7 +474,7 @@ exports.prune_noisy = function (res, pi) {
       }
       break
     case 'tls':
-      delete res.tls.peerCertificate  // 46 keys
+      delete res.tls.peerCertificate // 46 keys
       break
     case 'uribl':
       delete res.uribl.skip
