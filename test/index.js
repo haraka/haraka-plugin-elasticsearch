@@ -216,7 +216,6 @@ describe('storesIndexMapTemplate', function () {
 
     const plugin = this.plugin
     const filePath = path.resolve('templates', 'index', 'v8.json')
-    let indexMap
 
     plugin.load_es_ini()
 
@@ -228,18 +227,17 @@ describe('storesIndexMapTemplate', function () {
         return
       }
 
-      fs.readFile(filePath, (err2, data) => {
+      fs.readFile(filePath, 'utf8', (err2, data) => {
         if (err2) {
           console.error(err2)
           done()
         }
 
-        indexMap = JSON.parse(data)
-
         plugin.es.indices
           .putTemplate({
-            name: 'smtp-*',
-            body: JSON.stringify(indexMap),
+            name: 'haraka-results',
+            index_patterns: 'smtp-*',
+            mappings: JSON.parse(data),
           })
           .then((result) => {
             console.log(result)

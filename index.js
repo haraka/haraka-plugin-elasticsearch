@@ -431,6 +431,7 @@ exports.prune_noisy = function (res, pi) {
       break
     case 'helo':
       delete res._skip_hooks
+      break
     case 'karma':
       delete res.karma.todo
       delete res.karma.pass
@@ -475,6 +476,7 @@ exports.prune_redundant_cxn = function (res, name) {
     case 'remote':
     case 'reset':
       delete res[name];
+      break
     case 'helo':
       if (res.helo && res.helo.helo_host) delete res.helo.helo_host
       break
@@ -490,6 +492,7 @@ exports.prune_redundant_txn = function (res, name) {
     case 'remote':
     case 'reset':
       delete res[name];
+      break
     case 'spamassassin':
       if (!res.spamassassin) break
       delete res.spamassassin.hits
