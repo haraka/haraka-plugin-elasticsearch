@@ -7,6 +7,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### [8.1.2] - 2025-02-06
 
 - FEATURE: support for Cloud ID and the "@timestamp" field #60
+- added ./templates/component
+- test: update syntax for putTemplate
+- temp/i/v8: order plugins alphabetically
+- prune redundant and low-value data before insertion
+  - p0f: remove most numeric fields
+  - rspamd: remove is_skipped
+  - plugin: remove {local,remote,reset}, they already exist on conn property
+- moved ./index-templates into ./templates/index
+- delete p.tls.peerCertificate, too noisy, has 46 keys
 
 ### [8.1.1] - 2025-02-03
 

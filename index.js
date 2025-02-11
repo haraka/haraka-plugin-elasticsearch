@@ -351,7 +351,7 @@ exports.populate_message = function (pir, connection) {
   for (const h of this.cfg.headers) {
     const r = connection.transaction.header.get_decoded(h)
     if (!r) return
-    pir.message.header[h] = r
+    pir.message.header[h.toLowerCase()] = r
   }
 }
 
@@ -433,12 +433,27 @@ exports.prune_noisy = function (res, pi) {
       delete res._skip_hooks
       break
     case 'karma':
-      delete res.karma.todo
-      delete res.karma.pass
-      delete res.karma.skip
+      for (const f of [
+        'todo',
+        'pass',
+        'skip',
+        'asn_bad',
+        'asn_connections',
+        'asn_good',
+      ]) {
+        delete res.karma[f]
+      }
       break
     case 'p0f':
-      for (const f of ['distance', 'first_seen', 'last_chg', 'last_nat', 'last_seen', 'total_conn', 'up_mod_days']) {
+      for (const f of [
+        'distance',
+        'first_seen',
+        'last_chg',
+        'last_nat',
+        'last_seen',
+        'total_conn',
+        'up_mod_days',
+      ]) {
         delete res.p0f[f]
       }
       break
@@ -456,6 +471,9 @@ exports.prune_noisy = function (res, pi) {
         delete res.spamassassin.headers.Tests
         delete res.spamassassin.headers.Level
       }
+      break
+    case 'tls':
+      delete res.tls.peerCertificate  // 46 keys
       break
     case 'uribl':
       delete res.uribl.skip
@@ -475,7 +493,7 @@ exports.prune_redundant_cxn = function (res, name) {
     case 'local':
     case 'remote':
     case 'reset':
-      delete res[name];
+      delete res[name]
       break
     case 'helo':
       if (res.helo && res.helo.helo_host) delete res.helo.helo_host
@@ -491,7 +509,7 @@ exports.prune_redundant_txn = function (res, name) {
     case 'local':
     case 'remote':
     case 'reset':
-      delete res[name];
+      delete res[name]
       break
     case 'spamassassin':
       if (!res.spamassassin) break

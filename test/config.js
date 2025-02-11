@@ -47,7 +47,10 @@ describe('get_es_hosts', function () {
   it('passes through a URL string', function (done) {
     this.plugin.cfg = { hosts: { '1.1.1.1': 'https://test:pass@1.1.1.1' } }
     this.plugin.get_es_hosts()
-    assert.deepStrictEqual('https://test:pass@1.1.1.1', this.plugin.cfg.es_hosts[0])
+    assert.deepStrictEqual(
+      'https://test:pass@1.1.1.1',
+      this.plugin.cfg.es_hosts[0],
+    )
     done()
   })
 

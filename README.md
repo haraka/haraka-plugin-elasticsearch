@@ -78,14 +78,14 @@ transactions. The connections index tends to be mostly noise (monitoring,
 blocked connections, bruteforce auth attempts, etc.). To collapse them into
 the same index, set the value for both identically.
 
-# Index map template
+# Index template
 
-Creating a map template will apply the template(s) to any future indexes that
+Creating an index template will apply the template(s) to any future indexes that
 match the pattern/name in the template setting. This is how to manually apply
 an index map template from the sample file in this package:
 
 ```sh
-curl -X PUT 'http://localhost:9200/_template/haraka_results' -H 'Content-Type: application/json' -d @index-template/v8.json
+curl -X PUT 'http://localhost:9200/_template/haraka_results' -H 'Content-Type: application/json' -d @templates/index/v8.json
 ```
 
 <!-- leave these buried at the bottom of the document -->
