@@ -27,35 +27,64 @@ describe('templates', function () {
   it('saves component templates to ES', function (done) {
     this.timeout(8000)
 
-    const plugin = this.plugin
-    plugin.load_es_ini()
+    this.plugin.load_es_ini()
 
     const filePath = path.resolve('templates', 'component')
     const files = fs.readdirSync(filePath)
 
-    plugin.es_connect((err) => {
+    this.plugin.es_connect((err) => {
       assert.ifError(err)
 
       for (const f of files) {
         if (path.extname(f) !== '.json') continue
-        console.log(`\t${f}`)
 
         const data = fs.readFileSync(path.join(filePath, f))
-        const template = JSON.parse(data).component_templates[0].component_template.template
+        const template =
+          JSON.parse(data).component_templates[0].component_template.template
 
-        plugin.es.cluster.putComponentTemplate({
-          name: `haraka-${f}`,
-          template,
+        this.plugin.es.cluster
+          .putComponentTemplate({
+            name: `haraka-${f}`,
+            template,
+          })
+          .then((result) => {
+            console.log(`${f}: ${result}`)
+          })
+          .catch((err2) => {
+            console.error(err2)
+          })
+      }
+
+      done()
+    })
+  })
+
+  // this works, but only when it runs AFTER all the component templates
+  // are stored.
+  it.skip('saves a composable index template to ES', function (done) {
+    this.timeout(4000)
+
+    const filePath = path.resolve('templates', 'index', 'composable.json')
+    const data = fs.readFileSync(filePath)
+    const template = JSON.parse(data).index_templates[0].index_template
+
+    this.plugin.load_es_ini()
+
+    this.plugin.es_connect((err) => {
+      assert.ifError(err)
+
+      this.plugin.es.indices
+        .putIndexTemplate({
+          name: `haraka-results`,
+          ...template,
         })
         .then((result) => {
-          console.log(result)
+          console.log(`${f}: ${result}`)
         })
         .catch((err2) => {
           console.error(err2)
         })
-      }
-
-      done()
+        .finally(done)
     })
   })
 
@@ -104,13 +133,11 @@ describe('log_connection', function () {
   beforeEach(setup)
 
   it('saves results to Elasticsearch', function (done) {
-    const plugin = this.plugin
+    this.timeout(4000)
 
-    plugin.load_es_ini()
-    plugin.es_connect(function (err) {
+    this.plugin.load_es_ini()
+    this.plugin.es_connect((err) => {
       assert.ifError(err)
-
-      console.log('giving ES a few secs to start up')
 
       const connection = fixtures.connection.createConnection()
       connection.local.ip = '127.0.0.1'
@@ -120,7 +147,7 @@ describe('log_connection', function () {
       connection.results.add({ name: 'rspamd' }, { msg: 'test' })
 
       // console.log(util.inspect(connection, { depth: null }));
-      plugin.log_connection(function () {
+      this.plugin.log_connection(() => {
         // assert.ok(1);
         done()
       }, connection)

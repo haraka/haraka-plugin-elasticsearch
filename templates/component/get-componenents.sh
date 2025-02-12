@@ -6,3 +6,4 @@ for _p in connection email-message results plugin-access plugin-asn plugin-bounc
   curl -k -X GET "$ES_URL/_component_template/haraka-$_p" | jq -S > $_p.json
 done
 
+curl -k -X GET "$ES_URL/_index_template/haraka-results" | jq -S > ../index/composable.json

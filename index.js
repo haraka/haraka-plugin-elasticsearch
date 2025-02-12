@@ -57,7 +57,8 @@ exports.load_es_ini = function () {
     this.logdebug('Using nodes')
     this.clientArgs = { nodes: this.cfg.es_hosts }
   }
-  if (Object.keys(this.cfg.auth).length > 0) this.clientArgs.auth = this.cfg.auth
+  if (Object.keys(this.cfg.auth).length > 0)
+    this.clientArgs.auth = this.cfg.auth
   if (Object.keys(this.cfg.tls).length > 0) this.clientArgs.tls = this.cfg.tls
 }
 

@@ -1,0 +1,52 @@
+{
+  "index_templates": [
+    {
+      "index_template": {
+        "composed_of": [
+          "haraka-connection",
+          "haraka-email-message",
+          "haraka-plugin-access",
+          "haraka-plugin-asn",
+          "haraka-plugin-bounce",
+          "haraka-plugin-dkim",
+          "haraka-plugin-fcrdns",
+          "haraka-plugin-geoip",
+          "haraka-plugin-helo_checks",
+          "haraka-plugin-karma",
+          "haraka-plugin-known-senders",
+          "haraka-plugin-limit",
+          "haraka-plugin-p0f",
+          "haraka-plugin-rspamd",
+          "haraka-plugin-spamassassin",
+          "haraka-plugin-spf",
+          "haraka-results"
+        ],
+        "index_patterns": ["smtp-*"],
+        "template": {
+          "mappings": {
+            "dynamic_templates": [
+              {
+                "ip_addrs": {
+                  "mapping": {
+                    "type": "ip"
+                  },
+                  "match": "ip"
+                }
+              },
+              {
+                "hostnames": {
+                  "mapping": {
+                    "type": "text"
+                  },
+                  "match": "host"
+                }
+              }
+            ]
+          }
+        },
+        "version": 1
+      },
+      "name": "haraka-results"
+    }
+  ]
+}

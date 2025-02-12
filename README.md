@@ -78,7 +78,11 @@ transactions. The connections index tends to be mostly noise (monitoring,
 blocked connections, bruteforce auth attempts, etc.). To collapse them into
 the same index, set the value for both identically.
 
-# Index template
+# Composable Index Templates
+
+Composable templates are the modern (circa 2025) method of creating index templates. In the file ./test/template.js, there are unit tests with working JS code that install the component templates as well as the index template that uses them. If you're standing up a new ES cluster, copy/pasting that into a .js file will get you bootstrapped fairly quickly.
+
+# Index template (legacy)
 
 Creating an index template will apply the template(s) to any future indexes that
 match the pattern/name in the template setting. This is how to manually apply
