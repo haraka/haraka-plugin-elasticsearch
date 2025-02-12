@@ -1,0 +1,22 @@
+{
+  "component_templates": [
+    {
+      "component_template": {
+        "template": {
+          "mappings": {
+            "properties": {
+              "p.asn.asn": {
+                "type": "double"
+              },
+              "p.asn.org": {
+                "type": "keyword"
+              }
+            }
+          }
+        },
+        "version": 1
+      },
+      "name": "haraka-plugin-asn"
+    }
+  ]
+}

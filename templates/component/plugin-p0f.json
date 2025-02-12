@@ -1,0 +1,31 @@
+{
+  "component_templates": [
+    {
+      "component_template": {
+        "template": {
+          "mappings": {
+            "properties": {
+              "p.p0f.link_type": {
+                "type": "text"
+              },
+              "p.p0f.os_flavor": {
+                "type": "text"
+              },
+              "p.p0f.os_match_q": {
+                "type": "integer"
+              },
+              "p.p0f.os_name": {
+                "type": "keyword"
+              },
+              "p.p0f.uptime_min": {
+                "type": "double"
+              }
+            }
+          }
+        },
+        "version": 1
+      },
+      "name": "haraka-plugin-p0f"
+    }
+  ]
+}

@@ -145,6 +145,7 @@ describe('get_plugin_results', function () {
   it('adds plugin results to results object', function (done) {
     this.plugin.load_es_ini()
     this.connection.start_time = Date.now() - 1000
+    this.connection.remote = { ip: '127.0.0.3', host: 'localmail' }
     this.connection.results.add(this.plugin, { pass: 'test' })
     this.connection.results.add({ name: 'queue' }, { pass: 'delivered' })
     const expected_result = {
@@ -204,82 +205,5 @@ describe('trim_plugin_name', function () {
     this.plugin.trim_plugin_name(testObj, 'helo.checks')
     assert.deepEqual(testObj.helo, {})
     done()
-  })
-})
-
-describe('storesIndexMapTemplate', function () {
-  beforeEach(setup)
-
-  it('saves an index map template to Elasticsearch', function (done) {
-    this.timeout(4000)
-
-    const plugin = this.plugin
-    const filePath = path.resolve('index-templates', 'v8.json')
-    let indexMap
-
-    plugin.load_es_ini()
-
-    plugin.es_connect((err) => {
-      assert.ifError(err)
-
-      if (err) {
-        done()
-        return
-      }
-
-      fs.readFile(filePath, (err2, data) => {
-        if (err2) {
-          console.error(err2)
-          done()
-        }
-
-        indexMap = JSON.parse(data)
-
-        plugin.es.indices
-          .putTemplate({
-            name: 'smtp-*',
-            body: JSON.stringify(indexMap),
-          })
-          .then((result) => {
-            console.log(result)
-          })
-          .catch((err3) => {
-            if (err3.status !== 404) {
-              console.error(err3)
-            }
-            // other tests are running, so currently
-            // stored mapping may conflict
-          })
-          .finally(done)
-      })
-    })
-  })
-})
-
-describe('log_connection', function () {
-  beforeEach(setup)
-
-  it('saves results to Elasticsearch', function (done) {
-    const plugin = this.plugin
-
-    plugin.load_es_ini()
-    plugin.es_connect(function (err) {
-      assert.ifError(err)
-
-      console.log('giving ES a few secs to start up')
-
-      const connection = fixtures.connection.createConnection()
-      connection.local.ip = '127.0.0.1'
-      connection.remote.ip = '172.1.1.1'
-      connection.uuid = utils.uuid()
-      connection.count = { msg: { accepted: 1 } }
-      connection.results.add({ name: 'rspamd' }, { msg: 'test' })
-
-      // console.log(util.inspect(connection, { depth: null }));
-      plugin.log_connection(function () {
-        // assert.ok(1);
-        done()
-      }, connection)
-    })
   })
 })

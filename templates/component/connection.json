@@ -1,0 +1,96 @@
+{
+  "component_templates": [
+    {
+      "component_template": {
+        "template": {
+          "mappings": {
+            "properties": {
+              "conn.bytes": {
+                "type": "long"
+              },
+              "conn.count.errors": {
+                "coerce": true,
+                "doc_values": true,
+                "ignore_malformed": false,
+                "index": true,
+                "store": false,
+                "type": "long"
+              },
+              "conn.count.msg.accept": {
+                "coerce": true,
+                "doc_values": true,
+                "ignore_malformed": false,
+                "index": true,
+                "store": false,
+                "type": "long"
+              },
+              "conn.count.msg.reject": {
+                "type": "long"
+              },
+              "conn.count.msg.tempfail": {
+                "type": "long"
+              },
+              "conn.count.rcpt.accept": {
+                "type": "long"
+              },
+              "conn.count.rcpt.reject": {
+                "type": "long"
+              },
+              "conn.count.rcpt.tempfail": {
+                "type": "long"
+              },
+              "conn.count.trans": {
+                "type": "long"
+              },
+              "conn.duration": {
+                "type": "float"
+              },
+              "conn.early_talker": {
+                "type": "boolean"
+              },
+              "conn.hello.host": {
+                "eager_global_ordinals": false,
+                "fielddata": false,
+                "index": true,
+                "index_options": "positions",
+                "index_phrases": false,
+                "norms": true,
+                "store": false,
+                "type": "text"
+              },
+              "conn.hello.verb": {
+                "type": "keyword"
+              },
+              "conn.local.host": {
+                "type": "text"
+              },
+              "conn.local.ip": {
+                "type": "ip"
+              },
+              "conn.local.port": {
+                "type": "long"
+              },
+              "conn.pipelining": {
+                "type": "boolean"
+              },
+              "conn.relaying": {
+                "type": "boolean"
+              },
+              "conn.remote.host": {
+                "type": "text"
+              },
+              "conn.remote.ip": {
+                "type": "ip"
+              },
+              "conn.remote.port": {
+                "type": "long"
+              }
+            }
+          }
+        },
+        "version": 1
+      },
+      "name": "haraka-connection"
+    }
+  ]
+}

@@ -1,0 +1,398 @@
+{
+  "dynamic_templates": [
+    {
+      "fail_results": {
+        "mapping": {
+          "index": "true",
+          "type": "keyword"
+        },
+        "path_match": "*.fail"
+      }
+    },
+    {
+      "pass_results": {
+        "mapping": {
+          "index": "true",
+          "type": "keyword"
+        },
+        "path_match": "*.pass"
+      }
+    },
+    {
+      "skip_results": {
+        "mapping": {
+          "index": "true",
+          "type": "keyword"
+        },
+        "path_match": "*.skip"
+      }
+    },
+    {
+      "msg_results": {
+        "mapping": {
+          "index": "true",
+          "type": "keyword"
+        },
+        "path_match": "*.msg",
+        "path_unmatch": "count.msg"
+      }
+    },
+    {
+      "err_results": {
+        "mapping": {
+          "index": "true",
+          "type": "keyword"
+        },
+        "path_match": "*.err"
+      }
+    },
+    {
+      "ip_addrs": {
+        "mapping": {
+          "index": "true",
+          "type": "keyword",
+          "fields": {
+            "partial": {
+              "type": "keyword",
+              "index": "true"
+            }
+          }
+        },
+        "match": "ip"
+      }
+    },
+    {
+      "hostnames": {
+        "mapping": {
+          "index": "true",
+          "type": "keyword"
+        },
+        "match": "host"
+      }
+    }
+  ],
+  "properties": {
+    "plugin": {
+      "type": "nested",
+      "properties": {
+        "asn": {
+          "properties": {
+            "org": {
+              "index": "true",
+              "type": "keyword"
+            },
+            "asn": {
+              "type": "double"
+            }
+          }
+        },
+        "fcrdns": {
+          "properties": {
+            "ptr_names": {
+              "index": "true",
+              "type": "keyword"
+            },
+            "fcrdns": {
+              "index": "true",
+              "type": "keyword"
+            },
+            "other_ips": {
+              "index": "true",
+              "type": "keyword"
+            }
+          }
+        },
+        "geoip": {
+          "properties": {
+            "ll": {
+              "type": "geo_point"
+            },
+            "distance": {
+              "type": "float"
+            },
+            "org": {
+              "index": "true",
+              "type": "keyword"
+            }
+          }
+        },
+        "helo": {
+          "properties": {
+            "ips": {
+              "index": true,
+              "store": false,
+              "type": "ip",
+              "doc_values": true
+            }
+          }
+        },
+        "karma": {
+          "properties": {
+            "score": {
+              "type": "double"
+            },
+            "bad": {
+              "type": "double"
+            },
+            "history": {
+              "type": "double"
+            },
+            "good": {
+              "type": "double"
+            },
+            "connections": {
+              "type": "double"
+            }
+          }
+        },
+        "p0f": {
+          "properties": {
+            "os_flavor": {
+              "index": "true",
+              "type": "keyword"
+            }
+          }
+        },
+        "rspamd": {
+          "properties": {
+            "emails": {
+              "index": "true",
+              "type": "keyword"
+            },
+            "urls": {
+              "index": "true",
+              "type": "keyword"
+            },
+            "messages": {
+              "index": "true",
+              "type": "keyword"
+            },
+            "action": {
+              "index": "true",
+              "type": "keyword"
+            }
+          }
+        },
+        "spamassassin": {
+          "properties": {
+            "headers": {
+              "properties": {
+                "Status": {
+                  "index": "true",
+                  "type": "keyword"
+                },
+                "report": {
+                  "index": "true",
+                  "type": "keyword"
+                }
+              }
+            },
+            "score": {
+              "type": "double"
+            },
+            "reqd": {
+              "type": "double"
+            },
+            "tests": {
+              "index": "true",
+              "type": "keyword"
+            }
+          }
+        },
+        "spf": {
+          "properties": {
+            "domain": {
+              "index": "true",
+              "type": "keyword"
+            }
+          }
+        }
+      }
+    },
+    "connection": {
+      "properties": {
+        "relaying": {
+          "type": "boolean"
+        },
+        "count": {
+          "type": "object",
+          "properties": {
+            "msg": {
+              "properties": {
+                "reject": {
+                  "type": "long"
+                },
+                "tempfail": {
+                  "type": "long"
+                },
+                "accept": {
+                  "type": "long"
+                }
+              }
+            },
+            "rcpt": {
+              "properties": {
+                "reject": {
+                  "type": "long"
+                },
+                "tempfail": {
+                  "type": "long"
+                },
+                "accept": {
+                  "type": "long"
+                }
+              }
+            },
+            "errors": {
+              "type": "long"
+            },
+            "trans": {
+              "type": "long"
+            }
+          }
+        },
+        "early_talker": {
+          "type": "boolean"
+        },
+        "bytes": {
+          "type": "float"
+        }
+      }
+    },
+    "message": {
+      "properties": {
+        "envelope": {
+          "properties": {
+            "sender": {
+              "index": "true",
+              "type": "keyword",
+              "fields": {
+                "partial": {
+                  "type": "text",
+                  "index": true
+                }
+              }
+            },
+            "recipient": {
+              "type": "nested",
+              "properties": {
+                "address": {
+                  "index": "true",
+                  "type": "keyword",
+                  "fields": {
+                    "partial": {
+                      "type": "text",
+                      "index": true
+                    }
+                  }
+                },
+                "action": {
+                  "index": "true",
+                  "type": "keyword",
+                  "fields": {
+                    "partial": {
+                      "type": "text",
+                      "index": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "bytes": {
+          "type": "double"
+        },
+        "header": {
+          "properties": {
+            "date": {
+              "index": "true",
+              "type": "keyword"
+            },
+            "resent-from": {
+              "index": "true",
+              "type": "keyword"
+            },
+            "sender": {
+              "index": "true",
+              "type": "keyword",
+              "fields": {
+                "partial": {
+                  "type": "keyword"
+                }
+              }
+            },
+            "subject": {
+              "index": "true",
+              "type": "text",
+              "fields": {
+                "partial": {
+                  "type": "text",
+                  "index": true
+                }
+              }
+            },
+            "message-id": {
+              "index": "true",
+              "type": "keyword"
+            },
+            "from": {
+              "index": "true",
+              "type": "keyword",
+              "fields": {
+                "partial": {
+                  "type": "text",
+                  "index": true
+                }
+              }
+            },
+            "to": {
+              "index": "true",
+              "type": "keyword",
+              "fields": {
+                "partial": {
+                  "type": "text",
+                  "index": true
+                }
+              }
+            },
+            "reply-to": {
+              "index": "true",
+              "type": "keyword"
+            },
+            "resent-header": {
+              "index": "true",
+              "type": "keyword"
+            }
+          }
+        },
+        "body": {
+          "properties": {
+            "attachment": {
+              "properties": {
+                "file": {
+                  "type": "text",
+                  "index": true
+                },
+                "ctype": {
+                  "type": "text",
+                  "index": true
+                },
+                "bytes": {
+                  "type": "float"
+                },
+                "md5": {
+                  "index": "true",
+                  "type": "keyword"
+                }
+              }
+            }
+          }
+        },
+        "queue": {
+          "properties": {}
+        }
+      }
+    }
+  }
+}

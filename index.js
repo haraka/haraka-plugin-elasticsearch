@@ -46,7 +46,7 @@ exports.load_es_ini = function () {
     early_talker: undefined,
   }
 
-  if(!this.cfg.index.timestamp) this.cfg.index.timestamp = 'timestamp'
+  if (!this.cfg.index.timestamp) this.cfg.index.timestamp = 'timestamp'
 
   // Cloud ID overrides hosts
   this.clientArgs = { maxRetries: 5 }
@@ -54,12 +54,12 @@ exports.load_es_ini = function () {
     this.loginfo('Using Cloud ID')
     this.clientArgs.cloud = { id: this.cfg.cloud.id }
   } else {
-    this.loginfo('Using nodes')
+    this.logdebug('Using nodes')
     this.clientArgs = { nodes: this.cfg.es_hosts }
   }
-  if (this.cfg.auth) this.clientArgs.auth = this.cfg.auth
-  if (this.cfg.tls) this.clientArgs.tls = this.cfg.tls
-
+  if (Object.keys(this.cfg.auth).length > 0)
+    this.clientArgs.auth = this.cfg.auth
+  if (Object.keys(this.cfg.tls).length > 0) this.clientArgs.tls = this.cfg.tls
 }
 
 exports.get_es_hosts = function () {
@@ -350,9 +350,10 @@ exports.populate_message = function (pir, connection) {
   }
 
   for (const h of this.cfg.headers) {
-    const r = connection.transaction.header.get_decoded(h)
+    let r = connection.transaction.header.get_decoded(h)
     if (!r) return
-    pir.message.header[h] = r
+    if (h.toLowerCase() === 'date') r = new Date(r).toISOString()
+    pir.message.header[h.toLowerCase()] = r
   }
 }
 
@@ -418,17 +419,8 @@ exports.prune_noisy = function (res, pi) {
   if (res[pi]._watch_saw) delete res[pi]._watch_saw
 
   switch (pi) {
-    case 'karma':
-      delete res.karma.todo
-      delete res.karma.pass
-      delete res.karma.skip
-      break
     case 'access':
       delete res.access.pass
-      break
-    case 'uribl':
-      delete res.uribl.skip
-      delete res.uribl.pass
       break
     case 'dnsbl':
       delete res.dnsbl.pass
@@ -439,9 +431,41 @@ exports.prune_noisy = function (res, pi) {
     case 'geoip':
       delete res.geoip.ll
       break
+    case 'helo':
+      delete res._skip_hooks
+      break
+    case 'karma':
+      for (const f of [
+        'todo',
+        'pass',
+        'skip',
+        'asn_bad',
+        'asn_connections',
+        'asn_good',
+      ]) {
+        delete res.karma[f]
+      }
+      break
+    case 'p0f':
+      for (const f of [
+        'distance',
+        'first_seen',
+        'last_chg',
+        'last_nat',
+        'last_seen',
+        'total_conn',
+        'up_mod_days',
+      ]) {
+        delete res.p0f[f]
+      }
+      break
     case 'max_unrecognized_commands':
       res.unrecognized_commands = res.max_unrecognized_commands.count
       delete res.max_unrecognized_commands
+      break
+    case 'rspamd':
+      if (res.rspamd.symbols) delete res.rspamd.symbols
+      delete res.rspamd.is_skipped
       break
     case 'spamassassin':
       delete res.spamassassin.line0
@@ -450,8 +474,12 @@ exports.prune_noisy = function (res, pi) {
         delete res.spamassassin.headers.Level
       }
       break
-    case 'rspamd':
-      if (res.rspamd.symbols) delete res.rspamd.symbols
+    case 'tls':
+      delete res.tls.peerCertificate // 46 keys
+      break
+    case 'uribl':
+      delete res.uribl.skip
+      delete res.uribl.pass
       break
   }
 }
@@ -464,6 +492,11 @@ exports.prune_zero = function (res, name) {
 
 exports.prune_redundant_cxn = function (res, name) {
   switch (name) {
+    case 'local':
+    case 'remote':
+    case 'reset':
+      delete res[name]
+      break
     case 'helo':
       if (res.helo && res.helo.helo_host) delete res.helo.helo_host
       break
@@ -475,6 +508,11 @@ exports.prune_redundant_cxn = function (res, name) {
 
 exports.prune_redundant_txn = function (res, name) {
   switch (name) {
+    case 'local':
+    case 'remote':
+    case 'reset':
+      delete res[name]
+      break
     case 'spamassassin':
       if (!res.spamassassin) break
       delete res.spamassassin.hits

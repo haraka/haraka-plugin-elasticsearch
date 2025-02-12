@@ -1,0 +1,82 @@
+{
+  "component_templates": [
+    {
+      "component_template": {
+        "template": {
+          "mappings": {
+            "properties": {
+              "msg.body.attachment.bytes": {
+                "coerce": true,
+                "doc_values": true,
+                "ignore_malformed": false,
+                "index": true,
+                "store": false,
+                "type": "long"
+              },
+              "msg.body.attachment.ctype": {
+                "type": "text"
+              },
+              "msg.body.attachment.file": {
+                "type": "text"
+              },
+              "msg.body.attachment.md5": {
+                "type": "keyword"
+              },
+              "msg.bytes": {
+                "type": "long"
+              },
+              "msg.envelope.recipient.action": {
+                "type": "keyword"
+              },
+              "msg.envelope.recipient.address": {
+                "type": "text"
+              },
+              "msg.envelope.recipient.msg": {
+                "type": "text"
+              },
+              "msg.envelope.sender": {
+                "type": "text"
+              },
+              "msg.header.date": {
+                "doc_values": false,
+                "ignore_malformed": false,
+                "index": true,
+                "store": false,
+                "type": "date"
+              },
+              "msg.header.from": {
+                "type": "text"
+              },
+              "msg.header.message-id": {
+                "type": "text"
+              },
+              "msg.header.reply-to": {
+                "type": "text"
+              },
+              "msg.header.resent-from": {
+                "type": "text"
+              },
+              "msg.header.resent-header": {
+                "type": "text"
+              },
+              "msg.header.sender": {
+                "type": "text"
+              },
+              "msg.header.subject": {
+                "type": "text"
+              },
+              "msg.header.to": {
+                "type": "text"
+              },
+              "msg.queue.pass": {
+                "type": "keyword"
+              }
+            }
+          }
+        },
+        "version": 1
+      },
+      "name": "haraka-email-message"
+    }
+  ]
+}
