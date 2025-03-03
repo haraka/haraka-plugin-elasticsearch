@@ -178,7 +178,7 @@ exports.log_connection = function (next, connection) {
 // Hook for logging delivered messages
 exports.log_delivery = function (next, hmail, params) {
   if (!this.cfg.main?.log_delivery) next() // main.log_delivery = false
-  let doc = this.populate_from_hmail (hmail)
+  const doc = this.populate_from_hmail (hmail)
   const [host, ip, response, delay, port, mode, ok_recips, secured] = params
   if (!doc.remote) doc.remote = {}
   doc.remote.host = host
@@ -213,7 +213,7 @@ exports.log_delivery = function (next, hmail, params) {
 exports.log_delay = function (next, hmail, errorObj) {
   if (!this.cfg.main?.log_delay) next()
 
-  let doc = this.populate_from_hmail(hmail)
+  const doc = this.populate_from_hmail(hmail)
   if (!doc.outbound) doc.outbound = {}
   doc.outbound.result = 'Delayed'
   doc.outbound.response = errorObj.err
@@ -268,13 +268,13 @@ exports.log_bounce = function (next, hmail, errorObj) {
 // Extracts transaction and message info from the hmail.todo object
 exports.populate_from_hmail = function (hmail) {
   // Parse the hmail.todo object
-  let res = {}
+  const res = {}
   res.message = {}
   res.transaction = {
     uuid: hmail.todo.uuid
   }
   // Handles multiple recipients
-  let toArr = []
+  const toArr = []
   for (const rcpt in hmail.todo.rcpt_to) {
     if (hmail.todo.rcpt_to[rcpt]) {
       toArr.push(hmail.todo.rcpt_to[rcpt].address())
