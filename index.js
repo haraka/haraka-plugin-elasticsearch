@@ -12,6 +12,9 @@ exports.register = function () {
     if (err) return
     this.register_hook('reset_transaction', 'log_transaction')
     this.register_hook('disconnect', 'log_connection')
+    this.register_hook('delivered', 'log_delivery')
+    this.register_hook('deferred', 'log_delay')
+    this.register_hook('bounce', 'log_bounce')
   })
 }
 
@@ -19,7 +22,13 @@ exports.load_es_ini = function () {
   this.cfg = this.config.get(
     'elasticsearch.ini',
     {
-      booleans: ['+main.log_connections', '*.rejectUnauthorized'],
+      booleans: [
+        '+main.log_connections', 
+        '*.rejectUnauthorized', 
+        '+main.log_delay', 
+        '+main.log_delivery', 
+        '+main.log_bounce'
+      ],
     },
     () => {
       this.load_es_ini()
@@ -46,7 +55,7 @@ exports.load_es_ini = function () {
     early_talker: undefined,
   }
 
-  if (!this.cfg.index.timestamp) this.cfg.index.timestamp = 'timestamp'
+  if(!this.cfg.index.timestamp) this.cfg.index.timestamp = 'timestamp'
 
   // Cloud ID overrides hosts
   this.clientArgs = { maxRetries: 5 }
@@ -54,7 +63,7 @@ exports.load_es_ini = function () {
     this.loginfo('Using Cloud ID')
     this.clientArgs.cloud = { id: this.cfg.cloud.id }
   } else {
-    this.logdebug('Using nodes')
+    this.loginfo('Using nodes')
     this.clientArgs = { nodes: this.cfg.es_hosts }
   }
   if (Object.keys(this.cfg.auth).length > 0)
@@ -166,6 +175,124 @@ exports.log_connection = function (next, connection) {
   next()
 }
 
+// Hook for logging delivered messages
+exports.log_delivery = function (next, hmail, params) {
+  if (!this.cfg.main?.log_delivery) next() // main.log_delivery = false
+  let doc = this.populate_from_hmail (hmail)
+  const [host, ip, response, delay, port, mode, ok_recips, secured] = params
+  if (!doc.remote) doc.remote = {}
+  doc.remote.host = host
+  doc.remote.ip = ip,
+  doc.remote.port = port
+
+  if (!doc.outbound) doc.outbound = {}
+  doc.outbound.response = response
+  doc.outbound.delay = delay
+  doc.outbound.secured = secured
+  doc.outbound.result = 'Delivered'
+  // Timestamp
+  doc[this.cfg.index.timestamp] = new Date().toISOString()
+
+  this.es
+    .create({
+      index: this.getIndexName('transaction'),
+      id: utils.uuid(),
+      document: doc,
+    })
+    .then((response) => {
+      // connection.loginfo(this, response);
+    })
+    .catch((error) => {
+      this.logerror(this, error.message)
+    })
+
+  next()
+}
+
+// Hook for logging a delayed message
+exports.log_delay = function (next, hmail, errorObj) {
+  if (!this.cfg.main?.log_delay) next()
+
+  let doc = this.populate_from_hmail(hmail)
+  if (!doc.outbound) doc.outbound = {}
+  doc.outbound.result = 'Delayed'
+  doc.outbound.response = errorObj.err
+  doc.outbound.delay = errorObj.delay
+
+  // Timestamp
+  doc[this.cfg.index.timestamp] = new Date().toISOString()
+  this.es
+    .create({
+      index: this.getIndexName('transaction'),
+      id: this.generateUUID(),
+      document: doc,
+    })
+    .then((response) => {
+      // connection.loginfo(this, response);
+    })
+    .catch((error) => {
+      this.logerror(this, error.message)
+    })
+
+  next()
+}
+
+// Hook for logging a bounced message
+exports.log_bounce = function (next, hmail, errorObj) {
+  if (!this.cfg.main?.log_bounce) next()
+
+  let doc = this.populate_from_hmail(hmail)
+  if (!doc.outbound) doc.outbound = {}
+  doc.outbound.result = 'Bounced'
+  doc.outbound.response = errorObj.mx + ' says: Could not deliver to ' + errorObj.bounced_rcpt
+
+  // Timestamp
+  doc[this.cfg.index.timestamp] = new Date().toISOString()
+  this.es
+  .create({
+    index: this.getIndexName('transaction'),
+    id: utils.uuid(),
+    document: doc,
+  })
+  .then((response) => {
+    // connection.loginfo(this, response);
+  })
+  .catch((error) => {
+    this.logerror(this, error.message)
+  })
+
+  next()
+
+}
+
+// Extracts transaction and message info from the hmail.todo object
+exports.populate_from_hmail = function (hmail) {
+  // Parse the hmail.todo object
+  let res = {}
+  res.message = {}
+  res.transaction = {
+    uuid: hmail.todo.uuid
+  }
+  // Handles multiple recipients
+  let toArr = []
+  for (const rcpt in hmail.todo.rcpt_to) {
+    if (hmail.todo.rcpt_to[rcpt]) {
+      toArr.push(hmail.todo.rcpt_to[rcpt].address())
+    } else {
+      toArr.push(rcpt.address())
+    }
+  }
+  res.message.header = {
+      To: toArr.join(', '),
+      From: hmail.todo.mail_from.address()
+  }
+  res.outbound = {
+    domain: hmail.todo.domain
+  }
+
+  return res
+}
+
 exports.objToArray = function (obj) {
   const arr = []
   if (!obj || typeof obj !== 'object') return arr
@@ -193,9 +320,11 @@ exports.getIndexName = function (section) {
       return `${name}-${y}`
     case 'month':
       return `${name}-${y}-${m}`
-    default:
-      return `${name}-${y}-${m}-${d}`
-  }
+      case 'day':
+        return `${name}-${y}-${m}-${d}`
+      default:
+        return `${name}`
+    }
 }
 
 exports.populate_conn_properties = function (conn, res) {
@@ -207,6 +336,10 @@ exports.populate_conn_properties = function (conn, res) {
     }
     conn_res = res[this.cfg.top_level_names.connection]
   }
+  conn_res.transaction = {
+    uuid: conn.transaction.uuid
+  }
+
 
   conn_res.local = {
     ip: conn.local.ip,
@@ -522,3 +655,4 @@ exports.prune_redundant_txn = function (res, name) {
       break
   }
 }
+
