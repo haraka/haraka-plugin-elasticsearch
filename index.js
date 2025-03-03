@@ -241,7 +241,7 @@ exports.log_delay = function (next, hmail, errorObj) {
 exports.log_bounce = function (next, hmail, errorObj) {
   if (!this.cfg.main?.log_bounce) next()
 
-  let doc = this.populate_from_hmail(hmail)
+  const doc = this.populate_from_hmail(hmail)
   if (!doc.outbound) doc.outbound = {}
   doc.outbound.result = 'Bounced'
   doc.outbound.response = errorObj.mx + ' says: Could not deliver to ' + errorObj.bounced_rcpt
