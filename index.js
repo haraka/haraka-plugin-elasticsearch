@@ -336,10 +336,11 @@ exports.populate_conn_properties = function (conn, res) {
     }
     conn_res = res[this.cfg.top_level_names.connection]
   }
-  conn_res.transaction = {
-    uuid: conn.transaction.uuid
+  if (conn.transaction?.uuid) {
+    conn_res.transaction = {
+      uuid: conn.transaction.uuid
+    }
   }
-
 
   conn_res.local = {
     ip: conn.local.ip,
