@@ -1,5 +1,5 @@
-const assert = require('assert')
-const path = require('path')
+const assert = require('node:assert')
+const path = require('node:path')
 
 const fixtures = require('haraka-test-fixtures')
 
@@ -40,22 +40,23 @@ describe('get_es_hosts', function () {
   it('converts bare host to hosts format', function (done) {
     this.plugin.cfg = { hosts: { localhost: undefined } }
     this.plugin.get_es_hosts()
-    assert.deepEqual(['http://localhost:9200'], this.plugin.cfg.es_hosts)
+    assert.deepStrictEqual('http://localhost:9200', this.plugin.cfg.es_hosts[0])
     done()
   })
 
   it('passes through a URL string', function (done) {
     this.plugin.cfg = { hosts: { '1.1.1.1': 'https://test:pass@1.1.1.1' } }
     this.plugin.get_es_hosts()
-    assert.deepEqual(['https://test:pass@1.1.1.1'], this.plugin.cfg.es_hosts)
+    assert.deepStrictEqual(
+      'https://test:pass@1.1.1.1',
+      this.plugin.cfg.es_hosts[0],
+    )
     done()
   })
 
   it('applies auth & tls config to client config', function (done) {
-    console.log(this.plugin.cfg)
     this.plugin.config.root_path = path.resolve('test', 'fixtures')
     this.plugin.load_es_ini()
-    // console.log(this.plugin.cfg);
     assert.deepEqual(this.plugin.clientArgs, {
       auth: {
         username: 'haraka',

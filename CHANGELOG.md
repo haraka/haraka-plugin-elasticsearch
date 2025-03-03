@@ -4,6 +4,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
+### [8.1.2] - 2025-02-06
+
+- FEATURE: support for Cloud ID and the "@timestamp" field #60
+- moved ./index-templates into ./templates/index
+  - tmpl/i/v8: order plugins alphabetically
+- added ./templates/component/
+- test: update syntax for putTemplate
+- prune redundant and low-value data before insertion
+  - p0f: remove most numeric fields
+  - rspamd: remove is_skipped
+  - plugin: remove {local,remote,reset}, they already exist on conn property
+  - delete p.tls.peerCertificate, too noisy, has 46 keys
+
 ### [8.1.1] - 2025-02-03
 
 - fix: connection.remote_host -> connection.remote.host
@@ -107,3 +120,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 [8.0.4]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.0.4
 [8.1.0]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.0
 [8.1.1]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.1
+[8.1.2]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.2

@@ -1,0 +1,31 @@
+{
+  "component_templates": [
+    {
+      "component_template": {
+        "template": {
+          "mappings": {
+            "properties": {
+              "p.spamassassin.flag": {
+                "type": "boolean"
+              },
+              "p.spamassassin.required": {
+                "type": "double"
+              },
+              "p.spamassassin.score": {
+                "type": "double"
+              },
+              "p.spamassassin.tests": {
+                "type": "text"
+              },
+              "p.spamassassin.time": {
+                "type": "float"
+              }
+            }
+          }
+        },
+        "version": 1
+      },
+      "name": "haraka-plugin-spamassassin"
+    }
+  ]
+}

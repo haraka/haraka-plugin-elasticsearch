@@ -1,0 +1,22 @@
+{
+  "component_templates": [
+    {
+      "component_template": {
+        "template": {
+          "mappings": {
+            "properties": {
+              "p.helo.ips": {
+                "doc_values": true,
+                "index": true,
+                "store": false,
+                "type": "ip"
+              }
+            }
+          }
+        },
+        "version": 1
+      },
+      "name": "haraka-plugin-helo_checks"
+    }
+  ]
+}

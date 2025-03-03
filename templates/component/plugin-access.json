@@ -1,0 +1,31 @@
+{
+  "component_templates": [
+    {
+      "component_template": {
+        "template": {
+          "mappings": {
+            "properties": {
+              "p.access.blacklist": {
+                "type": "boolean"
+              },
+              "p.access.fail": {
+                "type": "text"
+              },
+              "p.access.msg": {
+                "type": "text"
+              },
+              "p.access.skip": {
+                "type": "text"
+              },
+              "p.access.whitelist": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "version": 1
+      },
+      "name": "haraka-plugin-access"
+    }
+  ]
+}
