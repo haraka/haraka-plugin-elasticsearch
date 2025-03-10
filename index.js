@@ -23,11 +23,11 @@ exports.load_es_ini = function () {
     'elasticsearch.ini',
     {
       booleans: [
-        '+main.log_connections', 
         '*.rejectUnauthorized', 
-        '+main.log_delay', 
-        '+main.log_delivery', 
-        '+main.log_bounce'
+        '+log.connections', 
+        '+log.delay', 
+        '+log.delivery', 
+        '+log.bounce'
       ],
     },
     () => {
@@ -69,6 +69,9 @@ exports.load_es_ini = function () {
   if (Object.keys(this.cfg.auth).length > 0)
     this.clientArgs.auth = this.cfg.auth
   if (Object.keys(this.cfg.tls).length > 0) this.clientArgs.tls = this.cfg.tls
+
+  // Handling legacy setting for log.connections
+  if (this.cfg.main.log_connections == 'false') this.cfg.log.connections = false
 }
 
 exports.get_es_hosts = function () {
@@ -138,7 +141,7 @@ exports.log_transaction = function (next, connection) {
 }
 
 exports.log_connection = function (next, connection) {
-  if (!this.cfg.main.log_connections) return next()
+  if (!this.cfg.log.connections) return next()
 
   if (this.cfg.ignore_hosts) {
     if (this.cfg.ignore_hosts[connection.remote.host]) return next()
@@ -260,7 +263,7 @@ exports.log_bounce = function (next, hmail, errorObj) {
   .catch((error) => {
     this.logerror(this, error.message)
   })
-
+  
   next()
 
 }
@@ -309,6 +312,7 @@ exports.getIndexName = function (section) {
   if (this.cfg.index && this.cfg.index[section]) {
     name = this.cfg.index[section]
   }
+  
   const date = new Date()
 
   const d = date.getUTCDate().toString().padStart(2, '0')
@@ -320,11 +324,11 @@ exports.getIndexName = function (section) {
       return `${name}-${y}`
     case 'month':
       return `${name}-${y}-${m}`
-      case 'day':
-        return `${name}-${y}-${m}-${d}`
-      default:
-        return `${name}`
-    }
+    case 'auto':
+      return `${name}`
+    default: // day
+      return `${name}-${y}-${m}-${d}`
+  }
 }
 
 exports.populate_conn_properties = function (conn, res) {
