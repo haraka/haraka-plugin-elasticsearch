@@ -4,6 +4,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
+### [8.1.3] - 2025-03-10
+
+- doc(README): improve formatting
+- Log bounce, deferred and delivery (#62)
+  - index.interval = auto will strip dates from the index name
+
 ### [8.1.2] - 2025-02-06
 
 - FEATURE: support for Cloud ID and the "@timestamp" field #60
@@ -121,3 +127,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 [8.1.0]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.0
 [8.1.1]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.1
 [8.1.2]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.2
+[8.1.3]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.3

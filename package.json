@@ -1,6 +1,6 @@
 {
   "name": "haraka-plugin-elasticsearch",
-  "version": "8.1.2",
+  "version": "8.1.3",
   "description": "Haraka plugin that saves logs to Elasticsearch",
   "files": [
     "CHANGELOG.md",

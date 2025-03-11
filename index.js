@@ -23,11 +23,11 @@ exports.load_es_ini = function () {
     'elasticsearch.ini',
     {
       booleans: [
-        '*.rejectUnauthorized', 
-        '+log.connections', 
-        '+log.delay', 
-        '+log.delivery', 
-        '+log.bounce'
+        '*.rejectUnauthorized',
+        '+log.connections',
+        '+log.delay',
+        '+log.delivery',
+        '+log.bounce',
       ],
     },
     () => {
@@ -55,7 +55,7 @@ exports.load_es_ini = function () {
     early_talker: undefined,
   }
 
-  if(!this.cfg.index.timestamp) this.cfg.index.timestamp = 'timestamp'
+  if (!this.cfg.index.timestamp) this.cfg.index.timestamp = 'timestamp'
 
   // Cloud ID overrides hosts
   this.clientArgs = { maxRetries: 5 }
@@ -181,12 +181,11 @@ exports.log_connection = function (next, connection) {
 // Hook for logging delivered messages
 exports.log_delivery = function (next, hmail, params) {
   if (!this.cfg.main?.log_delivery) next() // main.log_delivery = false
-  const doc = this.populate_from_hmail (hmail)
+  const doc = this.populate_from_hmail(hmail)
   const [host, ip, response, delay, port, mode, ok_recips, secured] = params
   if (!doc.remote) doc.remote = {}
   doc.remote.host = host
-  doc.remote.ip = ip,
-  doc.remote.port = port
+  ;(doc.remote.ip = ip), (doc.remote.port = port)
 
   if (!doc.outbound) doc.outbound = {}
   doc.outbound.response = response
@@ -247,25 +246,25 @@ exports.log_bounce = function (next, hmail, errorObj) {
   const doc = this.populate_from_hmail(hmail)
   if (!doc.outbound) doc.outbound = {}
   doc.outbound.result = 'Bounced'
-  doc.outbound.response = errorObj.mx + ' says: Could not deliver to ' + errorObj.bounced_rcpt
+  doc.outbound.response =
+    errorObj.mx + ' says: Could not deliver to ' + errorObj.bounced_rcpt
 
   // Timestamp
   doc[this.cfg.index.timestamp] = new Date().toISOString()
   this.es
-  .create({
-    index: this.getIndexName('transaction'),
-    id: utils.uuid(),
-    document: doc,
-  })
-  .then((response) => {
-    // connection.loginfo(this, response);
-  })
-  .catch((error) => {
-    this.logerror(this, error.message)
-  })
-  
-  next()
+    .create({
+      index: this.getIndexName('transaction'),
+      id: utils.uuid(),
+      document: doc,
+    })
+    .then((response) => {
+      // connection.loginfo(this, response);
+    })
+    .catch((error) => {
+      this.logerror(this, error.message)
+    })
 
+  next()
 }
 
 // Extracts transaction and message info from the hmail.todo object
@@ -274,7 +273,7 @@ exports.populate_from_hmail = function (hmail) {
   const res = {}
   res.message = {}
   res.transaction = {
-    uuid: hmail.todo.uuid
+    uuid: hmail.todo.uuid,
   }
   // Handles multiple recipients
   const toArr = []
@@ -286,11 +285,11 @@ exports.populate_from_hmail = function (hmail) {
     }
   }
   res.message.header = {
-      To: toArr.join(', '),
-      From: hmail.todo.mail_from.address()
+    To: toArr.join(', '),
+    From: hmail.todo.mail_from.address(),
   }
   res.outbound = {
-    domain: hmail.todo.domain
+    domain: hmail.todo.domain,
   }
 
   return res
@@ -312,7 +311,7 @@ exports.getIndexName = function (section) {
   if (this.cfg.index && this.cfg.index[section]) {
     name = this.cfg.index[section]
   }
-  
+
   const date = new Date()
 
   const d = date.getUTCDate().toString().padStart(2, '0')
@@ -342,7 +341,7 @@ exports.populate_conn_properties = function (conn, res) {
   }
   if (conn.transaction?.uuid) {
     conn_res.transaction = {
-      uuid: conn.transaction.uuid
+      uuid: conn.transaction.uuid,
     }
   }
 
@@ -660,4 +659,3 @@ exports.prune_redundant_txn = function (res, name) {
       break
   }
 }
-
