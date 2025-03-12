@@ -4,6 +4,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
+### [8.1.4] - 2025-03-12
+
+- fix: update the path to log settings #64
+- replace self-made UUID with utils.uuid(), #64
+- codeclimate: update config for eslint 9
+
 ### [8.1.3] - 2025-03-10
 
 - doc(README): improve formatting
@@ -128,3 +134,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 [8.1.1]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.1
 [8.1.2]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.2
 [8.1.3]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.3
+[8.1.4]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.4
