@@ -226,7 +226,7 @@ exports.log_delay = function (next, hmail, errorObj) {
   this.es
     .create({
       index: this.getIndexName('transaction'),
-      id: this.generateUUID(),
+      id: utils.uuid(),
       document: doc,
     })
     .then((response) => {
