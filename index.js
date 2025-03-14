@@ -180,7 +180,7 @@ exports.log_connection = function (next, connection) {
 
 // Hook for logging delivered messages
 exports.log_delivery = function (next, hmail, params) {
-  if (!this.cfg.log.delivery) next() // main.log_delivery = false
+  if (!this.cfg.log.delivery) return next() // main.log_delivery = false
   const doc = this.populate_from_hmail(hmail)
   const [host, ip, response, delay, port, mode, ok_recips, secured] = params
   if (!doc.remote) doc.remote = {}
@@ -213,7 +213,7 @@ exports.log_delivery = function (next, hmail, params) {
 
 // Hook for logging a delayed message
 exports.log_delay = function (next, hmail, errorObj) {
-  if (!this.cfg.log.delay) next()
+  if (!this.cfg.log.delay) return next()
 
   const doc = this.populate_from_hmail(hmail)
   if (!doc.outbound) doc.outbound = {}
@@ -241,7 +241,7 @@ exports.log_delay = function (next, hmail, errorObj) {
 
 // Hook for logging a bounced message
 exports.log_bounce = function (next, hmail, errorObj) {
-  if (!this.cfg.log.bounce) next()
+  if (!this.cfg.log.bounce) return next()
 
   const doc = this.populate_from_hmail(hmail)
   if (!doc.outbound) doc.outbound = {}
