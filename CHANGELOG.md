@@ -4,6 +4,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
+### [8.1.5] - 2025-10-07
+
+- fix: update templates path, so included in module
+- fix: log_delivery, log_bounce and log_delay when disabled #66
+
 ### [8.1.4] - 2025-03-12
 
 - fix: update the path to log settings #64
@@ -135,3 +140,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 [8.1.2]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.2
 [8.1.3]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.3
 [8.1.4]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.4
+[8.1.5]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.5
