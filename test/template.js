@@ -43,7 +43,7 @@ describe('templates', function () {
         this.plugin.es.cluster
           .putComponentTemplate({
             name: `haraka-${f}`,
-            data: JSON.parse(data).template,
+            ...JSON.parse(data),
           })
           .then((result) => {
             console.log(`${f}: ${result}`)
@@ -75,7 +75,7 @@ describe('templates', function () {
           ...template,
         })
         .then((result) => {
-          console.log(`${f}: ${result}`)
+          console.log(`${filePath}: ${result}`)
         })
         .catch((err2) => {
           console.error(err2)
