@@ -1,38 +1,31 @@
 {
-  "component_templates": [
-    {
-      "component_template": {
-        "template": {
-          "mappings": {
-            "properties": {
-              "p.fcrdns.fcrdns": {
-                "doc_values": true,
-                "eager_global_ordinals": false,
-                "index": true,
-                "index_options": "docs",
-                "norms": false,
-                "split_queries_on_whitespace": false,
-                "store": false,
-                "type": "keyword"
-              },
-              "p.fcrdns.has_rdns": {
-                "type": "boolean"
-              },
-              "p.fcrdns.prt_multidomain": {
-                "type": "boolean"
-              },
-              "p.fcrdns.ptr_name_has_ips": {
-                "type": "boolean"
-              },
-              "p.fcrdns.ptr_name_to_ip": {
-                "type": "object"
-              }
-            }
-          }
+  "template": {
+    "mappings": {
+      "properties": {
+        "p.fcrdns.fcrdns": {
+          "doc_values": true,
+          "eager_global_ordinals": false,
+          "index": true,
+          "index_options": "docs",
+          "norms": false,
+          "split_queries_on_whitespace": false,
+          "store": false,
+          "type": "keyword"
         },
-        "version": 1
-      },
-      "name": "haraka-plugin-fcrdns"
+        "p.fcrdns.has_rdns": {
+          "type": "boolean"
+        },
+        "p.fcrdns.prt_multidomain": {
+          "type": "boolean"
+        },
+        "p.fcrdns.ptr_name_has_ips": {
+          "type": "boolean"
+        },
+        "p.fcrdns.ptr_name_to_ip": {
+          "type": "object"
+        }
+      }
     }
-  ]
+  },
+  "version": 1
 }

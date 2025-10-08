@@ -4,10 +4,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
+- add post-components.sh to install templates to new ES
+- update get-components.sh to unwrap
+- templates: unwrap component templates to import format
+
 ### [8.1.5] - 2025-10-07
 
 - fix: update templates path, so included in module
 - fix: log_delivery, log_bounce and log_delay when disabled #66
+- deps: bump versions to latest
 
 ### [8.1.4] - 2025-03-12
 

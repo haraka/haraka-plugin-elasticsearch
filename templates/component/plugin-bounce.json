@@ -1,22 +1,15 @@
 {
-  "component_templates": [
-    {
-      "component_template": {
-        "template": {
-          "mappings": {
-            "properties": {
-              "p.bounce.isa": {
-                "doc_values": true,
-                "index": true,
-                "store": false,
-                "type": "boolean"
-              }
-            }
-          }
-        },
-        "version": 1
-      },
-      "name": "haraka-plugin-bounce"
+  "template": {
+    "mappings": {
+      "properties": {
+        "p.bounce.isa": {
+          "doc_values": true,
+          "index": true,
+          "store": false,
+          "type": "boolean"
+        }
+      }
     }
-  ]
+  },
+  "version": 1
 }

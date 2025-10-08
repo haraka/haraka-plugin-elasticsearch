@@ -1,55 +1,48 @@
 {
-  "component_templates": [
-    {
-      "component_template": {
-        "template": {
-          "mappings": {
-            "_routing": {
-              "required": false
-            },
-            "_source": {
-              "enabled": true,
-              "excludes": [],
-              "includes": []
-            },
-            "date_detection": true,
-            "dynamic": true,
-            "dynamic_date_formats": [
-              "strict_date_optional_time",
-              "yyyy/MM/dd HH:mm:ss Z||yyyy/MM/dd Z"
-            ],
-            "dynamic_templates": [],
-            "numeric_detection": false,
-            "properties": {
-              "p.karma.awards": {
-                "type": "text"
-              },
-              "p.karma.bad": {
-                "coerce": true,
-                "doc_values": true,
-                "ignore_malformed": false,
-                "index": true,
-                "store": false,
-                "type": "double"
-              },
-              "p.karma.connections": {
-                "type": "double"
-              },
-              "p.karma.good": {
-                "type": "double"
-              },
-              "p.karma.history": {
-                "type": "double"
-              },
-              "p.karma.score": {
-                "type": "double"
-              }
-            }
-          }
-        },
-        "version": 1
+  "template": {
+    "mappings": {
+      "_routing": {
+        "required": false
       },
-      "name": "haraka-plugin-karma"
+      "_source": {
+        "enabled": true,
+        "excludes": [],
+        "includes": []
+      },
+      "date_detection": true,
+      "dynamic": true,
+      "dynamic_date_formats": [
+        "strict_date_optional_time",
+        "yyyy/MM/dd HH:mm:ss Z||yyyy/MM/dd Z"
+      ],
+      "dynamic_templates": [],
+      "numeric_detection": false,
+      "properties": {
+        "p.karma.awards": {
+          "type": "text"
+        },
+        "p.karma.bad": {
+          "coerce": true,
+          "doc_values": true,
+          "ignore_malformed": false,
+          "index": true,
+          "store": false,
+          "type": "double"
+        },
+        "p.karma.connections": {
+          "type": "double"
+        },
+        "p.karma.good": {
+          "type": "double"
+        },
+        "p.karma.history": {
+          "type": "double"
+        },
+        "p.karma.score": {
+          "type": "double"
+        }
+      }
     }
-  ]
+  },
+  "version": 1
 }
