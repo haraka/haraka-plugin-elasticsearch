@@ -1,11 +1,9 @@
 'use strict'
 
 const assert = require('assert')
-const fs = require('fs')
 const path = require('path')
 
 const fixtures = require('haraka-test-fixtures')
-const utils = require('haraka-utils')
 
 function setup(done) {
   try {
