@@ -1,47 +1,40 @@
 {
-  "component_templates": [
-    {
-      "component_template": {
-        "template": {
-          "mappings": {
-            "properties": {
-              "p.known-senders.auth": {
-                "doc_values": true,
-                "eager_global_ordinals": false,
-                "index": true,
-                "index_options": "docs",
-                "norms": false,
-                "split_queries_on_whitespace": false,
-                "store": false,
-                "type": "keyword"
-              },
-              "p.known-senders.count": {
-                "coerce": true,
-                "doc_values": true,
-                "ignore_malformed": false,
-                "index": true,
-                "store": false,
-                "type": "double"
-              },
-              "p.known-senders.rcpt_ods": {
-                "doc_values": true,
-                "eager_global_ordinals": false,
-                "index": true,
-                "index_options": "docs",
-                "norms": false,
-                "split_queries_on_whitespace": false,
-                "store": false,
-                "type": "keyword"
-              },
-              "p.known-senders.sender": {
-                "type": "keyword"
-              }
-            }
-          }
+  "template": {
+    "mappings": {
+      "properties": {
+        "p.known-senders.auth": {
+          "doc_values": true,
+          "eager_global_ordinals": false,
+          "index": true,
+          "index_options": "docs",
+          "norms": false,
+          "split_queries_on_whitespace": false,
+          "store": false,
+          "type": "keyword"
         },
-        "version": 1
-      },
-      "name": "haraka-plugin-known-senders"
+        "p.known-senders.count": {
+          "coerce": true,
+          "doc_values": true,
+          "ignore_malformed": false,
+          "index": true,
+          "store": false,
+          "type": "double"
+        },
+        "p.known-senders.rcpt_ods": {
+          "doc_values": true,
+          "eager_global_ordinals": false,
+          "index": true,
+          "index_options": "docs",
+          "norms": false,
+          "split_queries_on_whitespace": false,
+          "store": false,
+          "type": "keyword"
+        },
+        "p.known-senders.sender": {
+          "type": "keyword"
+        }
+      }
     }
-  ]
+  },
+  "version": 1
 }

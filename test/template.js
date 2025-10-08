@@ -39,13 +39,11 @@ describe('templates', function () {
         if (path.extname(f) !== '.json') continue
 
         const data = fs.readFileSync(path.join(filePath, f))
-        const template =
-          JSON.parse(data).component_templates[0].component_template.template
 
         this.plugin.es.cluster
           .putComponentTemplate({
             name: `haraka-${f}`,
-            template,
+            ...JSON.parse(data),
           })
           .then((result) => {
             console.log(`${f}: ${result}`)
@@ -59,14 +57,12 @@ describe('templates', function () {
     })
   })
 
-  // this works, but only when it runs AFTER all the component templates
-  // are stored.
+  // this only works AFTER all the component templates are stored
   it.skip('saves a composable index template to ES', function (done) {
     this.timeout(4000)
 
     const filePath = path.resolve('templates', 'index', 'composable.json')
-    const data = fs.readFileSync(filePath)
-    const template = JSON.parse(data).index_templates[0].index_template
+    const template = JSON.parse(fs.readFileSync(filePath))
 
     this.plugin.load_es_ini()
 
@@ -79,7 +75,7 @@ describe('templates', function () {
           ...template,
         })
         .then((result) => {
-          console.log(`${f}: ${result}`)
+          console.log(`${filePath}: ${result}`)
         })
         .catch((err2) => {
           console.error(err2)

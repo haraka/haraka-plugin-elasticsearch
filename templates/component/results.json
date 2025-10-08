@@ -1,62 +1,55 @@
 {
-  "component_templates": [
-    {
-      "component_template": {
-        "template": {
-          "mappings": {
-            "dynamic_templates": [
-              {
-                "fail_results": {
-                  "mapping": {
-                    "index": "true",
-                    "type": "keyword"
-                  },
-                  "path_match": "*.fail"
-                }
-              },
-              {
-                "pass_results": {
-                  "mapping": {
-                    "index": "true",
-                    "type": "keyword"
-                  },
-                  "path_match": "*.pass"
-                }
-              },
-              {
-                "skip_results": {
-                  "mapping": {
-                    "index": "true",
-                    "type": "keyword"
-                  },
-                  "path_match": "*.skip"
-                }
-              },
-              {
-                "msg_results": {
-                  "mapping": {
-                    "index": "true",
-                    "type": "keyword"
-                  },
-                  "path_match": "*.msg",
-                  "path_unmatch": "*.count.msg"
-                }
-              },
-              {
-                "err_results": {
-                  "mapping": {
-                    "index": "true",
-                    "type": "keyword"
-                  },
-                  "path_match": "*.err"
-                }
-              }
-            ]
+  "template": {
+    "mappings": {
+      "dynamic_templates": [
+        {
+          "fail_results": {
+            "mapping": {
+              "index": "true",
+              "type": "keyword"
+            },
+            "path_match": "*.fail"
           }
         },
-        "version": 1
-      },
-      "name": "haraka-results"
+        {
+          "pass_results": {
+            "mapping": {
+              "index": "true",
+              "type": "keyword"
+            },
+            "path_match": "*.pass"
+          }
+        },
+        {
+          "skip_results": {
+            "mapping": {
+              "index": "true",
+              "type": "keyword"
+            },
+            "path_match": "*.skip"
+          }
+        },
+        {
+          "msg_results": {
+            "mapping": {
+              "index": "true",
+              "type": "keyword"
+            },
+            "path_match": "*.msg",
+            "path_unmatch": "*.count.msg"
+          }
+        },
+        {
+          "err_results": {
+            "mapping": {
+              "index": "true",
+              "type": "keyword"
+            },
+            "path_match": "*.err"
+          }
+        }
+      ]
     }
-  ]
+  },
+  "version": 1
 }

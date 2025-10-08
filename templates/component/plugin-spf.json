@@ -1,25 +1,18 @@
 {
-  "component_templates": [
-    {
-      "component_template": {
-        "template": {
-          "mappings": {
-            "properties": {
-              "p.spf.domain": {
-                "type": "keyword"
-              },
-              "p.spf.result": {
-                "type": "keyword"
-              },
-              "p.spf.scope": {
-                "type": "keyword"
-              }
-            }
-          }
+  "template": {
+    "mappings": {
+      "properties": {
+        "p.spf.domain": {
+          "type": "keyword"
         },
-        "version": 1
-      },
-      "name": "haraka-plugin-spf"
+        "p.spf.result": {
+          "type": "keyword"
+        },
+        "p.spf.scope": {
+          "type": "keyword"
+        }
+      }
     }
-  ]
+  },
+  "version": 1
 }

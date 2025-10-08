@@ -1,45 +1,38 @@
 {
-  "component_templates": [
-    {
-      "component_template": {
-        "template": {
-          "mappings": {
-            "properties": {
-              "p.dkim.domain": {
-                "eager_global_ordinals": false,
-                "fielddata": false,
-                "index": true,
-                "index_options": "positions",
-                "index_phrases": false,
-                "norms": true,
-                "store": false,
-                "type": "text"
-              },
-              "p.dkim.identity": {
-                "eager_global_ordinals": false,
-                "fielddata": false,
-                "index": true,
-                "index_options": "positions",
-                "index_phrases": false,
-                "norms": true,
-                "store": false,
-                "type": "text"
-              },
-              "p.dkim.selector": {
-                "doc_values": true,
-                "eager_global_ordinals": false,
-                "index": true,
-                "index_options": "docs",
-                "norms": false,
-                "split_queries_on_whitespace": false,
-                "store": false,
-                "type": "keyword"
-              }
-            }
-          }
+  "template": {
+    "mappings": {
+      "properties": {
+        "p.dkim.domain": {
+          "eager_global_ordinals": false,
+          "fielddata": false,
+          "index": true,
+          "index_options": "positions",
+          "index_phrases": false,
+          "norms": true,
+          "store": false,
+          "type": "text"
+        },
+        "p.dkim.identity": {
+          "eager_global_ordinals": false,
+          "fielddata": false,
+          "index": true,
+          "index_options": "positions",
+          "index_phrases": false,
+          "norms": true,
+          "store": false,
+          "type": "text"
+        },
+        "p.dkim.selector": {
+          "doc_values": true,
+          "eager_global_ordinals": false,
+          "index": true,
+          "index_options": "docs",
+          "norms": false,
+          "split_queries_on_whitespace": false,
+          "store": false,
+          "type": "keyword"
         }
-      },
-      "name": "haraka-plugin-dkim"
+      }
     }
-  ]
+  }
 }
