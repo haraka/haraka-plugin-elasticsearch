@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node-version: ${{ fromJson(needs.get-lts.outputs.active) }}
+        node-version: ${{ fromJson(needs.get-lts.outputs.lts) }}
       fail-fast: false
     steps:
       - name: Configure sysctl limits
@@ -34,7 +34,7 @@ jobs:
         with:
           stack-version: 8.8.0
           security-enabled: false
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-node@v4
         name: Node ${{ matrix.node-version }} on ${{ matrix.os }}
         with:
