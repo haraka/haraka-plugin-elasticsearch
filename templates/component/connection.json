@@ -46,20 +46,13 @@
           "type": "boolean"
         },
         "conn.hello.host": {
-          "eager_global_ordinals": false,
-          "fielddata": false,
-          "index": true,
-          "index_options": "positions",
-          "index_phrases": false,
-          "norms": true,
-          "store": false,
-          "type": "text"
+          "type": "wildcard"
         },
         "conn.hello.verb": {
           "type": "keyword"
         },
         "conn.local.host": {
-          "type": "text"
+          "type": "wildcard"
         },
         "conn.local.ip": {
           "type": "ip"
@@ -74,7 +67,7 @@
           "type": "boolean"
         },
         "conn.remote.host": {
-          "type": "text"
+          "type": "wildcard"
         },
         "conn.remote.ip": {
           "type": "ip"
@@ -85,5 +78,5 @@
       }
     }
   },
-  "version": 1
+  "version": 2
 }

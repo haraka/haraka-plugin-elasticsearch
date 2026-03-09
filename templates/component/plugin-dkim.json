@@ -3,24 +3,10 @@
     "mappings": {
       "properties": {
         "p.dkim.domain": {
-          "eager_global_ordinals": false,
-          "fielddata": false,
-          "index": true,
-          "index_options": "positions",
-          "index_phrases": false,
-          "norms": true,
-          "store": false,
-          "type": "text"
+          "type": "wildcard"
         },
         "p.dkim.identity": {
-          "eager_global_ordinals": false,
-          "fielddata": false,
-          "index": true,
-          "index_options": "positions",
-          "index_phrases": false,
-          "norms": true,
-          "store": false,
-          "type": "text"
+          "type": "keyword"
         },
         "p.dkim.selector": {
           "doc_values": true,
@@ -34,5 +20,6 @@
         }
       }
     }
-  }
+  },
+  "version": 2
 }

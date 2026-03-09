@@ -4,6 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
+- templates: several, use wildcard vs text indexes
 - chore: tell dependabot to ignore minor versions
 - add post-components.sh to install templates to new ES
 - update get-components.sh to unwrap

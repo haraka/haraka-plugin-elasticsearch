@@ -3,14 +3,7 @@
     "mappings": {
       "properties": {
         "p.fcrdns.fcrdns": {
-          "doc_values": true,
-          "eager_global_ordinals": false,
-          "index": true,
-          "index_options": "docs",
-          "norms": false,
-          "split_queries_on_whitespace": false,
-          "store": false,
-          "type": "keyword"
+          "type": "wildcard"
         },
         "p.fcrdns.has_rdns": {
           "type": "boolean"
@@ -27,5 +20,5 @@
       }
     }
   },
-  "version": 1
+  "version": 2
 }
