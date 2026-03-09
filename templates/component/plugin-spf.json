@@ -3,7 +3,7 @@
     "mappings": {
       "properties": {
         "p.spf.domain": {
-          "type": "keyword"
+          "type": "wildcard"
         },
         "p.spf.result": {
           "type": "keyword"
@@ -14,5 +14,5 @@
       }
     }
   },
-  "version": 1
+  "version": 2
 }

@@ -5,6 +5,12 @@ updates:
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
-      interval: 'weekly'
+      interval: 'monthly'
     allow:
       - dependency-type: production
+
+    ignore:
+      - dependency-name: '*'
+        update-types:
+          - 'version-update:semver-minor'
+          - 'version-update:semver-patch'

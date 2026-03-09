@@ -4,8 +4,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
-- add post-components.sh to install templates to new ES
-- update get-components.sh to unwrap
+### [8.1.6] - 2026-03-09
+
+- templates: several, use wildcard vs text indexes
+- chore: tell dependabot to ignore minor versions
+- add post-components.sh to install templates to new ES #75
+- update get-components.sh to unwrap JSON
 - templates: unwrap component templates to import format
 
 ### [8.1.5] - 2025-10-07
@@ -146,3 +150,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 [8.1.3]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.3
 [8.1.4]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.4
 [8.1.5]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.5
+[8.1.6]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.6
+[8.1.7]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.7
