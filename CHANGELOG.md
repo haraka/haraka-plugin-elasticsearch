@@ -4,6 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
+- chore: tell dependabot to ignore minor versions
 - add post-components.sh to install templates to new ES
 - update get-components.sh to unwrap
 - templates: unwrap component templates to import format

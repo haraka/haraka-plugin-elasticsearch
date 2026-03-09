@@ -37,6 +37,8 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     environment: npm
+    permissions:
+      id-token: write
     steps:
       - uses: actions/setup-node@v4
         with:
