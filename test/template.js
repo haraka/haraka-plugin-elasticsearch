@@ -7,24 +7,23 @@ const path = require('node:path')
 const fixtures = require('haraka-test-fixtures')
 const utils = require('haraka-utils')
 
-function setup(done) {
+function setup() {
   try {
     this.plugin = new fixtures.plugin('../index')
   } catch (e) {
     console.error(`unable to load elasticsearch plugin: ${e}`)
-    return done('failed to load elasticsearch')
+    throw new Error('failed to load elasticsearch')
   }
 
   this.connection = fixtures.connection.createConnection()
   this.plugin.config.root_path = path.resolve(__dirname, '..', '..', 'config')
 
-  done()
 }
 
 describe('templates', function () {
   beforeEach(setup)
 
-  it('saves component templates to ES', function (done) {
+  it('saves component templates to ES', async function () {
     this.timeout(8000)
 
     this.plugin.load_es_ini()
@@ -32,28 +31,30 @@ describe('templates', function () {
     const filePath = path.resolve('templates', 'component')
     const files = fs.readdirSync(filePath)
 
-    this.plugin.es_connect((err) => {
-      assert.ifError(err)
+    await new Promise((resolve, reject) => {
+      this.plugin.es_connect((err) => {
+        if (err) return reject(err)
 
-      for (const f of files) {
-        if (path.extname(f) !== '.json') continue
+        for (const f of files) {
+          if (path.extname(f) !== '.json') continue
 
-        const data = fs.readFileSync(path.join(filePath, f))
+          const data = fs.readFileSync(path.join(filePath, f))
 
-        this.plugin.es.cluster
-          .putComponentTemplate({
-            name: `haraka-${f}`,
-            ...JSON.parse(data),
-          })
-          .then((result) => {
-            console.log(`${f}: ${result}`)
-          })
-          .catch((err2) => {
-            console.error(err2)
-          })
-      }
+          this.plugin.es.cluster
+            .putComponentTemplate({
+              name: `haraka-${f}`,
+              ...JSON.parse(data),
+            })
+            .then((result) => {
+              console.log(`${f}: ${result}`)
+            })
+            .catch((err2) => {
+              console.error(err2)
+            })
+        }
 
-      done()
+        resolve()
+      })
     })
   })
 
