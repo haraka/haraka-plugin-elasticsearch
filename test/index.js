@@ -5,45 +5,40 @@ const path = require('path')
 
 const fixtures = require('haraka-test-fixtures')
 
-function setup(done) {
+function setup() {
   try {
     this.plugin = new fixtures.plugin('../index')
   } catch (e) {
     console.error(`unable to load elasticsearch plugin: ${e}`)
-    return done('failed to load elasticsearch')
+    throw new Error('failed to load elasticsearch')
   }
 
   this.connection = fixtures.connection.createConnection()
   this.plugin.config.root_path = path.resolve(__dirname, '..', '..', 'config')
-
-  done()
 }
 
 describe('register', function () {
   beforeEach(setup)
 
-  it('has a register function', function (done) {
+  it('has a register function', function () {
     assert.ok(this.plugin)
     assert.equal('function', typeof this.plugin.register)
-    done()
   })
 
-  it('can run register function', function (done) {
+  it('can run register function', function () {
     // this tests requires a living ES server
     this.plugin.register()
     // hasn't thrown an exception, success!
     assert.ok(1)
-    done()
   })
 })
 
 describe('objToArray', function () {
-  beforeEach(function (done) {
+  beforeEach(function () {
     this.plugin = new fixtures.plugin('../index')
-    done()
   })
 
-  it('converts an object to an array of key vals', function (done) {
+  it('converts an object to an array of key vals', function () {
     assert.deepEqual(
       [{ k: 'foo', v: 'bar' }],
       this.plugin.objToArray({ foo: 'bar' }),
@@ -55,17 +50,15 @@ describe('objToArray', function () {
       ],
       this.plugin.objToArray({ foo: 'bar', baz: 'wuz' }),
     )
-    done()
   })
 })
 
 describe('getIndexName', function () {
-  beforeEach(function (done) {
+  beforeEach(function () {
     this.plugin = new fixtures.plugin('../index')
-    done()
   })
 
-  it('gets index name for cxn or txn', function (done) {
+  it('gets index name for cxn or txn', function () {
     this.plugin.cfg = { index: {} }
     assert.ok(/smtp-connection-/.test(this.plugin.getIndexName('connection')))
     assert.ok(/smtp-transaction-/.test(this.plugin.getIndexName('transaction')))
@@ -74,14 +67,13 @@ describe('getIndexName', function () {
     this.plugin.cfg.index.transaction = 'txn'
     assert.ok(/cxn-/.test(this.plugin.getIndexName('connection')))
     assert.ok(/txn-/.test(this.plugin.getIndexName('transaction')))
-    done()
   })
 })
 
 describe('populate_conn_properties', function () {
   beforeEach(setup)
 
-  it('adds conn.local', function (done) {
+  it('adds conn.local', function () {
     this.connection.local.ip = '127.0.0.3'
     this.connection.local.port = '25'
     const result = {}
@@ -90,10 +82,9 @@ describe('populate_conn_properties', function () {
     this.plugin.populate_conn_properties(this.connection, result)
     delete result.local.host
     assert.deepEqual(expected, result.local)
-    done()
   })
 
-  it('adds conn.remote', function (done) {
+  it('adds conn.remote', function () {
     this.connection.remote.ip = '127.0.0.4'
     this.connection.remote.port = '2525'
     const result = {}
@@ -102,10 +93,9 @@ describe('populate_conn_properties', function () {
     this.plugin.populate_conn_properties(this.connection, result)
     delete result.remote.host
     assert.deepEqual(expected, result.remote)
-    done()
   })
 
-  it('adds conn.helo', function (done) {
+  it('adds conn.helo', function () {
     this.connection.hello.host = 'testimerson'
     this.connection.hello.verb = 'EHLO'
     const result = {}
@@ -114,10 +104,9 @@ describe('populate_conn_properties', function () {
     this.plugin.populate_conn_properties(this.connection, result)
     delete result.remote.host
     assert.deepEqual(expected, result.hello)
-    done()
   })
 
-  it('adds conn.count', function (done) {
+  it('adds conn.count', function () {
     this.connection.errors = 1
     this.connection.tran_count = 2
     this.connection.msg_count = { accept: 0 }
@@ -133,14 +122,13 @@ describe('populate_conn_properties', function () {
     this.plugin.populate_conn_properties(this.connection, result)
     delete result.remote.host
     assert.deepEqual(expected, result.count)
-    done()
   })
 })
 
 describe('get_plugin_results', function () {
   beforeEach(setup)
 
-  it('adds plugin results to results object', function (done) {
+  it('adds plugin results to results object', function () {
     this.plugin.load_es_ini()
     this.connection.start_time = Date.now() - 1000
     this.connection.remote = { ip: '127.0.0.3', host: 'localmail' }
@@ -153,14 +141,12 @@ describe('get_plugin_results', function () {
     delete this.plugin.cfg.top_level_names
     const result = this.plugin.get_plugin_results(this.connection)
     assert.deepEqual(expected_result, result)
-    done()
   })
 })
 
 describe('trim_plugin_name', function () {
-  beforeEach(function (done) {
+  beforeEach(function () {
     this.plugin = new fixtures.plugin('../index')
-    done()
   })
 
   const testObj = {
@@ -172,36 +158,31 @@ describe('trim_plugin_name', function () {
     'mail_from.is_resolvable': {},
   }
 
-  it(`trims connection phase prefix: data`, function (done) {
+  it(`trims connection phase prefix: data`, function () {
     this.plugin.trim_plugin_name(testObj, 'data.headers')
     assert.deepEqual(testObj.headers, {})
-    done()
   })
 
-  it(`trims connection phase prefix: connect`, function (done) {
+  it(`trims connection phase prefix: connect`, function () {
     this.plugin.trim_plugin_name(testObj, 'connect.geoip')
     assert.deepEqual(testObj.geoip, {})
 
     this.plugin.trim_plugin_name(testObj, 'connect.asn')
     assert.deepEqual(testObj.asn, {})
-    done()
   })
 
-  it(`trims connection phase prefix: rcpt_to`, function (done) {
+  it(`trims connection phase prefix: rcpt_to`, function () {
     this.plugin.trim_plugin_name(testObj, 'rcpt_to.qmail_deliverable')
     assert.deepEqual(testObj.qmail_deliverable, {})
-    done()
   })
 
-  it(`trims connection phase prefix: mail_from`, function (done) {
+  it(`trims connection phase prefix: mail_from`, function () {
     this.plugin.trim_plugin_name(testObj, 'mail_from.is_resolvable')
     assert.deepEqual(testObj.is_resolvable, {})
-    done()
   })
 
-  it(`trims connection phase prefix: helo`, function (done) {
+  it(`trims connection phase prefix: helo`, function () {
     this.plugin.trim_plugin_name(testObj, 'helo.checks')
     assert.deepEqual(testObj.helo, {})
-    done()
   })
 })
