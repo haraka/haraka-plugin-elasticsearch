@@ -1,9 +1,9 @@
 'use strict'
 // log to Elasticsearch
 
-const util = require('util')
+const os = require('node:os')
 const utils = require('haraka-utils')
-const Elasticsearch = require('@elastic/elasticsearch')
+const { Client } = require('@elastic/elasticsearch')
 
 exports.register = function () {
   this.load_es_ini()
@@ -55,6 +55,7 @@ exports.load_es_ini = function () {
     early_talker: undefined,
   }
 
+  this.cfg.index ??= {}
   if (!this.cfg.index.timestamp) this.cfg.index.timestamp = 'timestamp'
 
   // Cloud ID overrides hosts
@@ -64,14 +65,16 @@ exports.load_es_ini = function () {
     this.clientArgs.cloud = { id: this.cfg.cloud.id }
   } else {
     this.loginfo('Using nodes')
-    this.clientArgs = { nodes: this.cfg.es_hosts }
+    this.clientArgs.nodes = this.cfg.es_hosts
   }
-  if (Object.keys(this.cfg.auth).length > 0)
+  if (this.cfg.auth && Object.keys(this.cfg.auth).length > 0)
     this.clientArgs.auth = this.cfg.auth
-  if (Object.keys(this.cfg.tls).length > 0) this.clientArgs.tls = this.cfg.tls
+  if (this.cfg.tls && Object.keys(this.cfg.tls).length > 0)
+    this.clientArgs.tls = this.cfg.tls
 
   // Handling legacy setting for log.connections
-  if (this.cfg.main.log_connections == 'false') this.cfg.log.connections = false
+  if (this.cfg.main?.log_connections === 'false')
+    this.cfg.log.connections = false
 }
 
 exports.get_es_hosts = function () {
@@ -89,20 +92,28 @@ exports.get_es_hosts = function () {
 }
 
 exports.es_connect = function (done) {
-  this.es = new Elasticsearch.Client(this.clientArgs)
+  this.es = new Client(this.clientArgs)
 
   this.es
     .ping()
     .then(() => {
-      this.lognotice('connected')
+      this.lognotice(this, 'connected')
     })
     .catch((error) => {
-      this.logerror('cluster is down!')
-      this.logerror(util.inspect(error, { depth: null }))
+      this.logerror(this, 'cluster is down!')
+      this.logerror(this, error.message)
     })
     .finally(() => {
       if (done) done()
     })
+}
+
+// Fire-and-forget index of a document. Failures are logged via errLogger,
+// which is the connection in connection hooks or the plugin in outbound hooks
+exports.es_index = function (index, id, document, errLogger) {
+  return this.es.create({ index, id, document }).catch((error) => {
+    errLogger.logerror(this, error.message)
+  })
 }
 
 exports.log_transaction = function (next, connection) {
@@ -119,18 +130,12 @@ exports.log_transaction = function (next, connection) {
   res[this.cfg.index.timestamp] = new Date().toISOString()
 
   this.populate_conn_properties(connection, res)
-  this.es
-    .create({
-      index: this.getIndexName('transaction'),
-      id: connection.transaction.uuid,
-      document: res,
-    })
-    .then((response) => {
-      // connection.loginfo(this, response);
-    })
-    .catch((error) => {
-      connection.logerror(this, error.message)
-    })
+  this.es_index(
+    this.getIndexName('transaction'),
+    connection.transaction.uuid,
+    res,
+    connection,
+  )
 
   // hook reset_transaction doesn't seem to wait for next(). If I
   // wait until after I get a response back from ES, Haraka throws
@@ -162,18 +167,12 @@ exports.log_connection = function (next, connection) {
   this.populate_conn_properties(connection, res)
 
   // connection.lognotice(this, JSON.stringify(res));
-  this.es
-    .create({
-      index: this.getIndexName('connection'),
-      id: connection.uuid,
-      document: res,
-    })
-    .then((response) => {
-      // connection.loginfo(this, response);
-    })
-    .catch((error) => {
-      connection.logerror(this, error.message)
-    })
+  this.es_index(
+    this.getIndexName('connection'),
+    connection.uuid,
+    res,
+    connection,
+  )
 
   next()
 }
@@ -182,10 +181,12 @@ exports.log_connection = function (next, connection) {
 exports.log_delivery = function (next, hmail, params) {
   if (!this.cfg.log.delivery) return next() // main.log_delivery = false
   const doc = this.populate_from_hmail(hmail)
-  const [host, ip, response, delay, port, mode, ok_recips, secured] = params
+  // params: [host, ip, response, delay, port, mode, ok_recips, secured]
+  const [host, ip, response, delay, port, , , secured] = params
   if (!doc.remote) doc.remote = {}
   doc.remote.host = host
-  ;(doc.remote.ip = ip), (doc.remote.port = port)
+  doc.remote.ip = ip
+  doc.remote.port = port
 
   if (!doc.outbound) doc.outbound = {}
   doc.outbound.response = response
@@ -195,18 +196,7 @@ exports.log_delivery = function (next, hmail, params) {
   // Timestamp
   doc[this.cfg.index.timestamp] = new Date().toISOString()
 
-  this.es
-    .create({
-      index: this.getIndexName('transaction'),
-      id: utils.uuid(),
-      document: doc,
-    })
-    .then((response) => {
-      // connection.loginfo(this, response);
-    })
-    .catch((error) => {
-      this.logerror(this, error.message)
-    })
+  this.es_index(this.getIndexName('transaction'), utils.uuid(), doc, this)
 
   next()
 }
@@ -223,18 +213,7 @@ exports.log_delay = function (next, hmail, errorObj) {
 
   // Timestamp
   doc[this.cfg.index.timestamp] = new Date().toISOString()
-  this.es
-    .create({
-      index: this.getIndexName('transaction'),
-      id: utils.uuid(),
-      document: doc,
-    })
-    .then((response) => {
-      // connection.loginfo(this, response);
-    })
-    .catch((error) => {
-      this.logerror(this, error.message)
-    })
+  this.es_index(this.getIndexName('transaction'), utils.uuid(), doc, this)
 
   next()
 }
@@ -251,18 +230,7 @@ exports.log_bounce = function (next, hmail, errorObj) {
 
   // Timestamp
   doc[this.cfg.index.timestamp] = new Date().toISOString()
-  this.es
-    .create({
-      index: this.getIndexName('transaction'),
-      id: utils.uuid(),
-      document: doc,
-    })
-    .then((response) => {
-      // connection.loginfo(this, response);
-    })
-    .catch((error) => {
-      this.logerror(this, error.message)
-    })
+  this.es_index(this.getIndexName('transaction'), utils.uuid(), doc, this)
 
   next()
 }
@@ -277,16 +245,16 @@ exports.populate_from_hmail = function (hmail) {
   }
   // Handles multiple recipients
   const toArr = []
-  for (const rcpt in hmail.todo.rcpt_to) {
+  for (const rcpt of hmail.todo.rcpt_to) {
     if (hmail.todo.rcpt_to[rcpt]) {
-      toArr.push(hmail.todo.rcpt_to[rcpt].address())
+      toArr.push(hmail.todo.rcpt_to[rcpt].address)
     } else {
-      toArr.push(rcpt.address())
+      toArr.push(rcpt.address)
     }
   }
   res.message.header = {
     To: toArr.join(', '),
-    From: hmail.todo.mail_from.address(),
+    From: hmail.todo.mail_from.address,
   }
   res.outbound = {
     domain: hmail.todo.domain,
@@ -348,7 +316,7 @@ exports.populate_conn_properties = function (conn, res) {
   conn_res.local = {
     ip: conn.local.ip,
     port: conn.local.port,
-    host: this.cfg.hostname || require('os').hostname(),
+    host: this.cfg.hostname || os.hostname(),
   }
   conn_res.remote = {
     ip: conn.remote.ip,
@@ -387,8 +355,8 @@ exports.populate_conn_properties = function (conn, res) {
   }
 
   for (const f in this.cfg.conn_props) {
-    if (conn[f] === undefined) return
-    if (conn[f] === 0) return
+    if (conn[f] === undefined) continue
+    if (conn[f] === 0) continue
     if (this.cfg.conn_props[f]) {
       // alias specified
       conn_res[this.cfg.conn_props[f]] = conn[f]

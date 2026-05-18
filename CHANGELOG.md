@@ -4,6 +4,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
+### [8.2.0] - 2026-05-18
+
+- change: use @haraka/email-address syntax (vs address-rfc2821)
+  - related to https://github.com/haraka/Haraka/issues/3564
+- change: test runner is now node:test
+- change: remove unnecessary done callbacks in tests #82
+- security: `es_connect` no longer logs the full ES error object
+- ci: add a macOS job that stands up ES (see README "Testing")
+- fix: `populate_conn_properties` (`return` → `continue`)
+- fix: keep `maxRetries` on the non-Cloud-ID client path
+- fix: `populate_from_hmail` collects real recipient addresses
+- fix: don't throw when the `[auth]` or `[tls]` ini section is absent
+- chore: dedupe the five ES `create()` calls into `es_index()`
+
 ### [8.1.6] - 2026-03-09
 
 - templates: several, use wildcard vs text indexes
@@ -152,3 +166,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 [8.1.5]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.5
 [8.1.6]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.6
 [8.1.7]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.7
+[8.2.0]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.2.0
