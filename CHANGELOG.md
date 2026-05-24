@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Unreleased
 
 ### [8.2.1] - 2026-05-24
-- change: use @haraka/email-address syntax (vs address-rfc2821)
+
+- fix: don't return in for loop
 
 ### [8.2.0] - 2026-05-18
 

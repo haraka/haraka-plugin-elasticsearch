@@ -36,7 +36,7 @@
   "homepage": "https://github.com/haraka/haraka-plugin-elasticsearch#readme",
   "dependencies": {
     "@elastic/elasticsearch": "^8.19.1",
-    "haraka-utils": "^1.1.4"
+    "haraka-utils": "^2.0.0"
   },
   "devDependencies": {
     "@haraka/eslint-config": "^2.0.4",
