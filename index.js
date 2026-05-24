@@ -456,7 +456,7 @@ exports.populate_message = function (pir, connection) {
 
   for (const h of this.cfg.headers) {
     let r = connection.transaction.header.get_decoded(h)
-    if (!r) return
+    if (!r) continue
     if (h.toLowerCase() === 'date') r = new Date(r).toISOString()
     pir.message.header[h.toLowerCase()] = r
   }

@@ -10,15 +10,66 @@ env:
   CI: true
 
 jobs:
-  release:
-    uses: haraka/.github/.github/workflows/release.yml@master
-    secrets: inherit
+  version:
+    runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
+    outputs:
+      changed: ${{ steps.check.outputs.changed }}
+      version: ${{ steps.check.outputs.version }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 2 # last 2 commits
+      - name: check version change
+        id: check
+        run: |
+          PREV_VERSION=$(git show HEAD^:package.json | jq -r .version)
+          CURR_VERSION=$(jq -r .version package.json)
+          echo "Previous: $PREV_VERSION"
+          echo "Current:  $CURR_VERSION"
+          if [ "$PREV_VERSION" != "$CURR_VERSION" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+          echo "version=$CURR_VERSION" >> $GITHUB_OUTPUT
 
+  release:
+    needs: [version]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # needed to create tags and releases
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # fetch all tags
+      - id: tag-check
+        run: |
+          TAG="v${{ needs.version.outputs.version }}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+      - name: Create Git tag and push
+        if: steps.tag-check.outputs.exists == 'false'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git tag v${{ needs.version.outputs.version }}
+          git push origin v${{ needs.version.outputs.version }}
+      - name: Create GitHub Release
+        if: steps.tag-check.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.version.outputs.version }}
+          name: ${{ needs.version.outputs.version }}
+          generate_release_notes: false
+  
   publish:
-    needs: release
-    if: needs.release.outputs.changed == 'true'
+    needs: [release]
+    if: needs.version.outputs.changed == 'true'
     uses: haraka/.github/.github/workflows/publish.yml@master
     secrets: inherit
     permissions:
