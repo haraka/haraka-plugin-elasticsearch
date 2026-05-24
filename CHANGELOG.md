@@ -4,6 +4,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
+### [8.2.1] - 2026-05-24
+- change: use @haraka/email-address syntax (vs address-rfc2821)
+
 ### [8.2.0] - 2026-05-18
 
 - change: use @haraka/email-address syntax (vs address-rfc2821)
@@ -167,3 +170,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 [8.1.6]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.6
 [8.1.7]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.1.7
 [8.2.0]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.2.0
+[8.2.1]: https://github.com/haraka/haraka-plugin-elasticsearch/releases/tag/v8.2.1
