@@ -1,58 +1,66 @@
 const assert = require('node:assert')
 const path = require('node:path')
 
+const { describe, it, beforeEach } = require('node:test')
+
 const fixtures = require('haraka-test-fixtures')
 
 function set_up() {
+  let plugin
   try {
-    this.plugin = new fixtures.plugin('../index')
+    plugin = new fixtures.plugin('../index')
   } catch (e) {
     console.error(`unable to load elasticsearch plugin: ${e}`)
     throw new Error('failed to load elasticsearch')
   }
 
   process.env.WITHOUT_CONFIG_CACHE = '1'
-  this.connection = fixtures.connection.createConnection()
-  this.plugin.config.root_path = path.resolve('test', 'fixtures')
+  const connection = fixtures.connection.createConnection()
+  plugin.config.root_path = path.resolve('test', 'fixtures')
+  return { plugin, connection }
 }
 
-describe('load_es_ini', function () {
-  beforeEach(set_up)
+describe('load_es_ini', () => {
+  let plugin
+  beforeEach(() => {
+    ;({ plugin } = set_up())
+  })
 
-  it('can load elasticsearch.ini', function () {
-    this.plugin.load_es_ini()
-    // console.log(this.plugin.cfg);
-    assert.deepEqual(this.plugin.cfg.hosts, {
+  it('can load elasticsearch.ini', () => {
+    plugin.load_es_ini()
+    // console.log(plugin.cfg);
+    assert.deepEqual(plugin.cfg.hosts, {
       '127.0.0.1': undefined,
       '172.16.10.1': 'https://user:password@172.16.10.1:9200',
     })
-    assert.ok(this.plugin.cfg)
-    assert.ok(this.plugin.cfg.index)
+    assert.ok(plugin.cfg)
+    assert.ok(plugin.cfg.index)
   })
 })
 
-describe('get_es_hosts', function () {
-  beforeEach(set_up)
-
-  it('converts bare host to hosts format', function () {
-    this.plugin.cfg = { hosts: { localhost: undefined } }
-    this.plugin.get_es_hosts()
-    assert.deepStrictEqual('http://localhost:9200', this.plugin.cfg.es_hosts[0])
+describe('get_es_hosts', () => {
+  let plugin
+  beforeEach(() => {
+    ;({ plugin } = set_up())
   })
 
-  it('passes through a URL string', function () {
-    this.plugin.cfg = { hosts: { '1.1.1.1': 'https://test:pass@1.1.1.1' } }
-    this.plugin.get_es_hosts()
-    assert.deepStrictEqual(
-      'https://test:pass@1.1.1.1',
-      this.plugin.cfg.es_hosts[0],
-    )
+  it('converts bare host to hosts format', () => {
+    plugin.cfg = { hosts: { localhost: undefined } }
+    plugin.get_es_hosts()
+    assert.deepStrictEqual('http://localhost:9200', plugin.cfg.es_hosts[0])
   })
 
-  it('applies auth & tls config to client config', function () {
-    this.plugin.config.root_path = path.resolve('test', 'fixtures')
-    this.plugin.load_es_ini()
-    assert.deepEqual(this.plugin.clientArgs, {
+  it('passes through a URL string', () => {
+    plugin.cfg = { hosts: { '1.1.1.1': 'https://test:pass@1.1.1.1' } }
+    plugin.get_es_hosts()
+    assert.deepStrictEqual('https://test:pass@1.1.1.1', plugin.cfg.es_hosts[0])
+  })
+
+  it('applies auth & tls config to client config', () => {
+    plugin.config.root_path = path.resolve('test', 'fixtures')
+    plugin.load_es_ini()
+    assert.deepEqual(plugin.clientArgs, {
+      maxRetries: 5,
       auth: {
         username: 'haraka',
         password: 'nice-long-pass-phrase',

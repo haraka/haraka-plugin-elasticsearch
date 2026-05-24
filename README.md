@@ -95,6 +95,12 @@ curl -X PUT 'http://localhost:9200/_template/haraka_results' \
      -H 'Content-Type: application/json' -d @templates/index/v8.json
 ```
 
+## Testing
+
+The test suite includes live-Elasticsearch tests (`test/template.js` and `register()`); without a reachable ES on `http://localhost:9200` those tests time out.
+
+To stand up ES for local development, the steps in [.github/workflows/ci.yml](.github/workflows/ci.yml) are the reference recipes.
+
 <!-- leave these buried at the bottom of the document -->
 
 [ci-img]: https://github.com/haraka/haraka-plugin-elasticsearch/actions/workflows/ci.yml/badge.svg

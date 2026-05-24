@@ -3,13 +3,18 @@ name: CI
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+  push:
+    branches: [main, master]
 
 env:
   CI: true
+  ES_VERSION: 8.19.0
 
 jobs:
   lint:
     uses: haraka/.github/.github/workflows/lint.yml@master
+    permissions:
+      contents: read
 
   # coverage:
   #   uses: haraka/.github/.github/workflows/coverage.yml@master
@@ -23,6 +28,8 @@ jobs:
         os: [ubuntu-latest]
         node-version: ${{ fromJson(needs.get-lts.outputs.lts) }}
       fail-fast: false
+    permissions:
+      contents: read
     steps:
       - name: Configure sysctl limits
         run: |
@@ -32,7 +39,7 @@ jobs:
           sudo sysctl -w vm.max_map_count=262144
       - uses: elastic/elastic-github-actions/elasticsearch@master
         with:
-          stack-version: 8.8.0
+          stack-version: ${{ env.ES_VERSION }}
           security-enabled: false
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v4
@@ -42,8 +49,49 @@ jobs:
       - run: npm install
       - run: npm test
 
+  test-macos:
+    needs: [lint, get-lts]
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        node-version: ${{ fromJson(needs.get-lts.outputs.lts) }}
+      fail-fast: false
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        name: Node ${{ matrix.node-version }} on macos-latest
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Download Elasticsearch ${{ env.ES_VERSION }} (macOS arm64)
+        run: |
+          curl -fsSL -O \
+            "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}-darwin-aarch64.tar.gz"
+          tar xzf "elasticsearch-${ES_VERSION}-darwin-aarch64.tar.gz"
+      - name: Start Elasticsearch (security disabled, single-node)
+        run: |
+          ES_JAVA_OPTS="-Xms1g -Xmx1g" \
+            "./elasticsearch-${ES_VERSION}/bin/elasticsearch" -d -p es.pid \
+            -E xpack.security.enabled=false \
+            -E discovery.type=single-node \
+            -E http.port=9200
+      - name: Wait for Elasticsearch on :9200
+        run: |
+          for i in $(seq 1 60); do
+            if curl -fs http://localhost:9200 >/dev/null; then
+              echo "Elasticsearch is up"; exit 0
+            fi
+            sleep 3
+          done
+          echo "Elasticsearch did not become ready in time"; exit 1
+      - run: npm install
+      - run: npm test
+
   get-lts:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - id: get
         uses: msimerson/node-lts-versions@v1
