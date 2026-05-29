@@ -14,7 +14,7 @@ function setup() {
     // plugin.config = plugin.config.module_config(path.resolve('test'))
   } catch (e) {
     console.error(`unable to load elasticsearch plugin: ${e}`)
-    throw new Error('failed to load elasticsearch')
+    throw new Error('failed to load elasticsearch', { cause: e })
   }
 
   const connection = makeConnection()

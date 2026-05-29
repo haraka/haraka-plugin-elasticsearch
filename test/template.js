@@ -15,7 +15,7 @@ function setup() {
     plugin = makePlugin('../index', { register: false })
   } catch (e) {
     console.error(`unable to load elasticsearch plugin: ${e}`)
-    throw new Error('failed to load elasticsearch')
+    throw new Error('failed to load elasticsearch', { cause: e })
   }
 
   plugin.config.root_path = path.resolve(__dirname, '..', '..', 'config')

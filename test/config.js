@@ -11,7 +11,7 @@ function set_up() {
     plugin = makePlugin('../index', { register: false })
   } catch (e) {
     console.error(`unable to load elasticsearch plugin: ${e}`)
-    throw new Error('failed to load elasticsearch')
+    throw new Error('failed to load elasticsearch', { cause: e })
   }
 
   process.env.WITHOUT_CONFIG_CACHE = '1'
