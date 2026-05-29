@@ -496,6 +496,7 @@ exports.trim_plugin_name = function (res, name) {
 
   res[trimmed] = res[name]
   delete res[name]
+  /* eslint no-useless-assignment: off */
   name = trimmed
 }
 

@@ -5,19 +5,19 @@ const path = require('node:path')
 
 const { describe, it, beforeEach } = require('node:test')
 
-const fixtures = require('haraka-test-fixtures')
+const { makeConnection, makePlugin } = require('haraka-test-fixtures')
 
 function setup() {
   let plugin
   try {
-    plugin = new fixtures.plugin('../index')
+    plugin = makePlugin('../index', { register: false })
     // plugin.config = plugin.config.module_config(path.resolve('test'))
   } catch (e) {
     console.error(`unable to load elasticsearch plugin: ${e}`)
-    throw new Error('failed to load elasticsearch')
+    throw new Error('failed to load elasticsearch', { cause: e })
   }
 
-  const connection = fixtures.connection.createConnection()
+  const connection = makeConnection()
   plugin.config.root_path = path.resolve(__dirname, '..', '..', 'config')
   return { plugin, connection }
 }
@@ -44,7 +44,7 @@ describe('register', () => {
 describe('objToArray', () => {
   let plugin
   beforeEach(() => {
-    plugin = new fixtures.plugin('../index')
+    plugin = makePlugin('../index', { register: false })
   })
 
   it('converts an object to an array of key vals', () => {
@@ -65,7 +65,7 @@ describe('objToArray', () => {
 describe('getIndexName', () => {
   let plugin
   beforeEach(() => {
-    plugin = new fixtures.plugin('../index')
+    plugin = makePlugin('../index', { register: false })
   })
 
   it('gets index name for cxn or txn', () => {
@@ -163,7 +163,7 @@ describe('get_plugin_results', () => {
 describe('trim_plugin_name', () => {
   let plugin
   beforeEach(() => {
-    plugin = new fixtures.plugin('../index')
+    plugin = makePlugin('../index', { register: false })
   })
 
   const testObj = {

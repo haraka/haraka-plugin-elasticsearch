@@ -6,16 +6,16 @@ const path = require('node:path')
 
 const { describe, it, beforeEach } = require('node:test')
 
-const fixtures = require('haraka-test-fixtures')
+const { makeConnection, makePlugin } = require('haraka-test-fixtures')
 const utils = require('haraka-utils')
 
 function setup() {
   let plugin
   try {
-    plugin = new fixtures.plugin('../index')
+    plugin = makePlugin('../index', { register: false })
   } catch (e) {
     console.error(`unable to load elasticsearch plugin: ${e}`)
-    throw new Error('failed to load elasticsearch')
+    throw new Error('failed to load elasticsearch', { cause: e })
   }
 
   plugin.config.root_path = path.resolve(__dirname, '..', '..', 'config')
@@ -143,7 +143,7 @@ describe('log_connection', () => {
     plugin.es_connect((err) => {
       assert.ifError(err)
 
-      const connection = fixtures.connection.createConnection()
+      const connection = makeConnection()
       connection.local.ip = '127.0.0.1'
       connection.remote.ip = '172.1.1.1'
       connection.uuid = utils.uuid()

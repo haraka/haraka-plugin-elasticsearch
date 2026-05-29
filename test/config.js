@@ -3,19 +3,19 @@ const path = require('node:path')
 
 const { describe, it, beforeEach } = require('node:test')
 
-const fixtures = require('haraka-test-fixtures')
+const { makeConnection, makePlugin } = require('haraka-test-fixtures')
 
 function set_up() {
   let plugin
   try {
-    plugin = new fixtures.plugin('../index')
+    plugin = makePlugin('../index', { register: false })
   } catch (e) {
     console.error(`unable to load elasticsearch plugin: ${e}`)
-    throw new Error('failed to load elasticsearch')
+    throw new Error('failed to load elasticsearch', { cause: e })
   }
 
   process.env.WITHOUT_CONFIG_CACHE = '1'
-  const connection = fixtures.connection.createConnection()
+  const connection = makeConnection()
   plugin.config.root_path = path.resolve('test', 'fixtures')
   return { plugin, connection }
 }

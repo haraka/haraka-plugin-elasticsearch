@@ -1,7 +1,6 @@
-[![Build Status][ci-img]][ci-url]
-[![Code Climate][clim-img]][clim-url]
-
 # haraka-plugin-elasticsearch
+
+[![Test][ci-img]][ci-url] [![Cover][cov-img]][cov-url] [![Qlty][qlty-img]][qlty-url]
 
 Ship Haraka log info directly to Elasticsearch
 
@@ -105,5 +104,7 @@ To stand up ES for local development, the steps in [.github/workflows/ci.yml](.g
 
 [ci-img]: https://github.com/haraka/haraka-plugin-elasticsearch/actions/workflows/ci.yml/badge.svg
 [ci-url]: https://github.com/haraka/haraka-plugin-elasticsearch/actions/workflows/ci.yml
-[clim-img]: https://codeclimate.com/github/haraka/haraka-plugin-elasticsearch/badges/gpa.svg
-[clim-url]: https://codeclimate.com/github/haraka/haraka-plugin-elasticsearch
+[cov-img]: https://codecov.io/github/haraka/haraka-plugin-elasticsearch/coverage.svg
+[cov-url]: https://codecov.io/github/haraka/haraka-plugin-elasticsearch
+[qlty-img]: https://qlty.sh/gh/haraka/projects/haraka-plugin-elasticsearch/maintainability.svg
+[qlty-url]: https://qlty.sh/gh/haraka/projects/haraka-plugin-elasticsearch
