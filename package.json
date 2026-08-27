@@ -37,7 +37,7 @@
   },
   "homepage": "https://github.com/haraka/haraka-plugin-elasticsearch#readme",
   "dependencies": {
-    "@elastic/elasticsearch": "^8.19.1",
+    "@elastic/elasticsearch": "^9.4.2",
     "haraka-utils": "^2.1.0"
   },
   "devDependencies": {
